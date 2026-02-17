@@ -261,7 +261,7 @@
                 <div class="modal-player">
                     <audio id="modalAudio" controls preload="none"></audio>
                 </div>
-                <a class="modal-open-link" id="modalLink" href="#" target="_blank" rel="noopener">Åbn i Google Drive &#8599;</a>
+                <a class="modal-open-link" id="modalLink" href="#" download>Download sang &#8595;</a>
             </div>
         </div>
     </div>
@@ -274,7 +274,7 @@
             {
                 id: 'bare-en-far',
                 title: 'Bare En Far',
-                fileId: '19WgFNZj78u5RNJ9_nWsHim6bQsjQzZsV',
+                file: 'bare-en-far.mp3',
                 emoji: '\u{1F468}\u200D\u{1F467}\u200D\u{1F466}',
                 gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)',
                 glow: '#f59e0b'
@@ -282,7 +282,7 @@
             {
                 id: 'kristoffer',
                 title: 'KRISTOFFER! (Onkel Reje Mega Brainrot Mix)',
-                fileId: '13sqxyyH8QvydUbeJEd91f2uZuvBWaFA2',
+                file: 'kristoffer.mp3',
                 emoji: '\u{1F990}\u{1F4A5}',
                 gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)',
                 glow: '#e040fb'
@@ -290,7 +290,7 @@
             {
                 id: 'kokosnoed',
                 title: 'Som en Kokosnød',
-                fileId: '1ed71_PqNxxmB8xFIfoxaFlPPFewJGIGT',
+                file: 'som-en-kokosnoed.mp3',
                 emoji: '\u{1F965}\u{1F334}',
                 gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)',
                 glow: '#10b981'
@@ -298,7 +298,7 @@
             {
                 id: 'mine-drenge',
                 title: 'Mine Drenge',
-                fileId: '1gRq-NO4vT2AkeCrx9RC1WZT8OXrreiGY',
+                file: 'mine-drenge.mp3',
                 emoji: '\u{1F466}\u{1F466}',
                 gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)',
                 glow: '#3b82f6'
@@ -306,7 +306,7 @@
             {
                 id: 'fars-kamp',
                 title: 'En Fars Kamp for Sine Børn',
-                fileId: '1etgTZKIHoeBqPwXVlMNo_xa8pIvYVUYd',
+                file: 'en-fars-kamp.mp3',
                 emoji: '\u2694\uFE0F\u{1F6E1}\uFE0F',
                 gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)',
                 glow: '#ef4444'
@@ -314,7 +314,7 @@
             {
                 id: 'stop-brian',
                 title: 'Stop Så Brian',
-                fileId: '11u-sB31WfkMko5k63BYUABNjc3jxxdZ9',
+                file: 'stop-saa-brian.mp3',
                 emoji: '\u{1F6D1}\u{1F602}',
                 gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)',
                 glow: '#f97316'
@@ -342,8 +342,8 @@
             });
         }
 
-        function audioSrc(fileId) {
-            return `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`;
+        function audioSrc(filename) {
+            return `audio/${filename}`;
         }
 
         function openSong(id) {
@@ -368,9 +368,9 @@
             title.textContent = song.title;
             const count = playCounts[id] || 0;
             plays.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
-            link.href = `https://drive.google.com/file/d/${song.fileId}/preview`;
+            link.href = audioSrc(song.file);
 
-            audio.src = audioSrc(song.fileId);
+            audio.src = audioSrc(song.file);
             audio.play().catch(() => {});
 
             overlay.classList.add('active');
