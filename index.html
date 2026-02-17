@@ -210,16 +210,14 @@
 
         .modal-player {
             width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #000;
+            padding: 0 4px;
         }
 
-        .modal-player iframe {
+        .modal-player audio {
             width: 100%;
-            height: 80px;
-            border: none;
-            display: block;
+            height: 44px;
+            border-radius: 22px;
+            outline: none;
         }
 
         .modal-open-link {
@@ -261,7 +259,7 @@
                 <div class="modal-song-title" id="modalTitle"></div>
                 <div class="modal-song-plays" id="modalPlays"></div>
                 <div class="modal-player">
-                    <iframe id="modalIframe" allow="autoplay" allowfullscreen></iframe>
+                    <audio id="modalAudio" controls preload="none"></audio>
                 </div>
                 <a class="modal-open-link" id="modalLink" href="#" target="_blank" rel="noopener">Åbn i Google Drive &#8599;</a>
             </div>
@@ -276,7 +274,7 @@
             {
                 id: 'bare-en-far',
                 title: 'Bare En Far',
-                url: 'https://drive.google.com/file/d/19WgFNZj78u5RNJ9_nWsHim6bQsjQzZsV/preview',
+                fileId: '19WgFNZj78u5RNJ9_nWsHim6bQsjQzZsV',
                 emoji: '\u{1F468}\u200D\u{1F467}\u200D\u{1F466}',
                 gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)',
                 glow: '#f59e0b'
@@ -284,7 +282,7 @@
             {
                 id: 'kristoffer',
                 title: 'KRISTOFFER! (Onkel Reje Mega Brainrot Mix)',
-                url: 'https://drive.google.com/file/d/13sqxyyH8QvydUbeJEd91f2uZuvBWaFA2/preview',
+                fileId: '13sqxyyH8QvydUbeJEd91f2uZuvBWaFA2',
                 emoji: '\u{1F990}\u{1F4A5}',
                 gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)',
                 glow: '#e040fb'
@@ -292,7 +290,7 @@
             {
                 id: 'kokosnoed',
                 title: 'Som en Kokosnød',
-                url: 'https://drive.google.com/file/d/1ed71_PqNxxmB8xFIfoxaFlPPFewJGIGT/preview',
+                fileId: '1ed71_PqNxxmB8xFIfoxaFlPPFewJGIGT',
                 emoji: '\u{1F965}\u{1F334}',
                 gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)',
                 glow: '#10b981'
@@ -300,7 +298,7 @@
             {
                 id: 'mine-drenge',
                 title: 'Mine Drenge',
-                url: 'https://drive.google.com/file/d/1gRq-NO4vT2AkeCrx9RC1WZT8OXrreiGY/preview',
+                fileId: '1gRq-NO4vT2AkeCrx9RC1WZT8OXrreiGY',
                 emoji: '\u{1F466}\u{1F466}',
                 gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)',
                 glow: '#3b82f6'
@@ -308,7 +306,7 @@
             {
                 id: 'fars-kamp',
                 title: 'En Fars Kamp for Sine Børn',
-                url: 'https://drive.google.com/file/d/1etgTZKIHoeBqPwXVlMNo_xa8pIvYVUYd/preview',
+                fileId: '1etgTZKIHoeBqPwXVlMNo_xa8pIvYVUYd',
                 emoji: '\u2694\uFE0F\u{1F6E1}\uFE0F',
                 gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)',
                 glow: '#ef4444'
@@ -316,7 +314,7 @@
             {
                 id: 'stop-brian',
                 title: 'Stop Så Brian',
-                url: 'https://drive.google.com/file/d/11u-sB31WfkMko5k63BYUABNjc3jxxdZ9/preview',
+                fileId: '11u-sB31WfkMko5k63BYUABNjc3jxxdZ9',
                 emoji: '\u{1F6D1}\u{1F602}',
                 gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)',
                 glow: '#f97316'
@@ -344,6 +342,10 @@
             });
         }
 
+        function audioSrc(fileId) {
+            return `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`;
+        }
+
         function openSong(id) {
             const song = songs.find(s => s.id === id);
             if (!song) return;
@@ -357,7 +359,7 @@
             const emoji = document.getElementById('artEmoji');
             const title = document.getElementById('modalTitle');
             const plays = document.getElementById('modalPlays');
-            const iframe = document.getElementById('modalIframe');
+            const audio = document.getElementById('modalAudio');
             const link = document.getElementById('modalLink');
 
             art.style.background = song.gradient;
@@ -366,8 +368,10 @@
             title.textContent = song.title;
             const count = playCounts[id] || 0;
             plays.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
-            iframe.src = song.url;
-            link.href = song.url;
+            link.href = `https://drive.google.com/file/d/${song.fileId}/preview`;
+
+            audio.src = audioSrc(song.fileId);
+            audio.play().catch(() => {});
 
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -375,10 +379,11 @@
 
         function closeModal() {
             const overlay = document.getElementById('modalOverlay');
-            const iframe = document.getElementById('modalIframe');
+            const audio = document.getElementById('modalAudio');
+            audio.pause();
             overlay.classList.remove('active');
             document.body.style.overflow = '';
-            setTimeout(() => { iframe.src = ''; }, 300);
+            setTimeout(() => { audio.removeAttribute('src'); audio.load(); }, 300);
             currentSongId = null;
         }
 
