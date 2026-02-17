@@ -100,6 +100,145 @@
             color: rgba(255, 255, 255, 0.3);
             flex-shrink: 0;
         }
+
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 420px;
+            background: #1a1a2e;
+            border-radius: 20px;
+            overflow: hidden;
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.3s;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Album art */
+        .modal-art {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .modal-art .art-emoji {
+            font-size: 5rem;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3));
+            z-index: 1;
+        }
+
+        .modal-art .art-glow {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        /* Modal body */
+        .modal-body {
+            padding: 24px 20px 20px;
+            text-align: center;
+        }
+
+        .modal-song-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .modal-song-plays {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 20px;
+        }
+
+        .modal-player {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .modal-player iframe {
+            width: 100%;
+            height: 80px;
+            border: none;
+            display: block;
+        }
+
+        .modal-open-link {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .modal-open-link:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -111,38 +250,145 @@
         <div class="song-list" id="songList"></div>
     </div>
 
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-art" id="modalArt">
+                <button class="modal-close" id="modalClose">&#10005;</button>
+                <div class="art-glow" id="artGlow"></div>
+                <span class="art-emoji" id="artEmoji"></span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-song-title" id="modalTitle"></div>
+                <div class="modal-song-plays" id="modalPlays"></div>
+                <div class="modal-player">
+                    <iframe id="modalIframe" allow="autoplay" allowfullscreen></iframe>
+                </div>
+                <a class="modal-open-link" id="modalLink" href="#" target="_blank" rel="noopener">Åbn i Google Drive &#8599;</a>
+            </div>
+        </div>
+    </div>
+
     <script>
         const COUNTER_NS = 'hovborg-mine-sange';
         const COUNTER_API = 'https://api.counterapi.dev/v1';
 
         const songs = [
-            { id: 'bare-en-far', title: 'Bare En Far', url: 'https://drive.google.com/file/d/13sqxyyH8QvydUbeJEd91f2uZuvBWaFA2/preview' },
-            { id: 'kristoffer', title: 'KRISTOFFER! (Onkel Reje Mega Brainrot Mix)', url: 'https://drive.google.com/file/d/19WgFNZj78u5RNJ9_nWsHim6bQsjQzZsV/preview' },
-            { id: 'kokosnoed', title: 'Som en Kokosnød', url: 'https://drive.google.com/file/d/1ed71_PqNxxmB8xFIfoxaFlPPFewJGIGT/preview' },
-            { id: 'mine-drenge', title: 'Mine Drenge', url: 'https://drive.google.com/file/d/1etgTZKIHoeBqPwXVlMNo_xa8pIvYVUYd/preview' },
-            { id: 'fars-kamp', title: 'En Fars Kamp for Sine Børn', url: 'https://drive.google.com/file/d/1gRq-NO4vT2AkeCrx9RC1WZT8OXrreiGY/preview' },
-            { id: 'stop-brian', title: 'Stop Så Brian', url: 'https://drive.google.com/file/d/11u-sB31WfkMko5k63BYUABNjc3jxxdZ9/preview' }
+            {
+                id: 'bare-en-far',
+                title: 'Bare En Far',
+                url: 'https://drive.google.com/file/d/13sqxyyH8QvydUbeJEd91f2uZuvBWaFA2/preview',
+                emoji: '\u{1F468}\u200D\u{1F467}\u200D\u{1F466}',
+                gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)',
+                glow: '#f59e0b'
+            },
+            {
+                id: 'kristoffer',
+                title: 'KRISTOFFER! (Onkel Reje Mega Brainrot Mix)',
+                url: 'https://drive.google.com/file/d/19WgFNZj78u5RNJ9_nWsHim6bQsjQzZsV/preview',
+                emoji: '\u{1F990}\u{1F4A5}',
+                gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)',
+                glow: '#e040fb'
+            },
+            {
+                id: 'kokosnoed',
+                title: 'Som en Kokosnød',
+                url: 'https://drive.google.com/file/d/1ed71_PqNxxmB8xFIfoxaFlPPFewJGIGT/preview',
+                emoji: '\u{1F965}\u{1F334}',
+                gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)',
+                glow: '#10b981'
+            },
+            {
+                id: 'mine-drenge',
+                title: 'Mine Drenge',
+                url: 'https://drive.google.com/file/d/1etgTZKIHoeBqPwXVlMNo_xa8pIvYVUYd/preview',
+                emoji: '\u{1F466}\u{1F466}',
+                gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)',
+                glow: '#3b82f6'
+            },
+            {
+                id: 'fars-kamp',
+                title: 'En Fars Kamp for Sine Børn',
+                url: 'https://drive.google.com/file/d/1gRq-NO4vT2AkeCrx9RC1WZT8OXrreiGY/preview',
+                emoji: '\u2694\uFE0F\u{1F6E1}\uFE0F',
+                gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)',
+                glow: '#ef4444'
+            },
+            {
+                id: 'stop-brian',
+                title: 'Stop Så Brian',
+                url: 'https://drive.google.com/file/d/11u-sB31WfkMko5k63BYUABNjc3jxxdZ9/preview',
+                emoji: '\u{1F6D1}\u{1F602}',
+                gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)',
+                glow: '#f97316'
+            }
         ];
 
         const playCounts = {};
+        let currentSongId = null;
 
         function renderSongs() {
             const list = document.getElementById('songList');
             list.innerHTML = songs.map(song => `
-                <a class="song-card" href="${song.url}" target="_blank" rel="noopener" data-id="${song.id}">
+                <div class="song-card" data-id="${song.id}">
                     <span class="song-icon">&#127911;</span>
                     <div class="song-info">
                         <div class="song-title">${song.title}</div>
                         <div class="song-plays" id="plays-${song.id}">&#9654; indlæser...</div>
                     </div>
                     <span class="song-arrow">&#8250;</span>
-                </a>
+                </div>
             `).join('');
 
             list.querySelectorAll('.song-card').forEach(card => {
-                card.addEventListener('click', () => incrementPlay(card.dataset.id));
+                card.addEventListener('click', () => openSong(card.dataset.id));
             });
         }
+
+        function openSong(id) {
+            const song = songs.find(s => s.id === id);
+            if (!song) return;
+
+            currentSongId = id;
+            incrementPlay(id);
+
+            const overlay = document.getElementById('modalOverlay');
+            const art = document.getElementById('modalArt');
+            const glow = document.getElementById('artGlow');
+            const emoji = document.getElementById('artEmoji');
+            const title = document.getElementById('modalTitle');
+            const plays = document.getElementById('modalPlays');
+            const iframe = document.getElementById('modalIframe');
+            const link = document.getElementById('modalLink');
+
+            art.style.background = song.gradient;
+            glow.style.background = song.glow;
+            emoji.textContent = song.emoji;
+            title.textContent = song.title;
+            const count = playCounts[id] || 0;
+            plays.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
+            iframe.src = song.url;
+            link.href = song.url;
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            const iframe = document.getElementById('modalIframe');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => { iframe.src = ''; }, 300);
+            currentSongId = null;
+        }
+
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
 
         async function loadCounts() {
             await Promise.all(songs.map(async song => {
@@ -166,6 +412,11 @@
             if (el) {
                 const count = playCounts[id] || 0;
                 el.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
+            }
+            if (currentSongId === id) {
+                const modalPlays = document.getElementById('modalPlays');
+                const count = playCounts[id] || 0;
+                modalPlays.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
             }
         }
 
