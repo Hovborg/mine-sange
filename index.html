@@ -2,120 +2,234 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a1a">
     <title>Når AI Foreslår Sange</title>
     <style>
-        * {
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --bg: #0a0a1a;
+            --surface: rgba(255,255,255,0.05);
+            --surface-hover: rgba(255,255,255,0.09);
+            --border: rgba(255,255,255,0.08);
+            --text: #f0f0f5;
+            --text-secondary: rgba(255,255,255,0.45);
+            --accent: #7c6aef;
+            --radius: 16px;
+        }
+
+        html { background: var(--bg); }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
-            padding: 40px 16px 60px;
-            color: #fff;
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Animated background */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-orbs span {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-orbs span:nth-child(1) { width: 500px; height: 500px; background: #7c6aef; top: -10%; left: -10%; animation-delay: 0s; }
+        .bg-orbs span:nth-child(2) { width: 400px; height: 400px; background: #e040fb; bottom: -5%; right: -10%; animation-delay: -7s; }
+        .bg-orbs span:nth-child(3) { width: 350px; height: 350px; background: #3b82f6; top: 50%; left: 50%; animation-delay: -14s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
         .container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
+            padding: 60px 20px 80px;
         }
 
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent), #e040fb);
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(124,106,239,0.3);
         }
 
         .header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
             margin-bottom: 8px;
         }
 
         .header p {
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
+        /* Song list */
         .song-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
 
         .song-card {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 16px 18px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            text-decoration: none;
-            color: #fff;
-            transition: background 0.2s, transform 0.2s;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
             cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
+            animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+
+        .song-card:nth-child(1) { animation-delay: 0.05s; }
+        .song-card:nth-child(2) { animation-delay: 0.1s; }
+        .song-card:nth-child(3) { animation-delay: 0.15s; }
+        .song-card:nth-child(4) { animation-delay: 0.2s; }
+        .song-card:nth-child(5) { animation-delay: 0.25s; }
+        .song-card:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(16px); }
         }
 
         .song-card:hover {
-            background: rgba(255, 255, 255, 0.14);
-            transform: scale(1.02);
+            background: var(--surface-hover);
+            border-color: rgba(255,255,255,0.14);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
         }
 
-        .song-card:active {
-            transform: scale(0.98);
-        }
+        .song-card:active { transform: scale(0.98); }
 
-        .song-icon {
-            font-size: 1.6rem;
-            flex-shrink: 0;
-        }
-
-        .song-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .song-title {
-            font-size: 1rem;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        .song-plays {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 3px;
-        }
-
-        .song-arrow {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.3);
-            flex-shrink: 0;
-        }
-
-        /* Modal overlay */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 100;
+        .song-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+        }
+
+        .song-info { flex: 1; min-width: 0; }
+
+        .song-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-plays {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .song-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .song-play-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: rgba(255,255,255,0.6);
+            margin-left: 2px;
+        }
+
+        .song-card:hover .song-play-btn {
+            background: var(--accent);
+        }
+
+        .song-card:hover .song-play-btn svg {
+            fill: #fff;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 100;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.35s;
         }
 
         .modal-overlay.active {
@@ -125,124 +239,310 @@
 
         .modal {
             width: 100%;
-            max-width: 420px;
-            background: #1a1a2e;
-            border-radius: 20px;
-            overflow: hidden;
-            transform: translateY(30px) scale(0.95);
-            transition: transform 0.3s;
-            max-height: 90vh;
+            max-width: 480px;
+            background: linear-gradient(180deg, #141428 0%, #0e0e1e 100%);
+            border-radius: 28px 28px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 95vh;
+            max-height: 95dvh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 -8px 64px rgba(0,0,0,0.5);
         }
 
         .modal-overlay.active .modal {
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
+        }
+
+        .modal-handle {
+            width: 36px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.2);
+            margin: 10px auto 0;
+            flex-shrink: 0;
         }
 
         .modal-close {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 36px;
-            height: 36px;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: none;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            font-size: 1.2rem;
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .modal-close:hover {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255,255,255,0.18);
+            color: #fff;
         }
 
         /* Album art */
+        .modal-art-wrap {
+            padding: 28px 40px 20px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
         .modal-art {
             position: relative;
-            width: 100%;
-            aspect-ratio: 1;
+            width: 240px;
+            height: 240px;
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
         }
 
         .modal-art .art-emoji {
-            font-size: 5rem;
-            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3));
+            font-size: 4.5rem;
             z-index: 1;
+            filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3));
         }
 
         .modal-art .art-glow {
             position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.4;
-            z-index: 0;
+            filter: blur(50px);
+            opacity: 0.35;
+        }
+
+        .modal-art .art-shimmer {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%, rgba(255,255,255,0.06) 100%);
+            z-index: 2;
+        }
+
+        /* Spinning ring when playing */
+        .modal-art::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 27px;
+            border: 2px solid transparent;
+            border-top-color: rgba(255,255,255,0.25);
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.playing .modal-art::before {
+            opacity: 1;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Equalizer bars */
+        .eq-bars {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+            height: 20px;
+            margin-top: 4px;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.playing .eq-bars { opacity: 1; }
+
+        .eq-bars span {
+            width: 3px;
+            border-radius: 2px;
+            background: var(--accent);
+            animation: eq 1s ease-in-out infinite alternate;
+        }
+
+        .eq-bars span:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .eq-bars span:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+        .eq-bars span:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+        .eq-bars span:nth-child(4) { height: 18px; animation-delay: 0.45s; }
+        .eq-bars span:nth-child(5) { height: 6px; animation-delay: 0.6s; }
+
+        @keyframes eq {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1); }
         }
 
         /* Modal body */
         .modal-body {
-            padding: 24px 20px 20px;
+            padding: 8px 28px 32px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .modal-song-title {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+            line-height: 1.3;
         }
 
         .modal-song-plays {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 24px;
+        }
+
+        /* Custom progress bar */
+        .player-progress {
+            width: 100%;
+            margin-bottom: 8px;
+            cursor: pointer;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            position: relative;
+            transition: width 0.1s linear;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -3px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .player-progress:hover .progress-fill::after { opacity: 1; }
+
+        .player-times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
             margin-bottom: 20px;
+            font-weight: 500;
         }
 
-        .modal-player {
-            width: 100%;
-            padding: 0 4px;
+        /* Player controls */
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
-        .modal-player audio {
-            width: 100%;
-            height: 44px;
-            border-radius: 22px;
-            outline: none;
+        .ctrl-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            padding: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .modal-open-link {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 10px 24px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: background 0.2s, color 0.2s;
-        }
+        .ctrl-btn:hover { color: #fff; }
 
-        .modal-open-link:hover {
-            background: rgba(255, 255, 255, 0.18);
+        .ctrl-btn svg { width: 22px; height: 22px; fill: currentColor; }
+
+        .ctrl-play {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
             color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 24px rgba(124,106,239,0.35);
         }
+
+        .ctrl-play:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 32px rgba(124,106,239,0.45);
+        }
+
+        .ctrl-play:active { transform: scale(0.96); }
+
+        .ctrl-play svg { width: 26px; height: 26px; fill: currentColor; }
+
+        /* Download link */
+        .modal-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal-download:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+
+        .modal-download svg { width: 14px; height: 14px; fill: currentColor; }
+
+        /* Hide native audio */
+        audio { display: none; }
     </style>
 </head>
 <body>
+    <div class="bg-orbs"><span></span><span></span><span></span></div>
+
     <div class="container">
         <div class="header">
-            <h1>&#127925; Når AI Foreslår Sange</h1>
+            <div class="header-icon">&#127925;</div>
+            <h1>Når AI Foreslår Sange</h1>
             <p>Tryk på en sang for at lytte</p>
         </div>
         <div class="song-list" id="songList"></div>
@@ -250,19 +550,45 @@
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
-            <div class="modal-art" id="modalArt">
-                <button class="modal-close" id="modalClose">&#10005;</button>
-                <div class="art-glow" id="artGlow"></div>
-                <span class="art-emoji" id="artEmoji"></span>
+            <div class="modal-handle"></div>
+            <button class="modal-close" id="modalClose">&#10005;</button>
+            <div class="modal-art-wrap">
+                <div class="modal-art" id="modalArt">
+                    <div class="art-glow" id="artGlow"></div>
+                    <span class="art-emoji" id="artEmoji"></span>
+                    <div class="art-shimmer"></div>
+                </div>
             </div>
+            <div class="eq-bars"><span></span><span></span><span></span><span></span><span></span></div>
             <div class="modal-body">
                 <div class="modal-song-title" id="modalTitle"></div>
                 <div class="modal-song-plays" id="modalPlays"></div>
-                <div class="modal-player">
-                    <audio id="modalAudio" controls preload="none"></audio>
+                <div class="player-progress" id="progressBar">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
                 </div>
-                <a class="modal-open-link" id="modalLink" href="#" download>Download sang &#8595;</a>
+                <div class="player-times">
+                    <span id="timeCurrent">0:00</span>
+                    <span id="timeTotal">0:00</span>
+                </div>
+                <div class="player-controls">
+                    <button class="ctrl-btn" id="btnRewind" title="10s tilbage">
+                        <svg viewBox="0 0 24 24"><path d="M12.5 3C7.81 3 4.01 6.54 3.56 11H1l3.5 4 3.5-4H5.57c.46-3.38 3.37-6 6.93-6 3.87 0 7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C7.86 20.09 10.05 21 12.5 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-.5 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                    </button>
+                    <button class="ctrl-play" id="btnPlay">
+                        <svg viewBox="0 0 24 24" id="iconPlay"><polygon points="8,5 20,12 8,19"/></svg>
+                    </button>
+                    <button class="ctrl-btn" id="btnForward" title="10s frem">
+                        <svg viewBox="0 0 24 24"><path d="M11.5 3c4.69 0 8.49 3.54 8.94 8H23l-3.5 4-3.5-4h2.01c-.46-3.38-3.37-6-6.93-6-3.87 0-7 3.13-7 7s3.13 7 7 7c1.93 0 3.68-.79 4.94-2.06l1.42 1.42C16.14 20.09 13.95 21 11.5 21c-4.97 0-9-4.03-9-9s4.03-9 9-9zm.5 5v5l-4.28 2.54-.72-1.21 3.5-2.08V8h1.5z"/></svg>
+                    </button>
+                </div>
+                <a class="modal-download" id="modalLink" href="#" download>
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    Download
+                </a>
             </div>
+            <audio id="modalAudio" preload="none"></audio>
         </div>
     </div>
 
@@ -271,79 +597,54 @@
         const COUNTER_API = 'https://api.counterapi.dev/v1';
 
         const songs = [
-            {
-                id: 'bare-en-far',
-                title: 'Bare En Far',
-                file: 'bare-en-far.mp3',
-                emoji: '\u{1F468}\u200D\u{1F467}\u200D\u{1F466}',
-                gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)',
-                glow: '#f59e0b'
-            },
-            {
-                id: 'kristoffer',
-                title: 'KRISTOFFER! (Onkel Reje Mega Brainrot Mix)',
-                file: 'kristoffer.mp3',
-                emoji: '\u{1F990}\u{1F4A5}',
-                gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)',
-                glow: '#e040fb'
-            },
-            {
-                id: 'kokosnoed',
-                title: 'Som en Kokosnød',
-                file: 'som-en-kokosnoed.mp3',
-                emoji: '\u{1F965}\u{1F334}',
-                gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)',
-                glow: '#10b981'
-            },
-            {
-                id: 'mine-drenge',
-                title: 'Mine Drenge',
-                file: 'mine-drenge.mp3',
-                emoji: '\u{1F466}\u{1F466}',
-                gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)',
-                glow: '#3b82f6'
-            },
-            {
-                id: 'fars-kamp',
-                title: 'En Fars Kamp for Sine Børn',
-                file: 'en-fars-kamp.mp3',
-                emoji: '\u2694\uFE0F\u{1F6E1}\uFE0F',
-                gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)',
-                glow: '#ef4444'
-            },
-            {
-                id: 'stop-brian',
-                title: 'Stop Så Brian',
-                file: 'stop-saa-brian.mp3',
-                emoji: '\u{1F6D1}\u{1F602}',
-                gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)',
-                glow: '#f97316'
-            }
+            { id: 'bare-en-far', title: 'Bare En Far', file: 'bare-en-far.mp3', emoji: '\u{1F468}\u200D\u{1F467}\u200D\u{1F466}', gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)', glow: '#f59e0b' },
+            { id: 'kristoffer', title: 'KRISTOFFER!', subtitle: 'Onkel Reje Mega Brainrot Mix', file: 'kristoffer.mp3', emoji: '\u{1F990}\u{1F4A5}', gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)', glow: '#e040fb' },
+            { id: 'kokosnoed', title: 'Som en Kokosnød', file: 'som-en-kokosnoed.mp3', emoji: '\u{1F965}\u{1F334}', gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)', glow: '#10b981' },
+            { id: 'mine-drenge', title: 'Mine Drenge', file: 'mine-drenge.mp3', emoji: '\u{1F466}\u{1F466}', gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)', glow: '#3b82f6' },
+            { id: 'fars-kamp', title: 'En Fars Kamp for Sine Børn', file: 'en-fars-kamp.mp3', emoji: '\u2694\uFE0F\u{1F6E1}\uFE0F', gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)', glow: '#ef4444' },
+            { id: 'stop-brian', title: 'Stop Så Brian', file: 'stop-saa-brian.mp3', emoji: '\u{1F6D1}\u{1F602}', gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)', glow: '#f97316' }
         ];
 
         const playCounts = {};
         let currentSongId = null;
+        let isPlaying = false;
+
+        const audio = document.getElementById('modalAudio');
+        const overlay = document.getElementById('modalOverlay');
+        const progressFill = document.getElementById('progressFill');
+        const timeCurrent = document.getElementById('timeCurrent');
+        const timeTotal = document.getElementById('timeTotal');
+        const btnPlay = document.getElementById('btnPlay');
+        const iconPlay = document.getElementById('iconPlay');
+
+        function fmt(s) {
+            if (!s || !isFinite(s)) return '0:00';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
 
         function renderSongs() {
             const list = document.getElementById('songList');
-            list.innerHTML = songs.map(song => `
+            list.innerHTML = songs.map(song => {
+                const display = song.subtitle ? song.title : song.title;
+                const sub = song.subtitle ? `<span style="font-weight:400;opacity:0.5;font-size:0.78rem"> ${song.subtitle}</span>` : '';
+                return `
                 <div class="song-card" data-id="${song.id}">
-                    <span class="song-icon">&#127911;</span>
+                    <div class="song-thumb" style="background:${song.gradient}">${song.emoji}</div>
                     <div class="song-info">
-                        <div class="song-title">${song.title}</div>
+                        <div class="song-title">${display}${sub}</div>
                         <div class="song-plays" id="plays-${song.id}">&#9654; indlæser...</div>
                     </div>
-                    <span class="song-arrow">&#8250;</span>
-                </div>
-            `).join('');
+                    <div class="song-play-btn">
+                        <svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg>
+                    </div>
+                </div>`;
+            }).join('');
 
             list.querySelectorAll('.song-card').forEach(card => {
                 card.addEventListener('click', () => openSong(card.dataset.id));
             });
-        }
-
-        function audioSrc(filename) {
-            return `audio/${filename}`;
         }
 
         function openSong(id) {
@@ -353,61 +654,92 @@
             currentSongId = id;
             incrementPlay(id);
 
-            const overlay = document.getElementById('modalOverlay');
-            const art = document.getElementById('modalArt');
-            const glow = document.getElementById('artGlow');
-            const emoji = document.getElementById('artEmoji');
-            const title = document.getElementById('modalTitle');
-            const plays = document.getElementById('modalPlays');
-            const audio = document.getElementById('modalAudio');
-            const link = document.getElementById('modalLink');
-
-            art.style.background = song.gradient;
-            glow.style.background = song.glow;
-            emoji.textContent = song.emoji;
-            title.textContent = song.title;
+            document.getElementById('modalArt').style.background = song.gradient;
+            document.getElementById('artGlow').style.background = song.glow;
+            document.getElementById('artEmoji').textContent = song.emoji;
+            document.getElementById('modalTitle').textContent = song.subtitle ? song.title + ' (' + song.subtitle + ')' : song.title;
             const count = playCounts[id] || 0;
-            plays.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
-            link.href = audioSrc(song.file);
+            document.getElementById('modalPlays').textContent = `${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
+            document.getElementById('modalLink').href = 'audio/' + song.file;
 
-            audio.src = audioSrc(song.file);
-            audio.play().catch(() => {});
+            progressFill.style.width = '0%';
+            timeCurrent.textContent = '0:00';
+            timeTotal.textContent = '0:00';
+
+            audio.src = 'audio/' + song.file;
+            audio.play().then(() => { setPlayState(true); }).catch(() => { setPlayState(false); });
 
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
+        function setPlayState(playing) {
+            isPlaying = playing;
+            if (playing) {
+                iconPlay.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                overlay.classList.add('playing');
+            } else {
+                iconPlay.innerHTML = '<polygon points="8,5 20,12 8,19"/>';
+                overlay.classList.remove('playing');
+            }
+        }
+
         function closeModal() {
-            const overlay = document.getElementById('modalOverlay');
-            const audio = document.getElementById('modalAudio');
             audio.pause();
+            setPlayState(false);
             overlay.classList.remove('active');
             document.body.style.overflow = '';
-            setTimeout(() => { audio.removeAttribute('src'); audio.load(); }, 300);
+            setTimeout(() => { audio.removeAttribute('src'); audio.load(); }, 350);
             currentSongId = null;
         }
 
-        document.getElementById('modalClose').addEventListener('click', closeModal);
-        document.getElementById('modalOverlay').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+        // Player controls
+        btnPlay.addEventListener('click', () => {
+            if (isPlaying) { audio.pause(); setPlayState(false); }
+            else { audio.play().then(() => setPlayState(true)).catch(() => {}); }
         });
 
+        document.getElementById('btnRewind').addEventListener('click', () => {
+            audio.currentTime = Math.max(0, audio.currentTime - 10);
+        });
+
+        document.getElementById('btnForward').addEventListener('click', () => {
+            audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
+        });
+
+        // Progress bar
+        audio.addEventListener('timeupdate', () => {
+            if (!audio.duration) return;
+            progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+            timeCurrent.textContent = fmt(audio.currentTime);
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            timeTotal.textContent = fmt(audio.duration);
+        });
+
+        audio.addEventListener('ended', () => { setPlayState(false); });
+
+        document.getElementById('progressBar').addEventListener('click', (e) => {
+            if (!audio.duration) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = pct * audio.duration;
+        });
+
+        // Close modal
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        overlay.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+        // Counter API
         async function loadCounts() {
             await Promise.all(songs.map(async song => {
                 try {
                     const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${song.id}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        playCounts[song.id] = data.count || 0;
-                    } else {
-                        playCounts[song.id] = 0;
-                    }
-                } catch {
-                    playCounts[song.id] = 0;
-                }
+                    if (res.ok) { playCounts[song.id] = (await res.json()).count || 0; }
+                    else { playCounts[song.id] = 0; }
+                } catch { playCounts[song.id] = 0; }
                 updatePlayDisplay(song.id);
             }));
         }
@@ -415,13 +747,12 @@
         function updatePlayDisplay(id) {
             const el = document.getElementById(`plays-${id}`);
             if (el) {
-                const count = playCounts[id] || 0;
-                el.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
+                const c = playCounts[id] || 0;
+                el.textContent = `\u25B6 ${c} ${c === 1 ? 'gang' : 'gange'} afspillet`;
             }
             if (currentSongId === id) {
-                const modalPlays = document.getElementById('modalPlays');
-                const count = playCounts[id] || 0;
-                modalPlays.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
+                const c = playCounts[id] || 0;
+                document.getElementById('modalPlays').textContent = `${c} ${c === 1 ? 'gang' : 'gange'} afspillet`;
             }
         }
 
@@ -430,14 +761,8 @@
             updatePlayDisplay(id);
             try {
                 const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${id}/up`);
-                if (res.ok) {
-                    const data = await res.json();
-                    playCounts[id] = data.count;
-                    updatePlayDisplay(id);
-                }
-            } catch {
-                // Silently fail - optimistic update already applied
-            }
+                if (res.ok) { playCounts[id] = (await res.json()).count; updatePlayDisplay(id); }
+            } catch {}
         }
 
         renderSongs();
