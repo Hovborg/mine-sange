@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Når AI Foreslår Sange</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 16px 60px;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .song-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            text-decoration: none;
+            color: #fff;
+            transition: background 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .song-card:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: scale(1.02);
+        }
+
+        .song-card:active {
+            transform: scale(0.98);
+        }
+
+        .song-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .song-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .song-title {
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .song-plays {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 3px;
+        }
+
+        .song-arrow {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>&#127925; Når AI Foreslår Sange</h1>
+            <p>Tryk på en sang for at lytte</p>
+        </div>
+        <div class="song-list" id="songList"></div>
+    </div>
+
+    <script>
+        const COUNTER_NS = 'hovborg-mine-sange';
+        const COUNTER_API = 'https://api.counterapi.dev/v1';
+
+        const songs = [
+            { id: 'bare-en-far', title: 'Bare En Far', url: 'https://drive.google.com/file/d/13sqxyyH8QvydUbeJEd91f2uZuvBWaFA2/preview' },
+            { id: 'kristoffer', title: 'KRISTOFFER! (Onkel Reje Mega Brainrot Mix)', url: 'https://drive.google.com/file/d/19WgFNZj78u5RNJ9_nWsHim6bQsjQzZsV/preview' },
+            { id: 'kokosnoed', title: 'Som en Kokosnød', url: 'https://drive.google.com/file/d/1ed71_PqNxxmB8xFIfoxaFlPPFewJGIGT/preview' },
+            { id: 'mine-drenge', title: 'Mine Drenge', url: 'https://drive.google.com/file/d/1etgTZKIHoeBqPwXVlMNo_xa8pIvYVUYd/preview' },
+            { id: 'fars-kamp', title: 'En Fars Kamp for Sine Børn', url: 'https://drive.google.com/file/d/1gRq-NO4vT2AkeCrx9RC1WZT8OXrreiGY/preview' },
+            { id: 'stop-brian', title: 'Stop Så Brian', url: 'https://drive.google.com/file/d/11u-sB31WfkMko5k63BYUABNjc3jxxdZ9/preview' }
+        ];
+
+        const playCounts = {};
+
+        function renderSongs() {
+            const list = document.getElementById('songList');
+            list.innerHTML = songs.map(song => `
+                <a class="song-card" href="${song.url}" target="_blank" rel="noopener" data-id="${song.id}">
+                    <span class="song-icon">&#127911;</span>
+                    <div class="song-info">
+                        <div class="song-title">${song.title}</div>
+                        <div class="song-plays" id="plays-${song.id}">&#9654; indlæser...</div>
+                    </div>
+                    <span class="song-arrow">&#8250;</span>
+                </a>
+            `).join('');
+
+            list.querySelectorAll('.song-card').forEach(card => {
+                card.addEventListener('click', () => incrementPlay(card.dataset.id));
+            });
+        }
+
+        async function loadCounts() {
+            await Promise.all(songs.map(async song => {
+                try {
+                    const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${song.id}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        playCounts[song.id] = data.count || 0;
+                    } else {
+                        playCounts[song.id] = 0;
+                    }
+                } catch {
+                    playCounts[song.id] = 0;
+                }
+                updatePlayDisplay(song.id);
+            }));
+        }
+
+        function updatePlayDisplay(id) {
+            const el = document.getElementById(`plays-${id}`);
+            if (el) {
+                const count = playCounts[id] || 0;
+                el.textContent = `\u25B6 ${count} ${count === 1 ? 'gang' : 'gange'} afspillet`;
+            }
+        }
+
+        async function incrementPlay(id) {
+            playCounts[id] = (playCounts[id] || 0) + 1;
+            updatePlayDisplay(id);
+            try {
+                const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${id}/up`);
+                if (res.ok) {
+                    const data = await res.json();
+                    playCounts[id] = data.count;
+                    updatePlayDisplay(id);
+                }
+            } catch {
+                // Silently fail - optimistic update already applied
+            }
+        }
+
+        renderSongs();
+        loadCounts();
+    </script>
+</body>
+</html>
