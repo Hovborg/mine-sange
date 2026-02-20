@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#042f2e"/>
+      <stop offset="40%" stop-color="#065f46"/>
+      <stop offset="70%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="50%" cy="30%" r="25%">
+      <stop offset="0%" stop-color="#d1fae5" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#6ee7b7" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d9488" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#042f2e"/>
+    </linearGradient>
+    <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5b3a1a"/>
+      <stop offset="50%" stop-color="#8b6c42"/>
+      <stop offset="100%" stop-color="#5b3a1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#sky)"/>
+  <!-- Moon glow -->
+  <circle cx="250" cy="140" r="130" fill="url(#moon)"/>
+  <circle cx="250" cy="140" r="40" fill="#d1fae5" opacity="0.8"/>
+  <!-- Stars -->
+  <circle cx="60" cy="50" r="1.5" fill="#d1fae5" opacity="0.8"/>
+  <circle cx="140" cy="30" r="1" fill="#d1fae5" opacity="0.6"/>
+  <circle cx="380" cy="45" r="1.5" fill="#d1fae5" opacity="0.7"/>
+  <circle cx="440" cy="80" r="1" fill="#d1fae5" opacity="0.5"/>
+  <circle cx="90" cy="120" r="1" fill="#d1fae5" opacity="0.4"/>
+  <circle cx="420" cy="150" r="1.5" fill="#d1fae5" opacity="0.6"/>
+  <!-- Ocean -->
+  <rect x="0" y="350" width="500" height="150" fill="url(#water)"/>
+  <!-- Water reflection -->
+  <ellipse cx="250" cy="380" rx="60" ry="8" fill="#6ee7b7" opacity="0.15"/>
+  <ellipse cx="250" cy="400" rx="40" ry="5" fill="#6ee7b7" opacity="0.1"/>
+  <!-- Beach/sand strip -->
+  <path d="M0,340 Q125,330 250,345 Q375,355 500,340 L500,370 Q375,365 250,370 Q125,365 0,370Z" fill="#b08850" opacity="0.4"/>
+  <!-- Palm tree trunk - curved -->
+  <path d="M200,360 Q190,300 210,240 Q225,200 235,160" stroke="url(#trunk)" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <!-- Trunk texture lines -->
+  <path d="M195,340 Q200,337 215,340" stroke="#3d2a10" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M196,315 Q205,312 216,316" stroke="#3d2a10" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M200,290 Q208,287 218,291" stroke="#3d2a10" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Palm leaves -->
+  <g fill="#047857" opacity="0.9">
+    <!-- Main leaves -->
+    <path d="M235,160 Q300,100 370,90 Q310,120 260,160Z"/>
+    <path d="M235,160 Q180,90 130,80 Q175,110 225,155Z"/>
+    <path d="M235,160 Q310,140 380,160 Q310,155 250,165Z"/>
+    <path d="M235,160 Q170,140 100,160 Q170,155 225,165Z"/>
+    <path d="M235,160 Q280,80 310,50 Q275,100 240,155Z"/>
+    <path d="M235,160 Q200,80 180,50 Q210,100 232,155Z"/>
+  </g>
+  <!-- Leaf veins -->
+  <g stroke="#065f46" stroke-width="1" fill="none" opacity="0.5">
+    <path d="M235,160 Q300,110 360,95"/>
+    <path d="M235,160 Q180,100 140,88"/>
+    <path d="M235,160 Q285,75 305,55"/>
+  </g>
+  <!-- Coconuts -->
+  <circle cx="228" cy="170" r="12" fill="#6b4226"/>
+  <circle cx="248" cy="168" r="11" fill="#5b3a1a"/>
+  <circle cx="238" cy="178" r="10" fill="#7c4f30"/>
+  <!-- Coconut on beach (the song's coconut!) -->
+  <ellipse cx="320" cy="348" rx="18" ry="16" fill="#6b4226"/>
+  <ellipse cx="320" cy="344" rx="6" ry="4" fill="#5b3a1a" opacity="0.6"/>
+  <!-- Wave lines -->
+  <path d="M0,370 Q60,363 120,370 Q180,377 240,370 Q300,363 360,370 Q420,377 500,370" fill="none" stroke="#6ee7b7" stroke-width="1" opacity="0.3"/>
+  <path d="M0,390 Q60,383 120,390 Q180,397 240,390 Q300,383 360,390 Q420,397 500,390" fill="none" stroke="#6ee7b7" stroke-width="1" opacity="0.2"/>
+</svg>

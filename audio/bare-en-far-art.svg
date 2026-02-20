@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0a2e"/>
+      <stop offset="40%" stop-color="#d97706"/>
+      <stop offset="70%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="65%" r="30%">
+      <stop offset="0%" stop-color="#fde68a" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#92400e"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#sky)"/>
+  <circle cx="250" cy="320" r="140" fill="url(#sun)"/>
+  <circle cx="250" cy="340" r="60" fill="#fde68a" opacity="0.9"/>
+  <!-- Ground -->
+  <rect x="0" y="360" width="500" height="140" fill="url(#ground)"/>
+  <!-- Father silhouette - center, tall -->
+  <g fill="#1a0a2e">
+    <!-- Father body -->
+    <circle cx="250" cy="220" r="22"/>
+    <rect x="237" y="242" width="26" height="60" rx="8"/>
+    <!-- Left arm reaching down to child -->
+    <path d="M237 255 Q220 280 210 310" stroke="#1a0a2e" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- Right arm reaching down to child -->
+    <path d="M263 255 Q280 280 290 310" stroke="#1a0a2e" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- Father legs -->
+    <path d="M243 300 L235 360" stroke="#1a0a2e" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M257 300 L265 360" stroke="#1a0a2e" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <!-- Child left - small girl -->
+    <circle cx="205" cy="290" r="14"/>
+    <rect x="197" y="304" width="16" height="30" rx="5"/>
+    <!-- Girl arm up to father -->
+    <path d="M213 308 Q215 305 210 310" stroke="#1a0a2e" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Girl legs -->
+    <path d="M201 332 L197 360" stroke="#1a0a2e" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M209 332 L213 360" stroke="#1a0a2e" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <!-- Girl dress triangle -->
+    <path d="M197 315 L205 338 L213 315Z" fill="#1a0a2e"/>
+    <!-- Child right - small boy -->
+    <circle cx="295" cy="295" r="13"/>
+    <rect x="288" y="308" width="14" height="25" rx="4"/>
+    <!-- Boy arm up -->
+    <path d="M288 312 Q286 308 290 310" stroke="#1a0a2e" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Boy legs -->
+    <path d="M291 331 L288 360" stroke="#1a0a2e" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M299 331 L302 360" stroke="#1a0a2e" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- Sparkle stars -->
+  <circle cx="80" cy="60" r="2" fill="#fde68a" opacity="0.8"/>
+  <circle cx="420" cy="40" r="2.5" fill="#fde68a" opacity="0.7"/>
+  <circle cx="150" cy="100" r="1.5" fill="#fde68a" opacity="0.6"/>
+  <circle cx="380" cy="120" r="2" fill="#fde68a" opacity="0.5"/>
+  <circle cx="60" cy="150" r="1.5" fill="#fde68a" opacity="0.6"/>
+  <circle cx="440" cy="180" r="2" fill="#fde68a" opacity="0.4"/>
+  <circle cx="320" cy="50" r="1.8" fill="#fde68a" opacity="0.7"/>
+</svg>

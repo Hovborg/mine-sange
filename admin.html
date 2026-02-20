@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4444'/%3E%3Cpath d='M16 6a4 4 0 0 1 4 4v2h1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V14a2 2 0 0 1 2-2h1v-2a4 4 0 0 1 4-4zm0 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0-10a2 2 0 0 0-2 2v2h4v-2a2 2 0 0 0-2-2z' fill='white'/%3E%3C/svg%3E">
+    <title>Admin - Fars Jukebox</title>
+    <script src="/admin/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a1a;
+            --surface: rgba(255,255,255,0.05);
+            --surface-2: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.08);
+            --text: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --text-muted: #606060;
+            --accent: #7c6aef;
+            --green: #10b981;
+            --red: #ef4444;
+            --orange: #f59e0b;
+            --blue: #3b82f6;
+            --pink: #e040fb;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
+        }
+        .header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+        .header h1 span { color: var(--accent); }
+        .header-meta { font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .back-link { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+        .back-link:hover { text-decoration: underline; }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px; margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px;
+        }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .stat-value.green { color: var(--green); }
+        .stat-value.blue { color: var(--blue); }
+        .stat-value.orange { color: var(--orange); }
+        .stat-value.pink { color: var(--pink); }
+        .stat-value.red { color: var(--red); }
+        .stat-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+
+        .section { margin-bottom: 32px; }
+        .section-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: ''; width: 3px; height: 16px; background: var(--accent); border-radius: 2px; }
+
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+        .chart-card h3 { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+        .chart-card canvas { width: 100% !important; height: 200px !important; }
+
+        .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+        .table-scroll { max-height: 400px; overflow-y: auto; }
+        .table-scroll thead th { position: sticky; top: 0; z-index: 1; background: var(--surface-2); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { text-align: left; padding: 10px 14px; background: var(--surface-2); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+        td { padding: 10px 14px; border-top: 1px solid var(--border); white-space: nowrap; }
+        tr:hover td { background: var(--surface); }
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+        .ip-cell { color: var(--accent); }
+        .song-cell { font-weight: 500; }
+        .time-cell { color: var(--text-secondary); }
+        .device-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 500; }
+        .device-badge.mobil { background: rgba(16,185,129,0.15); color: var(--green); }
+        .device-badge.pc { background: rgba(59,130,246,0.15); color: var(--blue); }
+        .device-badge.tablet { background: rgba(245,158,11,0.15); color: var(--orange); }
+
+        .now-playing-section { margin-bottom: 24px; }
+        .np-card { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(124,106,239,0.08)); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 20px; }
+        .np-title { font-size: 0.8rem; font-weight: 600; color: var(--green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .np-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+        .np-empty { font-size: 0.8rem; color: var(--text-muted); padding: 4px 0; }
+        .np-listener { display: grid; grid-template-columns: auto 1fr auto; gap: 8px 14px; padding: 12px; margin-top: 8px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid var(--border); }
+        .np-listener:first-child { margin-top: 0; }
+        .np-song { font-weight: 600; font-size: 0.95rem; grid-column: 1; }
+        .np-time { font-size: 0.7rem; color: var(--text-muted); grid-column: 3; align-self: center; }
+        .np-details { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.72rem; }
+        .np-tag { padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+        .np-tag.ip { font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+        .np-tag.country { color: var(--green); }
+        .np-tag.device { color: var(--blue); }
+        .np-tag.browser { color: var(--orange); }
+        .np-tag.os { color: var(--pink); }
+
+        .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-left: 10px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .refresh-badge { font-size: 0.65rem; color: var(--text-muted); background: var(--surface); padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
+        .refresh-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1><span>Admin</span> Fars Jukebox</h1>
+            <a href="/" class="back-link">&larr; Tilbage til siden</a>
+        </div>
+        <div style="text-align:right">
+            <div class="refresh-badge"><span class="refresh-dot"></span> Live hvert 10s</div>
+            <div class="header-meta" id="generated"></div>
+        </div>
+    </div>
+
+    <div class="now-playing-section">
+        <div class="np-card">
+            <div class="np-title"><span class="np-dot"></span> Lytter lige nu</div>
+            <div id="npListeners"><div class="np-empty">Ingen lytter lige nu</div></div>
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="loading">Indlaeser statistik</div>
+    </div>
+
+    <script>
+        const SONG_COLORS = {
+            'bare-en-far': '#f59e0b',
+            'kristoffer': '#e040fb',
+            'som-en-kokosnoed': '#10b981', 'kokosnoed': '#10b981',
+            'mine-drenge': '#3b82f6',
+            'en-fars-kamp': '#ef4444', 'fars-kamp': '#ef4444',
+            'stop-saa-brian': '#f97316', 'stop-brian': '#f97316',
+            'brormand': '#e040fb'
+        };
+        const SONG_NAMES = {
+            'bare-en-far': 'Bare En Far',
+            'kristoffer': 'KRISTOFFER!',
+            'som-en-kokosnoed': 'Som en Kokosnoed', 'kokosnoed': 'Som en Kokosnoed',
+            'mine-drenge': 'Mine Drenge',
+            'en-fars-kamp': 'En Fars Kamp', 'fars-kamp': 'En Fars Kamp',
+            'stop-saa-brian': 'Stop Saa Brian', 'stop-brian': 'Stop Saa Brian',
+            'brormand': 'Brormand'
+        };
+
+        const hasChart = typeof Chart !== 'undefined';
+        if (hasChart) {
+            Chart.defaults.color = '#a0a0a0';
+            Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.font.size = 11;
+            Chart.defaults.responsive = true;
+            Chart.defaults.maintainAspectRatio = false;
+        }
+
+        let charts = {};
+        let latestData = null;
+
+        function esc(s) {
+            if (s == null) return '';
+            const d = document.createElement('div');
+            d.textContent = String(s);
+            return d.innerHTML;
+        }
+
+        function formatTime(iso) {
+            try {
+                const d = new Date(iso);
+                return d.toLocaleString('da-DK', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            } catch { return iso; }
+        }
+        function formatDate(iso) {
+            try { return new Date(iso).toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' }); }
+            catch { return iso; }
+        }
+
+        function createOrUpdate(id, config) {
+            if (!hasChart) return;
+            try {
+                if (charts[id]) {
+                    charts[id].data = config.data;
+                    charts[id].update('none');
+                } else {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const ctx = el.getContext('2d');
+                    if (!ctx) return;
+                    charts[id] = new Chart(ctx, config);
+                }
+            } catch (e) {
+                const card = document.getElementById(id)?.closest('.chart-card');
+                if (card) {
+                    const err = document.createElement('div');
+                    err.style.cssText = 'color:#ef4444;font-size:11px;padding:4px 0';
+                    err.textContent = 'Fejl: ' + e.message;
+                    card.appendChild(err);
+                }
+            }
+        }
+
+        let initialized = false;
+
+        function buildLayout() {
+            document.getElementById('content').innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-label">Afspilninger</div><div class="stat-value green" id="statPlays">-</div></div>
+                <div class="stat-card"><div class="stat-label">Unikke lyttere</div><div class="stat-value blue" id="statListeners">-</div></div>
+                <div class="stat-card"><div class="stat-label">Lyttetid</div><div class="stat-value orange" id="statListenTime">-</div><div class="stat-sub">minutter total</div></div>
+                <div class="stat-card"><div class="stat-label">Sidevisninger</div><div class="stat-value pink" id="statPageviews">-</div></div>
+                <div class="stat-card"><div class="stat-label">Gns. per dag</div><div class="stat-value" id="statAvg">-</div></div>
+                <div class="stat-card"><div class="stat-label">Peak time</div><div class="stat-value red" id="statPeak">-</div></div>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-card"><h3>Afspilninger per sang</h3><canvas id="chartSongs"></canvas></div>
+                <div class="chart-card"><h3>Lyttetid per sang (min)</h3><canvas id="chartDuration"></canvas></div>
+                <div class="chart-card"><h3>Aktivitet per dag</h3><canvas id="chartDays"></canvas></div>
+                <div class="chart-card"><h3>Aktivitet per time</h3><canvas id="chartHours"></canvas></div>
+                <div class="chart-card"><h3>Enheder</h3><canvas id="chartDevices"></canvas></div>
+                <div class="chart-card"><h3>Browsere</h3><canvas id="chartBrowsers"></canvas></div>
+                <div class="chart-card"><h3>Operativsystemer</h3><canvas id="chartOS"></canvas></div>
+                <div class="chart-card"><h3>Lande</h3><canvas id="chartCountries"></canvas></div>
+            </div>
+            <div class="section"><div class="section-title">Top IP-adresser</div><div class="table-wrap"><table>
+                <thead><tr><th>IP</th><th>Afspilninger</th><th>Land</th></tr></thead><tbody id="tbodyIPs"></tbody></table></div></div>
+            <div class="section"><div class="section-title">Seneste afspilninger</div><div class="table-wrap table-scroll"><table>
+                <thead><tr><th>Tidspunkt</th><th>Sang</th><th>IP</th><th>Land</th><th>Enhed</th><th>Browser</th><th>OS</th></tr></thead><tbody id="tbodyRecent"></tbody></table></div></div>`;
+        }
+
+        function render(data) {
+            const firstRender = !initialized;
+            if (firstRender) { buildLayout(); initialized = true; }
+
+            document.getElementById('generated').textContent = 'Opdateret: ' + formatTime(data.generated);
+
+            // Update stat cards
+            document.getElementById('statPlays').textContent = data.total_plays;
+            document.getElementById('statListeners').textContent = data.unique_listeners;
+            document.getElementById('statListenTime').textContent = data.total_listen_minutes || '0';
+            document.getElementById('statPageviews').textContent = data.page_views;
+            document.getElementById('statAvg').textContent = data.avg_plays_per_day || '-';
+            document.getElementById('statPeak').textContent = data.peak_hour !== undefined ? data.peak_hour + ':00' : '-';
+
+            // Update top IPs table
+            let ipRows = '';
+            for (const item of (data.top_ips || [])) {
+                ipRows += `<tr><td class="mono ip-cell">${esc(item.ip)}</td><td class="mono">${esc(item.plays)}</td><td>${esc(item.country) || '-'}</td></tr>`;
+            }
+            document.getElementById('tbodyIPs').innerHTML = ipRows;
+
+            // Update recent plays table (sort by time, newest first)
+            const sortedPlays = (data.recent_plays || []).slice().sort((a, b) => b.t.localeCompare(a.t));
+            let recentRows = '';
+            for (const play of sortedPlays.slice(0, 50)) {
+                const name = SONG_NAMES[play.s] || play.s;
+                const color = SONG_COLORS[play.s] || '#7c6aef';
+                const deviceClass = (play.device || '').toLowerCase();
+                recentRows += `<tr>
+                    <td class="mono time-cell">${esc(formatTime(play.t))}</td>
+                    <td class="song-cell" style="color:${esc(color)}">${esc(name)}</td>
+                    <td class="mono ip-cell">${esc(play.ip)}</td>
+                    <td>${esc(play.country) || '-'}</td>
+                    <td><span class="device-badge ${esc(deviceClass)}">${esc(play.device) || '-'}</span></td>
+                    <td>${esc(play.browser) || '-'}</td>
+                    <td>${esc(play.os) || '-'}</td>
+                </tr>`;
+            }
+            document.getElementById('tbodyRecent').innerHTML = recentRows;
+
+            // Build charts - delay first render to let DOM/layout settle
+            if (firstRender) {
+                requestAnimationFrame(() => requestAnimationFrame(() => buildCharts(data)));
+            } else {
+                buildCharts(data);
+            }
+        }
+
+        function buildCharts(data) {
+            if (!hasChart) {
+                document.querySelectorAll('.chart-card').forEach(c => {
+                    if (!c.querySelector('.no-chart')) {
+                        const msg = document.createElement('div');
+                        msg.className = 'no-chart';
+                        msg.style.cssText = 'color:#ef4444;font-size:12px;padding:8px 0';
+                        msg.textContent = 'Chart.js kunne ikke indlaeases';
+                        c.appendChild(msg);
+                    }
+                });
+                return;
+            }
+
+            const barOpts = (horiz) => ({
+                indexAxis: horiz ? 'y' : 'x',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
+            });
+            const doughnutOpts = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, pointStyle: 'circle' } } },
+                cutout: '60%'
+            };
+
+            // Songs bar chart
+            const songEntries = Object.entries(data.per_song || {});
+            createOrUpdate('chartSongs', {
+                type: 'bar',
+                data: {
+                    labels: songEntries.map(([k]) => SONG_NAMES[k] || k),
+                    datasets: [{
+                        data: songEntries.map(([,v]) => v),
+                        backgroundColor: songEntries.map(([k]) => SONG_COLORS[k] || '#7c6aef'),
+                        borderRadius: 6, borderSkipped: false
+                    }]
+                },
+                options: barOpts(true)
+            });
+
+            // Duration per song bar chart
+            const durEntries = Object.entries(data.per_song_duration || {});
+            if (durEntries.length) {
+                createOrUpdate('chartDuration', {
+                    type: 'bar',
+                    data: {
+                        labels: durEntries.map(([k]) => SONG_NAMES[k] || k),
+                        datasets: [{
+                            data: durEntries.map(([,v]) => v),
+                            backgroundColor: durEntries.map(([k]) => SONG_COLORS[k] || '#7c6aef'),
+                            borderRadius: 6, borderSkipped: false
+                        }]
+                    },
+                    options: barOpts(true)
+                });
+            }
+
+            // Days line chart
+            const dayEntries = Object.entries(data.per_day || {});
+            createOrUpdate('chartDays', {
+                type: 'line',
+                data: {
+                    labels: dayEntries.map(([k]) => formatDate(k)),
+                    datasets: [{
+                        data: dayEntries.map(([,v]) => v),
+                        borderColor: '#7c6aef', backgroundColor: 'rgba(124,106,239,0.1)',
+                        fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#7c6aef'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+            });
+
+            // Hourly activity bar chart
+            const hourlyData = data.hourly_activity || {};
+            createOrUpdate('chartHours', {
+                type: 'bar',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => i + ':00'),
+                    datasets: [{
+                        data: Array.from({length: 24}, (_, i) => hourlyData[String(i)] || 0),
+                        backgroundColor: Array.from({length: 24}, (_, i) => i === data.peak_hour ? '#ef4444' : 'rgba(124,106,239,0.6)'),
+                        borderRadius: 4, borderSkipped: false
+                    }]
+                },
+                options: barOpts(false)
+            });
+
+            // Device doughnut
+            const deviceEntries = Object.entries(data.per_device || {});
+            createOrUpdate('chartDevices', {
+                type: 'doughnut',
+                data: {
+                    labels: deviceEntries.map(([k]) => k),
+                    datasets: [{
+                        data: deviceEntries.map(([,v]) => v),
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#e040fb'],
+                        borderWidth: 0
+                    }]
+                },
+                options: doughnutOpts
+            });
+
+            // Browser doughnut
+            const browserEntries = Object.entries(data.per_browser || {}).slice(0, 6);
+            createOrUpdate('chartBrowsers', {
+                type: 'doughnut',
+                data: {
+                    labels: browserEntries.map(([k]) => k),
+                    datasets: [{
+                        data: browserEntries.map(([,v]) => v),
+                        backgroundColor: ['#7c6aef', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#e040fb'],
+                        borderWidth: 0
+                    }]
+                },
+                options: doughnutOpts
+            });
+
+            // OS doughnut
+            const osEntries = Object.entries(data.per_os || {}).slice(0, 6);
+            createOrUpdate('chartOS', {
+                type: 'doughnut',
+                data: {
+                    labels: osEntries.map(([k]) => k),
+                    datasets: [{
+                        data: osEntries.map(([,v]) => v),
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#7c6aef', '#e040fb'],
+                        borderWidth: 0
+                    }]
+                },
+                options: doughnutOpts
+            });
+
+            // Countries bar chart
+            const countryEntries = Object.entries(data.per_country || {}).slice(0, 10);
+            createOrUpdate('chartCountries', {
+                type: 'bar',
+                data: {
+                    labels: countryEntries.map(([k]) => k),
+                    datasets: [{
+                        data: countryEntries.map(([,v]) => v),
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6, borderSkipped: false
+                    }]
+                },
+                options: barOpts(true)
+            });
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/admin/stats.json?_=' + Date.now());
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                latestData = data;
+                render(data);
+            } catch (e) {
+                if (!document.getElementById('chartSongs')) {
+                    document.getElementById('content').innerHTML = `<div class="loading" style="animation:none">Kunne ikke indlaese data: ${esc(e.message)}</div>`;
+                }
+            }
+        }
+
+        // --- Now Playing ---
+        function parseSimpleUA(ua) {
+            if (!ua) return { device: '', browser: '', os: '' };
+            let device = 'PC', browser = '', os = '';
+            if (/iPhone|iPad/.test(ua)) { device = 'Mobil'; os = 'iOS'; }
+            else if (/Android/.test(ua)) { device = 'Mobil'; os = 'Android'; }
+            else if (/Macintosh/.test(ua)) os = 'Mac OS X';
+            else if (/Windows/.test(ua)) os = 'Windows';
+            else if (/Linux/.test(ua)) os = 'Linux';
+            if (/Chrome\//.test(ua) && !/Edg/.test(ua)) browser = 'Chrome';
+            else if (/Safari\//.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+            else if (/Firefox\//.test(ua)) browser = 'Firefox';
+            else if (/Edg\//.test(ua)) browser = 'Edge';
+            return { device, browser, os };
+        }
+
+        async function loadNowPlaying() {
+            try {
+                const res = await fetch('/admin/np.log?_=' + Date.now());
+                if (!res.ok) { updateNP([]); return; }
+                const text = await res.text();
+                if (!text.trim()) { updateNP([]); return; }
+                const lines = text.trim().split('\n');
+                const now = Date.now();
+                const active = {};
+                for (const line of lines.slice(-100)) {
+                    const parts = line.split('|');
+                    if (parts.length < 3) continue;
+                    const ip = parts[0].trim();
+                    const timeStr = parts[1].trim();
+                    const song = parts[2].trim();
+                    // Format: IP|time|song|duration|ua (new) or IP|time|song|ua (old)
+                    let dur = 0, ua = '';
+                    if (parts.length >= 5) {
+                        dur = parseInt(parts[3].trim()) || 0;
+                        ua = parts[4].trim();
+                    } else if (parts.length >= 4) {
+                        ua = parts[3].trim();
+                    }
+                    if (!song || song === '-') continue;
+                    const ts = new Date(timeStr).getTime();
+                    if (isNaN(ts)) continue;
+                    if (now - ts < 20000) {
+                        const uaInfo = parseSimpleUA(ua);
+                        const info = getIPInfo(ip);
+                        active[ip + '|' + song] = {
+                            ip, song, ts, dur,
+                            country: info.country || '',
+                            device: info.device || uaInfo.device,
+                            browser: info.browser || uaInfo.browser,
+                            os: info.os || uaInfo.os
+                        };
+                    }
+                }
+                updateNP(Object.values(active));
+            } catch { updateNP([]); }
+        }
+
+        function getIPInfo(ip) {
+            if (!latestData) return {};
+            const play = (latestData.recent_plays || []).find(p => p.ip === ip);
+            if (play) return { country: play.country, cc: play.cc, device: play.device, browser: play.browser, os: play.os };
+            const top = (latestData.top_ips || []).find(t => t.ip === ip);
+            if (top) return { country: top.country };
+            return {};
+        }
+
+        function updateNP(listeners) {
+            const el = document.getElementById('npListeners');
+            if (!listeners.length) {
+                el.innerHTML = '<div class="np-empty">Ingen lytter lige nu</div>';
+                return;
+            }
+            el.innerHTML = listeners.map(l => {
+                const name = SONG_NAMES[l.song] || l.song;
+                const color = SONG_COLORS[l.song] || '#7c6aef';
+                const ago = Math.round((Date.now() - l.ts) / 1000);
+                const durMin = Math.floor(l.dur / 60);
+                const durSec = l.dur % 60;
+                const durStr = l.dur > 0 ? `${durMin}:${String(durSec).padStart(2,'0')}` : '';
+                const tags = [];
+                tags.push(`<span class="np-tag ip">${esc(l.ip)}</span>`);
+                if (l.country) tags.push(`<span class="np-tag country">${esc(l.country)}</span>`);
+                if (durStr) tags.push(`<span class="np-tag" style="color:#f59e0b">&#9836; ${esc(durStr)}</span>`);
+                if (l.device) tags.push(`<span class="np-tag device">${esc(l.device)}</span>`);
+                if (l.browser) tags.push(`<span class="np-tag browser">${esc(l.browser)}</span>`);
+                if (l.os) tags.push(`<span class="np-tag os">${esc(l.os)}</span>`);
+                return `<div class="np-listener">
+                    <span class="np-song" style="color:${esc(color)}">${esc(name)}</span>
+                    <span class="np-time">${ago}s siden</span>
+                    <div class="np-details">${tags.join('')}</div>
+                </div>`;
+            }).join('');
+        }
+
+        loadStats();
+        loadNowPlaying();
+        setInterval(loadStats, 10000);
+        setInterval(loadNowPlaying, 5000);
+    </script>
+</body>
+</html>

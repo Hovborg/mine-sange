@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a001a"/>
+      <stop offset="50%" stop-color="#2d004d"/>
+      <stop offset="100%" stop-color="#0a001a"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e040fb" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#e040fb" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c4dff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#7c4dff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="neon">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bigGlow">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+  <rect width="500" height="500" fill="url(#bg)"/>
+  <!-- Background energy circles -->
+  <circle cx="250" cy="250" r="200" fill="url(#glow1)"/>
+  <circle cx="250" cy="250" r="140" fill="url(#glow2)"/>
+  <!-- Concentric rings -->
+  <circle cx="250" cy="250" r="180" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.2"/>
+  <circle cx="250" cy="250" r="150" fill="none" stroke="#7c4dff" stroke-width="1" opacity="0.3"/>
+  <circle cx="250" cy="250" r="120" fill="none" stroke="#e040fb" stroke-width="1.5" opacity="0.2"/>
+  <!-- Explosion rays -->
+  <g opacity="0.4" stroke="#e040fb" stroke-width="2" filter="url(#neon)">
+    <line x1="250" y1="250" x2="250" y2="30"/>
+    <line x1="250" y1="250" x2="440" y2="110"/>
+    <line x1="250" y1="250" x2="470" y2="250"/>
+    <line x1="250" y1="250" x2="440" y2="390"/>
+    <line x1="250" y1="250" x2="250" y2="470"/>
+    <line x1="250" y1="250" x2="60" y2="390"/>
+    <line x1="250" y1="250" x2="30" y2="250"/>
+    <line x1="250" y1="250" x2="60" y2="110"/>
+  </g>
+  <!-- Shrimp - large stylized -->
+  <g transform="translate(250,240)" filter="url(#neon)">
+    <!-- Shrimp body curve -->
+    <path d="M0,-60 C40,-55 60,-30 55,0 C50,30 30,55 0,70 C-20,55 -35,30 -30,0 C-25,-20 -15,-50 0,-60Z" fill="#e040fb" opacity="0.9"/>
+    <!-- Shrimp segments -->
+    <path d="M-25,-10 Q0,-20 25,-10" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
+    <path d="M-28,5 Q0,-5 28,5" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
+    <path d="M-27,20 Q0,10 27,20" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
+    <path d="M-22,35 Q0,25 22,35" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+    <!-- Tail fan -->
+    <path d="M0,70 L-20,95 L0,85 L20,95Z" fill="#7c4dff"/>
+    <!-- Antennae -->
+    <path d="M-5,-60 Q-40,-100 -60,-85" stroke="#e040fb" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M5,-60 Q40,-100 60,-85" stroke="#e040fb" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Eye -->
+    <circle cx="-8" cy="-45" r="5" fill="#fff"/>
+    <circle cx="-8" cy="-45" r="2.5" fill="#0a001a"/>
+    <!-- Legs -->
+    <path d="M-20,10 L-40,25" stroke="#e040fb" stroke-width="2" stroke-linecap="round"/>
+    <path d="M-22,20 L-42,35" stroke="#e040fb" stroke-width="2" stroke-linecap="round"/>
+    <path d="M-20,30 L-38,48" stroke="#e040fb" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <!-- BRAINROT text effect -->
+  <text x="250" y="460" text-anchor="middle" font-family="Impact,Arial Black,sans-serif" font-size="42" font-weight="900" fill="#e040fb" filter="url(#neon)" letter-spacing="8" opacity="0.8">BRAINROT</text>
+  <!-- Sparkle particles -->
+  <circle cx="100" cy="80" r="3" fill="#e040fb" opacity="0.8"/>
+  <circle cx="400" cy="100" r="2" fill="#7c4dff" opacity="0.9"/>
+  <circle cx="80" cy="350" r="2.5" fill="#e040fb" opacity="0.6"/>
+  <circle cx="420" cy="380" r="3" fill="#7c4dff" opacity="0.7"/>
+  <circle cx="150" cy="420" r="2" fill="#e040fb" opacity="0.5"/>
+  <circle cx="350" cy="60" r="2" fill="#fff" opacity="0.6"/>
+  <circle cx="130" cy="180" r="1.5" fill="#fff" opacity="0.4"/>
+  <circle cx="370" cy="300" r="2" fill="#fff" opacity="0.3"/>
+</svg>
