@@ -23,21 +23,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script async src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <script data-goatcounter="https://sang.hovborg.tech/count" async src="/count.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"></script>
     <style>
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --bg: #121212;
-            --surface: rgba(255,255,255,0.04);
-            --surface-hover: rgba(255,255,255,0.08);
-            --border: rgba(255,255,255,0.06);
             --text: #ffffff;
             --text-secondary: #b3b3b3;
             --text-muted: #6a6a6a;
             --accent: #1db954;
-            --radius: 8px;
         }
 
         html { background: var(--bg); }
@@ -76,7 +72,7 @@
         .container { position: relative; z-index: 1; width: 100%; max-width: 520px; margin: 0 auto; padding: 60px 20px 100px; }
 
         /* Header */
-        .header { text-align: center; margin-bottom: 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .header { text-align: center; margin-bottom: 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px; border-radius: 16px; backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%); background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
         .header-icon { display: flex; align-items: center; justify-content: center; width: 96px; height: 96px; flex-shrink: 0; }
         .header-icon img { width: 100%; height: 100%; object-fit: contain; }
         .header-text { min-width: 0; }
@@ -87,11 +83,26 @@
         /* Song list */
         .song-list { display: flex; flex-direction: column; gap: 6px; }
 
+        /* Glass utility */
+        .glass {
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        @supports not (backdrop-filter: blur(1px)) {
+            .glass { background: rgba(30,30,30,0.95); }
+        }
+
         .song-card {
             display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-            background: rgba(255,255,255,0.04); border: none; border-radius: 10px;
-            color: var(--text); cursor: pointer; transition: background 0.15s ease;
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+            color: var(--text); cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease;
             -webkit-tap-highlight-color: transparent; animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+        @supports not (backdrop-filter: blur(1px)) {
+            .song-card { background: rgba(30,30,30,0.95); }
         }
         .song-card:nth-child(1) { animation-delay: 0.02s; }
         .song-card:nth-child(2) { animation-delay: 0.04s; }
@@ -103,10 +114,11 @@
         .song-card:nth-child(8) { animation-delay: 0.16s; }
         .song-card:nth-child(9) { animation-delay: 0.18s; }
         .song-card:nth-child(10) { animation-delay: 0.20s; }
+        .song-card:nth-child(11) { animation-delay: 0.22s; }
 
         @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } }
 
-        .song-card:hover { background: rgba(255,255,255,0.06); }
+        .song-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.12); }
         .song-card:hover .song-number { opacity: 0; }
         .song-card:hover .song-number-play { opacity: 1; }
         .song-card:active { background: rgba(255,255,255,0.08); }
@@ -148,12 +160,18 @@
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal {
-            width: 100%; max-width: 480px; background: linear-gradient(180deg, var(--modal-tint, #1a1a1a) 0%, #181818 50%, #121212 100%);
+            width: 100%; max-width: 480px;
+            backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%);
+            background: linear-gradient(180deg, rgba(18,18,18,0.75) 0%, rgba(18,18,18,0.8) 50%, rgba(18,18,18,0.85) 100%);
             border-radius: 28px 28px 0 0; transform: translateY(100%);
+            border-top: 1px solid rgba(255,255,255,0.1);
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s;
             max-height: 95vh; max-height: 95dvh; display: flex; flex-direction: column;
             overflow: hidden; box-shadow: 0 -8px 64px rgba(0,0,0,0.5);
             touch-action: none;
+        }
+        @supports not (backdrop-filter: blur(1px)) {
+            .modal { background: linear-gradient(180deg, #1a1a1a 0%, #181818 50%, #121212 100%); }
         }
         .modal-overlay.active .modal { transform: translateY(0); }
 
@@ -204,6 +222,14 @@
         .ctrl-play:active { transform: scale(0.95); }
         .ctrl-play svg { width: 28px; height: 28px; fill: currentColor; }
 
+        /* Volume slider */
+        .volume-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 0 4px; }
+        .volume-row svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.5); flex-shrink: 0; cursor: pointer; }
+        .volume-row svg:hover { fill: #fff; }
+        .volume-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.12); outline: none; cursor: pointer; }
+        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px rgba(0,0,0,0.3); cursor: pointer; }
+        .volume-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 0 6px rgba(0,0,0,0.3); cursor: pointer; }
+
         /* Action buttons row */
         .modal-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
         .action-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; color: var(--text-secondary); text-decoration: none; font-size: 0.78rem; font-weight: 500; transition: all 0.15s; cursor: pointer; font-family: inherit; }
@@ -213,12 +239,16 @@
         /* Mini player */
         .mini-player {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-            background: #181818;
+            backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+            background: rgba(24,24,24,0.8);
             border-top: 1px solid rgba(255,255,255,0.06);
             display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 0 16px 12px;
             padding-bottom: max(12px, env(safe-area-inset-bottom));
             transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer; -webkit-tap-highlight-color: transparent;
+        }
+        @supports not (backdrop-filter: blur(1px)) {
+            .mini-player { background: #181818; }
         }
         .mini-player.visible { transform: translateY(0); }
         .mini-player-top-progress { width: 100%; height: 2px; background: rgba(255,255,255,0.08); margin: 0; flex-basis: 100%; }
@@ -283,8 +313,59 @@
         .waveform-wrap { width: 100%; height: 56px; margin-bottom: 4px; border-radius: 8px; overflow: hidden; }
         .waveform-wrap.ready ~ .player-progress { display: none; }
 
+        /* Kristoffer folder link */
+        .section-link {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            margin-top: 24px; border-radius: 12px; text-decoration: none; color: var(--text);
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: linear-gradient(135deg, rgba(255,107,53,0.12), rgba(255,215,0,0.08));
+            border: 1px solid rgba(255,107,53,0.2);
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards 0.3s;
+        }
+        .section-link:hover { background: linear-gradient(135deg, rgba(255,107,53,0.18), rgba(255,215,0,0.12)); border-color: rgba(255,107,53,0.35); transform: translateY(-1px); }
+        .section-link:active { transform: scale(0.98); }
+        .section-link-icon { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #ff6b35, #ffd700); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 2px 8px rgba(255,107,53,0.3); }
+        .section-link-info { flex: 1; min-width: 0; }
+        .section-link-title { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.01em; }
+        .section-link-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+        .section-link-arrow { color: rgba(255,255,255,0.3); font-size: 1.2rem; flex-shrink: 0; transition: color 0.15s, transform 0.15s; }
+        .section-link:hover .section-link-arrow { color: rgba(255,255,255,0.6); transform: translateX(2px); }
+
         /* Copyright footer */
         .site-footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.7rem; color: var(--text-muted); line-height: 1.7; opacity: 0.3; letter-spacing: 0.03em; }
+
+        /* Lyrics - Karaoke style */
+        .lyrics-toggle { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px 8px; font-size: 0.75rem; font-family: inherit; font-weight: 500; transition: color 0.2s; display: inline-flex; align-items: center; gap: 4px; border-radius: 12px; }
+        .lyrics-toggle:hover, .lyrics-toggle.active { color: var(--accent); }
+        .lyrics-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+        .lyrics-container {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s, opacity 0.3s;
+            border-radius: 16px; margin-bottom: 0; opacity: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; position: relative; min-height: 0;
+        }
+        .lyrics-container.open { max-height: 120px; padding: 16px 20px; margin-bottom: 12px; opacity: 1; }
+        .lyrics-line {
+            font-size: 1.3rem; font-weight: 700; color: rgba(255,255,255,0.2);
+            line-height: 1.4; letter-spacing: -0.02em;
+            position: absolute; width: 100%; padding: 0 8px;
+            opacity: 0; transform: translateY(12px) scale(0.95);
+            transition: opacity 0.35s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .lyrics-line.active {
+            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; position: relative;
+        }
+        .lyrics-line.next {
+            opacity: 0.25; transform: translateY(8px) scale(0.92); position: relative; font-size: 0.95rem; font-weight: 500; margin-top: 8px;
+        }
+        .lyrics-line.past { opacity: 0; transform: translateY(-12px); }
+        .lyrics-word { display: inline; color: rgba(255,255,255,0.2); transition: color 0.25s, text-shadow 0.25s; }
+        .lyrics-word.singing { color: #facc15; text-shadow: 0 0 18px rgba(250,204,21,0.7), 0 0 40px rgba(250,204,21,0.3); transition: none; }
+        .lyrics-word.sung { color: #fff; text-shadow: 0 0 6px rgba(255,255,255,0.15); }
+        .lyrics-line.next .lyrics-word { color: rgba(255,255,255,0.25); }
+        .lyrics-none { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 12px 0; font-style: italic; position: relative; }
 
         /* Noscript */
         .noscript-msg { text-align: center; color: var(--text-secondary); padding: 40px 20px; font-size: 0.9rem; }
@@ -306,6 +387,14 @@
         <div class="song-list" id="songList">
             <noscript><div class="noscript-msg">JavaScript skal være aktiveret for at afspille sange.</div></noscript>
         </div>
+        <a href="/kristoffer.html" class="section-link">
+            <div class="section-link-icon">&#127925;</div>
+            <div class="section-link-info">
+                <div class="section-link-title">Kristoffers Ønskede Sange</div>
+                <div class="section-link-sub">Sange som Kristoffer har ønsket sig</div>
+            </div>
+            <div class="section-link-arrow">&#8250;</div>
+        </a>
         <footer class="site-footer">Fars Jukebox &copy; 2026 &middot; Sange skabt med AI</footer>
     </div>
 
@@ -340,8 +429,14 @@
             </div>
             <div class="eq-bars"><span></span><span></span><span></span><span></span><span></span></div>
             <div class="modal-body">
-                <div class="modal-song-title" id="modalTitle"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <div class="modal-song-title" id="modalTitle" style="flex:1;min-width:0"></div>
+                    <button class="lyrics-toggle" id="lyricsToggle" aria-label="Vis sangtekst" title="Sangtekst">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 9h-2v2H9v-2H7v-2h2V7h2v2h2v2zm3-3.5V9h-1V5.5L16 7.5zM6 20V4h7v5h5v11H6z"/></svg>
+                    </button>
+                </div>
                 <div class="modal-song-plays" id="modalPlays" style="display:none"></div>
+                <div class="lyrics-container" id="lyricsBox"></div>
                 <div class="casting-indicator" id="castingIndicator">
                     <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zM21 3H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
                     <span class="casting-pulse" id="castingLabel">Caster til enhed...</span>
@@ -360,6 +455,9 @@
                     <button class="ctrl-btn" id="btnRepeat" aria-label="Gentag" title="Gentag">
                         <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
                     </button>
+                    <button class="ctrl-btn" id="btnPrev" aria-label="Forrige sang" title="Forrige sang">
+                        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                    </button>
                     <button class="ctrl-btn" id="btnRewind" aria-label="10 sekunder tilbage" title="10s tilbage">
                         <svg viewBox="0 0 24 24"><path d="M12.5 3C7.81 3 4.01 6.54 3.56 11H1l3.5 4 3.5-4H5.57c.46-3.38 3.37-6 6.93-6 3.87 0 7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C7.86 20.09 10.05 21 12.5 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-.5 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
                     </button>
@@ -372,6 +470,10 @@
                     <button class="ctrl-btn" id="btnNext" aria-label="Næste sang" title="Næste sang">
                         <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                     </button>
+                </div>
+                <div class="volume-row">
+                    <svg id="volumeIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100" aria-label="Lydstyrke">
                 </div>
                 <div class="modal-actions">
                     <button class="action-btn cast-btn" id="btnCast" aria-label="Cast til enhed">
@@ -390,22 +492,606 @@
 
     <script>
         const songs = [
-            { id: 'fars-kamp', title: 'En Fars Kamp for Sine Børn', file: 'en-fars-kamp.mp3', image: 'audio/fars-kamp-art.png', gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)', glow: '#ef4444', duration: 242 },
-            { id: 'bare-en-far', title: 'Bare En Far', file: 'bare-en-far.mp3', image: 'audio/bare-en-far-art.png', gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)', glow: '#f59e0b', duration: 149 },
-            { id: 'kristoffer', title: 'KRISTOFFER!', subtitle: 'Onkel Reje Mega Heavy Mix', file: 'kristoffer.mp3', image: 'audio/kristoffer-art.png', gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)', glow: '#e040fb', duration: 265 },
-            { id: 'kokosnoed', title: 'Som en Kokosnød', file: 'som-en-kokosnoed.mp3', image: 'audio/kokosnoed-art.png', gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)', glow: '#10b981', duration: 250 },
-            { id: 'mine-drenge', title: 'Mine Drenge', file: 'mine-drenge.mp3', image: 'audio/mine-drenge-art.png', gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)', glow: '#3b82f6', duration: 194 },
-            { id: 'stop-brian', title: 'Stop Så Brian', file: 'stop-saa-brian.mp3', image: 'audio/stop-brian-art.svg', gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)', glow: '#f97316', duration: 205 },
-            { id: 'brormand', title: 'Brormand', file: 'brormand.mp3', image: 'audio/brormand-art.jpg', gradient: 'linear-gradient(135deg, #e040fb, #ff6090, #f59e0b)', glow: '#e040fb', duration: 202 },
-            { id: 'hvad-boern-ved', title: 'Hvad Børn Ved', file: 'hvad-boern-ved.mp3', image: 'audio/hvad-boern-ved-art.png', gradient: 'linear-gradient(135deg, #f5a623, #e8852a, #8b5e34)', glow: '#f5a623', duration: 186 },
-            { id: 'hjem', title: 'Hjem', file: 'hjem.mp3', image: 'audio/hjem-art.png', gradient: 'linear-gradient(135deg, #c8956c, #a07050, #6b4530)', glow: '#c8956c', duration: 213 },
-            { id: 'lad-dem-snakke', title: 'Lad Dem Snakke', file: 'lad-dem-snakke.mp3', image: 'audio/lad-dem-snakke-art.png', gradient: 'linear-gradient(135deg, #f5c842, #e8a020, #c47a18)', glow: '#f5c842', duration: 208 }
+            { id: 'fars-kamp', title: 'En Fars Kamp for Sine Børn', file: 'en-fars-kamp.mp3', image: 'audio/fars-kamp-art.png', gradient: 'linear-gradient(135deg, #ef4444, #b91c1c, #7f1d1d)', glow: '#ef4444', duration: 242, lyrics: [
+
+                {t:32.12, text:"Med tre drenge i hjertet, det er min sag", w:[32.12,32.14,32.52,32.92,33.31,34.64,35.58,35.68,35.88]},
+                {t:37.03, text:"Mikkel, Rasmus, Christoffer, I er mit liv", w:[37.03,39.26,39.54,40.72,40.84,41.1,41.74]},
+                {t:43.14, text:"Den 21. februar vendte alt sig om", w:[43.14,44.78,45.72,46.44,47.44,47.8,50.44]},
+                {t:50.44, text:"Men i dag uden besked, hvor var I mandag?", w:[50.44,51.58,51.7,51.94,52.46,53.8,53.9,54.12,54.24]},
+                {t:56.89, text:"En forælder skjulte jer væk fra mig", w:[56.89,57.66,58.22,58.94,59.1,59.4,59.68]},
+                {t:61.18, text:"Mens mit hjerte skreg: kom hjem til mig", w:[61.18,61.28,61.5,61.84,62.52,62.66,63.0,63.2]},
+                {t:63.5, text:"Jeg kæmper for jer hver eneste dag", w:[63.5,67.62,68.12,68.86,69.72,69.97,70.72]},
+                {t:70.82, text:"Gennem tårer og smerte, det er min sag", w:[70.82,71.5,72.06,72.1,72.9,72.92,73.04,73.66]},
+                {t:73.76, text:"Christoffer visker: jeg elsker dig alligevel", w:[73.76,74.82,75.48,75.6,75.98,76.48]},
+                {t:77.11, text:"Det er de ord, der holder mig i livet, min søn", w:[77.11,77.58,77.68,77.94,78.36,78.36,78.7,78.96,79.38,79.96,80.12]},
+                {t:86.84, text:"Mor siger, jeg ikke må elske dig", w:[86.84,87.13,87.86,88.36,88.7,88.9,93.3]},
+                {t:93.48, text:"Fire år gammel med hemmeligheder i sig", w:[93.48,93.48,94.32,94.48,94.76,95.94,96.16]},
+                {t:99.26, text:"Men du hviskede sandheden, min lille mand", w:[99.26,99.36,99.56,100.56,101.64,102.2,102.36]},
+                {t:102.74, text:"Jeg elsker dig alligevel, du holdt min hånd", w:[102.74,106.24,106.42,106.97,107.78,108.34,108.78,111.66]},
+                {t:112.44, text:"Rasmus, du har brug for struktur og ro", w:[112.44,113.18,113.18,113.36,113.7,113.94,115.11,115.32]},
+                {t:118.44, text:"Hos mig kommer du i skole, det kan tallene vise, tro", w:[118.44,118.54,118.72,119.1,119.34,119.62,120.14,120.16,120.32,121.08,124.88]},
+                {t:124.9, text:"Men hos hende er der fravær, dag efter dag", w:[124.9,124.94,125.28,125.48,125.74,125.94,127.06,127.31,128.12]},
+                {t:128.24, text:"Hvorfor ser systemet ikke din sag?", w:[128.24,129.1,129.36,130.08,130.34,130.62]},
+                {t:131.88, text:"Jeg kæmper for jer hver eneste dag", w:[131.88,133.26,133.78,134.5,135.37,135.62,136.36]},
+                {t:136.46, text:"Gennem tårer og smerte, det er min sag", w:[136.46,137.18,137.66,137.72,138.54,138.54,138.66,139.29]},
+                {t:139.4, text:"Christoffer visker: jeg elsker dig alligevel", w:[139.4,140.4,141.12,141.5,141.62,142.11]},
+                {t:142.76, text:"Det er de ord, der holder mig i livet, min søn", w:[142.76,143.2,143.32,143.58,143.98,144.04,144.34,144.58,144.82,145.56,145.7]},
+                {t:148.86, text:"Den 16. november rev morfar dig væk", w:[148.86,149.04,149.96,150.44,151.16,151.26,151.56]},
+                {t:151.88, text:"Stop nu, råbte han, mens du græd i skræk", w:[151.88,152.1,152.92,153.14,153.84,153.84,153.98,154.34,154.46]},
+                {t:155.22, text:"Men telefonen optog, sandheden klar", w:[155.22,155.88,156.48,157.18,157.74]},
+                {t:158.16, text:"Jeg vil altså med far jo, det sagde du, min skat", w:[158.16,158.54,158.76,159.24,159.38,160.0,160.28,160.4,160.7,160.96,161.38]},
+                {t:161.5, text:"Systemet svigter, kommunen ser væk", w:[161.5,162.52,163.5,164.12,164.3]},
+                {t:164.66, text:"Mens I betaler prisen for deres fejl og svigt", w:[164.66,164.84,165.0,165.66,166.26,166.52,166.86,167.24,167.32]},
+                {t:167.7, text:"Jeg skriver hver uge, for I er mit alt", w:[167.7,168.18,170.32,170.74,171.4,171.56,171.74,171.88,172.08]},
+                {t:172.58, text:"Mine tre drenge, mine smukke", w:[172.58,172.98,173.38,174.58,174.9]},
+                {t:175.44, text:"Jeg kæmper for jer hver eneste dag", w:[175.44,178.02,178.6,179.32,179.65,180.42,181.16]},
+                {t:181.26, text:"Gennem tårer og smerte, det er min sag", w:[181.26,181.96,182.44,182.52,183.3,183.3,183.48,184.11]},
+                {t:184.22, text:"Christoffer visker: jeg elsker dig alligevel", w:[184.22,185.24,185.92,186.04,186.4,186.91]},
+                {t:187.42, text:"Det er de ord, der holder mig i livet, min søn", w:[187.42,187.96,188.14,188.4,188.78,188.84,189.14,189.38,189.62,190.38,190.56]},
+                {t:191.1, text:"En dag vil I læse disse ord, mine drenge", w:[191.1,193.9,194.22,194.56,194.7,195.24,195.5,196.08,196.73]},
+                {t:196.92, text:"Og I vil vide, far kæmpede så længe", w:[196.92,197.12,197.36,197.9,198.3,198.54,199.28,199.84]},
+                {t:199.94, text:"I var aldrig problemet", w:[199.94,200.14,200.3,200.9]},
+                {t:201.7, text:"I var altid det vigtigste", w:[201.7,201.78,202.08,202.54,202.72]},
+                {t:203.42, text:"Jeg elsker jer", w:[203.42,204.22,204.38]},
+                {t:205.38, text:"Altid, for evigt", w:[205.38,207.8,208.63]},
+                {t:209.84, text:"Det er det sidste", w:[209.84,209.94,209.98,210.2]},
+                {t:210.5, text:"Mikkel, Rasmus, Christoffer, I er mit liv", w:[210.5,213.42,214.02,215.36,215.46,215.76,216.4]},
+                {t:218.24, text:"Far vil altid kæmpe", w:[218.24,218.34,218.88,219.59]},
+                {t:221.24, text:"Med alt hvad han har som et skriv", w:[221.24,221.34,221.6,221.82,221.98,222.36,222.74,223.09]},
+                {t:225.94, text:"Kærlighed til mine drenge, det er min mission", w:[225.94,226.48,226.64,226.88,227.8,228.38,228.48,232.24]},
+                {t:233.45, text:"Kærlighed til mine drenge, det er min mission", w:[233.45,233.9,234.02,234.86,235.57,236.86,236.96,237.66]}
+            ] },
+            { id: 'bare-en-far', title: 'Bare En Far', file: 'bare-en-far.mp3', image: 'audio/bare-en-far-art.png', gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)', glow: '#f59e0b', duration: 149, lyrics: [
+
+                {t:0.0, text:"Mit navn er Brian, jeg står her i dag", w:[0.0,0.46,0.58,0.72,2.38,2.48,3.17,3.28,3.56]},
+                {t:5.9, text:"Med tre drenge i hjertet, det er lige en sag", w:[5.9,6.0,6.44,7.12,7.89,8.9,9.1,9.2,9.59,10.1]},
+                {t:11.31, text:"Mikkel, Rasmus, Christoffer, I er jo mit liv", w:[11.31,12.5,12.86,14.12,14.41,14.74,15.02,15.68]},
+                {t:16.2, text:"Jeg lover jer, for altid vil jeg være her", w:[16.2,16.86,17.74,18.28,18.38,19.18,19.46,19.62,20.52]},
+                {t:21.39, text:"Jeg kæmper for jer hver eneste dag", w:[21.39,21.5,22.0,22.16,22.61,23.05,23.71]},
+                {t:23.82, text:"Gennem tårer og smerte, det er min sag", w:[23.82,24.32,24.76,24.84,25.58,25.6,25.84,26.1]},
+                {t:27.21, text:"Christoffer visker: jeg elsker dig alligevel", w:[27.21,27.32,28.5,28.75,29.22,29.52]},
+                {t:31.02, text:"Det er de ord, der holder mig i live, min søn", w:[31.02,32.12,32.24,32.79,33.72,33.96,34.36,34.58,34.74,35.22,35.34]},
+                {t:35.7, text:"Mor siger, du ikke må elske mig", w:[35.7,37.08,38.12,38.74,38.9,39.08,39.76]},
+                {t:39.8, text:"Fire år gammel med hemmeligheder i sig", w:[39.8,40.68,41.14,41.6,41.88,42.88,43.0]},
+                {t:44.02, text:"Men du hviskede sandheden, min lille mand", w:[44.02,44.12,44.32,44.86,45.8,45.8,46.18]},
+                {t:47.08, text:"Jeg elsker dig alligevel, du holdt min hånd", w:[47.08,48.35,48.9,49.95,50.76,50.84,51.5,51.84]},
+                {t:52.42, text:"Jeg kæmper for jer hver eneste dag", w:[52.42,52.86,53.3,53.48,53.82,54.36,55.02]},
+                {t:55.12, text:"Gennem tårer og smerte, det er min sag", w:[55.12,55.62,56.08,56.16,56.86,56.88,57.14,57.38]},
+                {t:57.62, text:"Christoffer visker: jeg elsker dig alligevel", w:[57.62,58.64,59.8,60.06,60.56,61.39]},
+                {t:62.34, text:"Det er de ord, der holder mig i live, min søn", w:[62.34,63.18,63.62,64.11,65.02,65.25,65.64,65.88,66.2,66.7,66.7]},
+                {t:67.18, text:"Jeg viste dem beviset, de lagde det væk", w:[67.18,68.56,69.68,69.92,71.58,71.85,72.36,72.77]},
+                {t:74.08, text:"De lukkede min journal og kaldte det et træk", w:[74.08,74.42,74.92,75.16,75.8,76.3,76.96,77.06,77.46]},
+                {t:79.38, text:"Min søn sagde: begge slår, de undersøgte kun mig", w:[79.38,79.64,80.08,80.48,80.72,81.44,81.94,82.86,83.4]},
+                {t:83.94, text:"Sådan ser det ud, når systemet dømmer dig", w:[83.94,84.62,85.08,85.4,85.88,85.92,87.26,88.42]},
+                {t:88.42, text:"Jeg kæmper for jer hver eneste dag", w:[88.42,89.32,89.82,89.98,90.32,90.88,91.56]},
+                {t:91.68, text:"Gennem tårer og smerte, det er min sag", w:[91.68,92.12,92.64,92.66,93.4,93.4,93.68,93.9]},
+                {t:94.26, text:"Christoffer visker: jeg elsker dig alligevel", w:[94.26,95.08,96.3,96.6,97.06,97.9]},
+                {t:99.2, text:"Det er de ord, der holder mig i live, min søn", w:[99.2,99.76,100.02,100.42,101.46,101.76,102.12,102.38,102.56,103.24,103.24]},
+                {t:104.24, text:"En dag vil I høre disse ord, mine drenge", w:[104.24,105.84,105.94,106.32,106.46,106.76,107.16,107.7,108.48]},
+                {t:110.2, text:"Og I vil vide, far kæmpede så længe", w:[110.2,110.3,110.58,110.94,112.02,112.12,112.97,113.81]},
+                {t:114.12, text:"Mikkel, Rasmus, Christoffer, I er mit liv", w:[114.12,116.61,117.08,118.5,118.64,119.48,119.95]},
+                {t:120.06, text:"Far holder aldrig op, det er mit løfte til jer", w:[120.06,121.02,121.38,121.96,122.9,123.18,123.82,124.05,124.76,124.96]},
+                {t:126.94, text:"Jeg kæmper for jer hver eneste dag", w:[126.94,127.19,127.64,127.82,128.23,128.68,129.32]},
+                {t:129.42, text:"Gennem tårer og smerte, det er min sag", w:[129.42,129.96,130.4,130.46,131.24,131.24,131.5,131.74]},
+                {t:132.1, text:"Christoffer visker: jeg elsker dig alligevel", w:[132.1,133.0,134.14,134.4,134.88,135.74]},
+                {t:137.0, text:"Det er de ord, der holder mig i live, min søn", w:[137.0,137.56,137.92,138.24,139.22,139.6,139.94,140.2,140.38,140.8,140.95]},
+                {t:141.34, text:"Der holder mig i live, min søn", w:[141.34,144.92,145.02,145.4,145.6,146.02,146.43]}
+            ] },
+            { id: 'kristoffer', title: 'KRISTOFFER!', subtitle: 'Onkel Reje Mega Heavy Mix', file: 'kristoffer.mp3', image: 'audio/kristoffer-art.png', gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)', glow: '#e040fb', duration: 265, lyrics: [
+                {t:10.5, text:"KRISTOFFER! (KRISTOFFER!)", w:[10.48,11.42]},
+                {t:11.5, text:"SKIBIDI! (skibidi!)", w:[11.54,12.22]},
+                {t:12.8, text:"SIGMA! (sigma!)", w:[12.8,13.6]},
+                {t:14.2, text:"FANUM TAX PÅ FARS PANDEKAGER! (HEY!)", w:[14.18,14.52,14.78,14.88,15.2,16.5]},
+                {t:16.6, text:"NO CAP! (no cap!)", w:[16.62,16.7,17.42,17.42]},
+                {t:18.1, text:"OHIO! (ohio!)", w:[18.06,19.04]},
+                {t:19.7, text:"KRISTOFFER HAR MEGA RIZZ! (MEGA RIZZ!)", w:[19.68,20.28,20.5,20.98,21.66,21.66]},
+                {t:22.3, text:"Han kører Hot Wheels over gulvet", w:[22.28,22.34,22.74,22.96,23.28,23.68]},
+                {t:24.3, text:"BRRRRM BRRRRM helt ud i køkkenet (BRRRRM BRRRRM!)", w:[24.34,25.02,25.16,25.4,25.9,26.32,27.1,27.68]},
+                {t:27.8, text:"Han råber FAR SE MIN NYE BANE", w:[27.8,27.84,28.18,28.42,28.66,28.9,29.16]},
+                {t:29.8, text:"Og smadrer den ind i køleskabet (SMASH!)", w:[29.76,30.56,30.96,31.2,31.56,31.68,32.34]},
+                {t:33.3, text:"Han råber TRALALERO TRALALA (tralala!)", w:[33.3,33.34,33.68,34.62,35.96]},
+                {t:36.0, text:"Han skriger BOMBARDIRO CROCODILO (crocodilo!)", w:[36.02,36.04,36.46,37.3,38.1]},
+                {t:38.8, text:"Han tager Playmobil med hjem til mig", w:[38.82,38.84,39.12,39.8,40.04,40.52,40.7]},
+                {t:41.0, text:"Og siger BRR BRR PATAPIM (patapim!)", w:[40.98,41.18,41.58,41.9,42.16,43.1]},
+                {t:44.1, text:"Og så hopper han op på sofaen", w:[44.06,44.14,44.3,44.7,44.92,45.3,45.52]},
+                {t:46.4, text:"Tager luftguitar og skriger (WOOOOO!)", w:[46.44,46.98,47.78,48.16,48.88]},
+                {t:49.9, text:"FAR ER DU KLAR TIL DET HER?!", w:[49.9,50.08,50.46,50.48,50.96,51.08,51.24]},
+                {t:51.9, text:"FAR ER DU KLAR?! (ER DU KLAR?!)", w:[51.88,52.28,52.38,52.56,53.38,53.54,53.74]},
+                {t:54.5, text:"ELSKER DIG SOM EN MONSTER TRUCK! (MONSTER TRUCK!)", w:[54.46,54.64,54.9,55.22,55.44,55.8,56.42,56.68]},
+                {t:57.1, text:"ELSKER DIG SOM EN SUPERHELT! (SUPERHELT!)", w:[57.06,57.38,57.68,57.98,58.08,59.12]},
+                {t:60.0, text:"Kristoffer Kristoffer KRISTOFFER!", w:[60.04,60.58,61.24]},
+                {t:62.4, text:"ELSKER DIG SOM EN T-REX! (T-REX!)", w:[62.42,62.86,63.14,63.46,64.54,65.32]},
+                {t:65.4, text:"ELSKER DIG SOM EN MEGA ROBOT! (MEGA ROBOT!)", w:[65.44,65.64,65.88,66.22,66.32,66.78,67.42,67.58]},
+                {t:68.3, text:"Elsker dig til månen og tilbage", w:[68.28,68.7,68.86,69.02,69.54,69.88]},
+                {t:71.5, text:"KRISTOOOOOOFFER!", w:[71.5]},
+                {t:76.7, text:"Han bygger Lego-tårn til loftet (til loftet!)", w:[76.74,76.84,77.22,78.24,78.42,79.02,79.3]},
+                {t:80.0, text:"Og VÆLTER det med et stort grin (HA HA HA!)", w:[79.96,80.02,80.48,80.66,80.88,81.0,81.3,81.62,82.0,82.14]},
+                {t:82.5, text:"Han løber som Sonic ned ad gangen (ZOOM!)", w:[82.54,83.1,83.2,83.38,83.74,83.94,84.2,84.82]},
+                {t:85.1, text:"Han brøler WHAT THE SIGMA til sit spejl (SIGMA!)", w:[85.1,85.22,85.46,85.7,85.98,86.44,86.62,86.86,87.24]},
+                {t:88.1, text:"Han siger SEKS! og jeg siger SYV! (SYV!)", w:[88.08,88.2,88.56,89.1,89.12,89.26,89.6,90.12]},
+                {t:90.4, text:"Fanum tax på fars pandekager (HEY!)", w:[90.4,90.76,91.34,91.46,92.02,92.98]},
+                {t:93.6, text:"Han kalder SKIBIDI og POOOOP og OHIO", w:[93.6,93.66,94.06,94.6,94.9,95.38,95.5]},
+                {t:95.9, text:"Så højt at hele huset ryster (RYSTER!)", w:[95.92,96.57,96.68,96.8,97.18,97.7,98.14]},
+                {t:98.9, text:"Og så hopper han op på sofaen", w:[98.94,99.04,99.26,99.56,99.76,100.18,100.4]},
+                {t:101.3, text:"Tager luftguitar og skriger (WOOOOO!)", w:[101.26,101.82,102.68,103.1,103.64]},
+                {t:104.7, text:"FAR ER DU KLAR TIL DET HER?!", w:[104.74,104.92,105.2,105.36,105.82,105.94,106.12]},
+                {t:106.8, text:"FAR ER DU KLAR?! (ER DU KLAR?!)", w:[106.8,106.9,107.24,108.16,108.4,108.4,108.76]},
+                {t:109.3, text:"ELSKER DIG SOM EN MONSTER TRUCK! (MONSTER TRUCK!)", w:[109.32,109.5,109.76,110.08,110.22,110.7,111.3,111.5]},
+                {t:111.9, text:"ELSKER DIG SOM EN SUPERHELT! (SUPERHELT!)", w:[111.92,112.24,112.52,112.82,113.29,114.0]},
+                {t:114.9, text:"Kristoffer Kristoffer KRISTOFFER!", w:[114.92,115.46,116.12]},
+                {t:117.5, text:"ELSKER DIG SOM EN T-REX! (T-REX!)", w:[117.48,117.72,118.0,118.3,119.42,120.18]},
+                {t:120.3, text:"ELSKER DIG SOM EN MEGA ROBOT! (MEGA ROBOT!)", w:[120.3,120.5,120.72,121.06,121.16,121.62,122.36,122.46]},
+                {t:123.1, text:"Elsker dig til månen og tilbage", w:[123.06,123.56,123.72,123.88,124.4,124.74]},
+                {t:127.9, text:"KRISTOOOOOOFFER!", w:[127.88]},
+                {t:129.5, text:"Han elsker mig som en TRAMPOLIN! (som en trampolin!)", w:[129.54,132.18,132.64,132.84,133.12,133.38,134.54,134.66,134.86]},
+                {t:135.5, text:"Han elsker mig som en VULKAN! (som en vulkan!)", w:[135.46,135.52,135.9,136.08,136.36,136.6,137.36,137.46,137.6]},
+                {t:138.2, text:"Han elsker mig som en BAMSEFIS! (en bamsefis!)", w:[138.2,138.26,138.64,138.84,139.14,139.34,140.06,140.12]},
+                {t:140.9, text:"Han elsker mig som en TORNADO! (en tornado!)", w:[140.88,141.28,141.38,141.58,141.9,142.08,142.9,142.98]},
+                {t:143.7, text:"Han elsker mig som en IS MED TRE KUGLER! (tre kugler!)", w:[143.7,143.76,144.08,144.28,144.48,144.66,145.1,145.5,146.12,146.32,146.32]},
+                {t:147.4, text:"Han elsker mig som en NINJA I PYJAMAS! (ninja i pyjamas!)", w:[147.38,147.78,147.88,148.1,148.38,148.6,148.98,149.32,150.14,150.38,151.16]},
+                {t:151.3, text:"Han elsker mig som en RAKET TIL MÅNEN", w:[151.34,153.58,153.74,153.9,154.54,154.64,155.08,155.3]},
+                {t:155.8, text:"DER EKSPLODERER I GULDSTJERNER! (BOOOM!)", w:[155.76,156.56,157.46,157.62,170.86]},
+                {t:172.0, text:"Han maler med pensel i begge hænder", w:[172.0,173.22,173.78,173.9,174.5,174.66,174.98]},
+                {t:175.4, text:"Der er maling på fingre og kind (overalt!)", w:[175.36,175.82,175.98,176.56,176.76,177.1,177.34,177.62]},
+                {t:178.5, text:"Han siger FAR DEN HER ER TIL DIG", w:[178.5,178.78,179.1,179.3,179.5,179.68,179.98,180.16]},
+                {t:180.6, text:"Det bedste nogen har lavet (til dig!)", w:[180.62,181.5,181.96,182.42,182.64,183.18,183.48]},
+                {t:184.1, text:"Han venter på hver eneste tirsdag (tirsdag!)", w:[184.14,184.18,184.62,184.72,185.16,185.54,186.2]},
+                {t:186.9, text:"Han fortæller alt hvad han har lavet", w:[186.94,187.0,187.32,187.62,187.82,188.12,188.74]},
+                {t:188.9, text:"Tyve minutter i bilen med Sonic (SONIC!)", w:[188.86,189.36,190.02,190.48,190.98,191.06,191.54]},
+                {t:195.1, text:"Han spørger HVORNÅR SKAL JEG TIL FAR IGEN (hvornår?)", w:[195.06,195.08,195.08,195.08,195.08,195.08,195.08,195.08,195.08]},
+                {t:195.1, text:"Og så hopper han op på sofaen", w:[195.08,195.08,195.16,195.54,195.84,196.18,196.38]},
+                {t:197.3, text:"Tager luftguitar og skriger (WOOOOO!)", w:[197.3,197.82,198.69,199.08,199.74]},
+                {t:200.7, text:"FAR ER DU KLAR TIL DET HER?!", w:[200.72,201.12,201.18,201.36,201.76,201.96,202.12]},
+                {t:202.8, text:"FAR ER DU KLAR?! (ER DU KLAR?!)", w:[202.78,202.98,203.28,203.46,204.22,204.4,204.8]},
+                {t:205.3, text:"ELSKER DIG SOM EN MONSTER TRUCK! (MONSTER TRUCK!)", w:[205.26,205.46,205.78,206.06,206.2,206.6,207.42,207.62]},
+                {t:208.0, text:"ELSKER DIG SOM EN SUPERHELT! (SUPERHELT!)", w:[208.0,208.26,208.5,208.82,208.92,210.04]},
+                {t:210.9, text:"Kristoffer Kristoffer KRISTOFFER!", w:[210.92,211.46,212.12]},
+                {t:213.4, text:"ELSKER DIG SOM EN T-REX! (T-REX!)", w:[213.42,213.74,214.0,214.3,214.48,215.58]},
+                {t:216.2, text:"ELSKER DIG SOM EN MEGA ROBOT! (MEGA ROBOT!)", w:[216.22,216.46,216.74,217.04,217.18,217.66,218.34,218.5]},
+                {t:219.2, text:"Elsker dig til månen og tilbage", w:[219.18,219.5,219.74,219.9,220.38,220.9]},
+                {t:223.6, text:"KRISTOOOOOOFFER!", w:[223.61]},
+                {t:225.5, text:"ELSKER DIG SOM EN VANDBOMBE! (VANDBOMBE!)", w:[225.49,227.46,227.74,228.02,228.18,229.26]},
+                {t:230.0, text:"ELSKER DIG SOM EN HELIKOPTER! (HELIKOPTER!)", w:[229.96,230.2,230.52,230.78,230.92,232.08]},
+                {t:232.7, text:"ELSKER DIG SOM EN STOR PRUT! (STOR PRUT!)", w:[232.68,232.92,233.26,233.52,233.86,234.2,234.78,234.9]},
+                {t:235.4, text:"ELSKER DIG SOM EN HOT WHEELS BIL! (HOT WHEELS!)", w:[235.42,235.66,235.98,236.24,236.38,236.82,237.0,237.74,237.76]},
+                {t:238.2, text:"Jeg lovede dig en sang", w:[238.18,238.34,238.72,238.96,239.12]},
+                {t:239.7, text:"Og Kristoffer", w:[239.7,241.36]},
+                {t:242.4, text:"HER ER DIN SANG! (DIN SANG!)", w:[242.38,243.68,244.04,244.42,245.42,246.2]},
+                {t:246.7, text:"HELT TIL MÅNEN OG TILBAGE!", w:[246.72,247.12,247.28,247.88,248.28]},
+                {t:249.5, text:"HELT TIL MÅNEN OG TILBAGE!", w:[249.48,249.7,250.14,250.54,251.26]},
+                {t:262.4, text:"KRISTOOOOOOFFER!", w:[262.4]}
+            ] },
+            { id: 'kokosnoed', title: 'Som en Kokosnød', file: 'som-en-kokosnoed.mp3', image: 'audio/kokosnoed-art.png', gradient: 'linear-gradient(135deg, #10b981, #059669, #065f46)', glow: '#10b981', duration: 250, lyrics: [
+
+                {t:0.14, text:"Yeah, whoo-hoo!", w:[0.14,0.44]},
+                {t:1.62, text:"Hey, hey, hey, hey!", w:[1.62,2.68,2.88,3.1]},
+                {t:4.23, text:"Han bygger Lego på gulvet i stuen", w:[4.23,8.3,8.48,8.88,9.16,9.82,10.0]},
+                {t:10.5, text:"Og Sonic skal altid være med", w:[10.5,11.88,12.42,12.75,13.2,13.4]},
+                {t:14.27, text:"Han griner så højt når nogen siger prut", w:[14.27,15.79,15.96,16.57,16.7,17.05,17.6,17.98]},
+                {t:18.84, text:"Og det er det bedste jeg ved", w:[18.84,19.0,19.3,19.52,19.9,20.36,20.64]},
+                {t:22.46, text:"Han kender hvert eneste Pokémon-navn", w:[22.46,22.68,23.06,23.56,24.08]},
+                {t:25.84, text:"Han viser mig ting jeg ikke forstår", w:[25.84,26.13,26.58,26.78,27.0,27.26,27.66]},
+                {t:28.04, text:"Men jeg sidder der alligevel og griner med", w:[28.04,29.42,29.66,29.98,30.2,31.24,31.46,31.98]},
+                {t:32.32, text:"For hans latter er alt hvad jeg når", w:[32.32,32.96,33.26,33.56,33.9,34.32,34.54,34.78]},
+                {t:35.06, text:"Han elsker mig som en kokosnød", w:[35.06,36.17,36.3,36.38,36.62,36.8]},
+                {t:37.98, text:"Han elsker mig som en krokodille", w:[37.98,39.67,39.84,39.94,40.16,40.34]},
+                {t:41.5, text:"Kristoffer, Kristoffer, Kristoffer!", w:[41.5,42.68,43.3]},
+                {t:43.76, text:"Han elsker mig som en traktor", w:[43.76,44.12,44.24,44.34,44.56,44.72]},
+                {t:45.34, text:"Han elsker mig som et rumskib", w:[45.34,45.86,45.96,46.12,46.34,46.52]},
+                {t:47.62, text:"Og jeg elsker ham mere end nogen", w:[47.62,47.72,48.53,48.7,49.26,49.7,49.8]},
+                {t:50.1, text:"Han står med pensel i begge hænder", w:[50.1,50.36,50.62,50.84,51.58,52.29,52.52]},
+                {t:52.88, text:"Maling på fingre, maling på kind", w:[52.88,54.02,54.26,55.27,55.78,55.9]},
+                {t:56.24, text:"Han siger: far, send den her til mor", w:[56.24,56.92,57.7,58.6,58.98,59.26,59.46,59.68]},
+                {t:59.94, text:"Holder billedet op med det største grin", w:[59.94,60.6,61.3,61.54,61.86,62.08,62.82]},
+                {t:63.28, text:"Så laver han Sonic-lyd ned ad gangen", w:[63.28,64.39,64.52,64.74,65.54,65.86,67.14]},
+                {t:67.26, text:"Med armene bagud, fuld fart forud", w:[67.26,67.72,68.16,69.12,69.32,69.66]},
+                {t:70.9, text:"Han snubler i sokkerne og griner bare", w:[70.9,71.1,71.62,71.82,72.76,73.0,73.36]},
+                {t:74.28, text:"Og jeg tænker: du er det sødeste jeg har skudt ud", w:[74.28,74.46,74.78,75.26,75.32,75.46,75.56,75.98,76.26,76.64,77.1]},
+                {t:77.46, text:"Han elsker mig som en kokosnød", w:[77.46,79.42,79.54,79.62,79.86,80.04]},
+                {t:81.2, text:"Han elsker mig som en krokodille", w:[81.2,82.89,83.06,83.16,83.4,83.56]},
+                {t:84.76, text:"Kristoffer, han elsker mig som en traktor", w:[84.76,86.0,86.92,87.46,87.58,87.8,87.96]},
+                {t:88.52, text:"Han elsker mig som et rumskib", w:[88.52,89.08,89.18,89.36,89.58,89.76]},
+                {t:90.86, text:"Og jeg elsker ham mere end nogen", w:[90.86,90.96,91.41,91.92,92.56,92.68,93.02]},
+                {t:93.32, text:"Han siger skib 20 gange i træk", w:[93.32,93.62,94.08,94.44,94.9,96.28,96.52]},
+                {t:97.46, text:"Og gøj, at når han ser noget stort", w:[97.46,97.64,98.14,98.2,98.32,98.5,98.76,99.47]},
+                {t:100.12, text:"Han viser mig YouTube på min telefon", w:[100.12,100.34,100.68,100.92,101.75,102.38,103.09]},
+                {t:103.64, text:"Og siger: far, den her er god", w:[103.64,104.36,104.96,105.5,105.74,106.06,106.24]},
+                {t:106.5, text:"Han bygger et Lego-tårn op til loftet", w:[106.5,108.88,109.0,109.14,110.0,110.24,110.58]},
+                {t:111.46, text:"Og vælter det, det er bare for sjov", w:[111.46,112.64,113.1,113.42,113.42,113.46,113.8,114.44]},
+                {t:114.76, text:"Så råber han BOR!", w:[114.76,115.3,115.68,116.02]},
+                {t:116.78, text:"Og griner så højt at naboerne hører hans lov", w:[116.78,118.52,118.9,119.28,119.6,119.68,120.52,121.02,121.28]},
+                {t:122.16, text:"Han elsker mig som en kokosnød", w:[122.16,122.64,122.76,122.86,123.1,123.42]},
+                {t:124.42, text:"Han elsker mig som en krokodille", w:[124.42,126.09,126.24,126.42,126.62,126.78]},
+                {t:128.0, text:"Kristoffer, han elsker mig som en traktor", w:[128.0,129.18,130.14,130.66,130.78,131.04,131.2]},
+                {t:131.74, text:"Han elsker mig som et rumskib", w:[131.74,132.32,132.42,132.58,132.8,133.0]},
+                {t:134.1, text:"Og jeg elsker ham mere end nogen", w:[134.1,134.2,134.99,135.16,135.55,135.94,136.26]},
+                {t:136.62, text:"Og lige ved sengetid, hver eneste gang", w:[136.62,137.48,137.58,137.84,139.06,139.29,139.64]},
+                {t:140.02, text:"Så stopper han op og kigger på mig", w:[140.02,140.92,141.32,141.54,141.86,142.86,143.02,143.24]},
+                {t:143.6, text:"Og så finder han på en ny", w:[143.6,147.64,147.76,148.38,148.56,148.8,149.26]},
+                {t:149.78, text:"Far, jeg elsker dig som en dinosaur", w:[149.78,150.68,151.7,151.8,151.92,152.14,152.36]},
+                {t:152.74, text:"Og jeg elsker dig som en pandekage", w:[152.74,153.18,153.36,153.52,153.68,153.94,154.16]},
+                {t:154.76, text:"Og jeg tænker: bliv aldrig voksen", w:[154.76,154.98,155.06,155.58,156.13,156.28]},
+                {t:156.66, text:"Bliv ved med at sige de der ting", w:[156.66,156.86,157.0,157.14,157.26,157.44,157.58,157.7]},
+                {t:157.96, text:"Enghavevej, der var jeg solgt", w:[157.96,159.46,159.5,159.5,159.5]},
+                {t:159.88, text:"Det sted hvor han lærte at gå", w:[159.88,160.18,160.6,160.74,160.82,161.1,161.18]},
+                {t:161.46, text:"Der hvor alle fem boede under ét tag", w:[161.46,161.88,162.06,162.38,162.94,163.46,163.78,164.6]},
+                {t:164.76, text:"Nu kører jeg 20 minutter for at hente ham", w:[164.76,165.1,165.44,165.58,166.54,166.78,166.88,167.12,167.78]},
+                {t:168.06, text:"Og 20 minutter for at bringe ham hjem", w:[168.06,168.58,169.32,169.62,169.72,169.96,170.42,170.94]},
+                {t:171.04, text:"Men de minutter i bilen med Sonic på højtaler", w:[171.04,172.14,172.36,173.04,173.26,173.84,174.04,174.46,174.56]},
+                {t:175.8, text:"De bedste minutter, igen og igen", w:[175.8,175.9,176.74,177.63,178.16,178.46]},
+                {t:178.84, text:"Han spørger: hvornår skal jeg til far igen?", w:[178.84,179.2,180.44,180.84,181.1,181.3,181.46,181.76]},
+                {t:183.74, text:"Og den sætning alene", w:[183.74,183.84,184.08,184.64]},
+                {t:185.7, text:"Holder mig kørende, holder mig oppe", w:[185.7,187.26,187.4,188.48,188.9,189.34]},
+                {t:191.12, text:"Han elsker mig som en kokosnød", w:[191.12,193.16,193.34,193.46,193.68,193.84]},
+                {t:195.02, text:"Han elsker mig som en krokodille", w:[195.02,196.73,196.88,197.0,197.22,197.38]},
+                {t:198.64, text:"Kristoffer, han elsker mig som en traktor", w:[198.64,199.86,200.74,201.28,201.38,201.62,201.76]},
+                {t:202.3, text:"Han elsker mig som et rumskib", w:[202.3,202.91,203.02,203.2,203.4,203.58]},
+                {t:204.2, text:"Og jeg elsker ham mere end ordet", w:[204.2,204.76,205.58,205.74,206.38,206.5,206.84]},
+                {t:207.42, text:"En dag bliver du stor nok til at forstå", w:[207.42,208.08,208.3,208.6,208.8,209.06,209.38,209.94,210.16]},
+                {t:210.72, text:"At din far aldrig stoppede med at prøve", w:[210.72,211.22,211.44,212.2,212.36,213.34,213.48,213.9]},
+                {t:214.28, text:"At Lego-tårnene stadig står på min hylde", w:[214.28,214.58,215.48,216.26,216.54,216.92,217.56]},
+                {t:218.06, text:"At jeg gemte hvert eneste brev", w:[218.06,218.34,218.66,218.88,219.54,220.1]},
+                {t:220.46, text:"Kristoffer", w:[220.46]},
+                {t:221.4, text:"Du elsker mig som en kokosnød", w:[221.4,223.24,223.36,223.46,223.68,224.17]},
+                {t:225.02, text:"Og jeg elsker dig som hele verden", w:[225.02,226.34,226.57,226.9,227.12,227.36,228.27]},
+                {t:230.04, text:"Din far er her", w:[230.04,230.38,230.68,230.94]},
+                {t:232.96, text:"Din far er her", w:[232.96,233.06,233.36,233.6]},
+                {t:234.4, text:"Din far er her", w:[234.4,235.6,236.8,238.0]}
+            ] },
+            { id: 'mine-drenge', title: 'Mine Drenge', file: 'mine-drenge.mp3', image: 'audio/mine-drenge-art.png', gradient: 'linear-gradient(135deg, #3b82f6, #2563eb, #1e3a8a)', glow: '#3b82f6', duration: 194, lyrics: [
+
+                {t:10.54, text:"Mikkel, du er blevet stor nu", w:[10.54,11.36,12.06,12.66,12.92,13.28]},
+                {t:13.64, text:"Næsten voksen, men stadig min", w:[13.64,15.66,17.02,17.74,18.24]},
+                {t:18.58, text:"Jeg husker da du var så lille", w:[18.58,20.56,21.16,21.26,21.52,21.84,22.54]},
+                {t:23.1, text:"Nu har du din egen vej at gå", w:[23.1,23.24,23.46,23.62,23.84,24.34,24.74,24.84]},
+                {t:25.98, text:"Men ved du godt at far er her", w:[25.98,26.08,26.26,26.44,26.7,26.84,27.18,27.46]},
+                {t:27.82, text:"Hver gang du har brug for det", w:[27.82,28.22,28.46,28.76,29.1,29.4,29.5]},
+                {t:30.04, text:"Rasmus, jeg ved du kæmper", w:[30.04,32.47,33.48,33.74,34.04]},
+                {t:34.68, text:"Morgener der føles tunge som bly", w:[34.68,36.98,37.65,38.16,38.78,39.1]},
+                {t:41.8, text:"Jeg ville ønske jeg kunne bære det for dig", w:[41.8,41.9,42.22,42.58,42.76,42.92,43.2,43.38,43.58]},
+                {t:43.96, text:"Men du har lukket døren for mig", w:[43.96,44.54,44.72,44.96,45.28,46.1,46.2]},
+                {t:47.01, text:"Jeg banker stille på, hver eneste dag", w:[47.01,47.3,47.5,47.9,48.2,48.28,48.62]},
+                {t:48.94, text:"Og venter til du åbner igen", w:[48.94,49.56,49.86,49.98,50.58,51.18]},
+                {t:55.41, text:"Jeg ser jer i alting jeg gør", w:[55.41,56.66,58.54,58.96,59.24,59.74,60.06]},
+                {t:60.3, text:"Selvom afstanden gør ondt", w:[60.3,60.82,61.7,61.82]},
+                {t:62.5, text:"Jeg er jeres far", w:[62.5,62.92,63.0,63.38]},
+                {t:63.58, text:"Det kan ingen tage fra", w:[63.58,67.17,67.3,67.89,68.2]},
+                {t:69.54, text:"Tre drenge, mine drenge", w:[69.54,71.64,72.94,73.6]},
+                {t:74.98, text:"I er alt hvad jeg har", w:[74.98,75.08,75.37,75.94,76.04,81.56]},
+                {t:81.66, text:"Christoffer, du er så lille endnu", w:[81.66,82.78,82.96,83.18,83.56,84.12]},
+                {t:84.6, text:"Du forstår det ikke helt", w:[84.6,86.72,87.32,87.6,89.45]},
+                {t:89.9, text:"Men når du griner, stopper verden", w:[89.9,91.68,91.9,92.22,92.88,93.59]},
+                {t:94.1, text:"Og weekender uden dig", w:[94.1,94.78,95.71,96.34]},
+                {t:96.44, text:"Er stuen uden lyd", w:[96.44,97.44,98.48,98.76]},
+                {t:99.1, text:"Jeg tæller dage til jeg ser dig", w:[99.1,99.59,99.98,100.48,100.82,101.14,101.56]},
+                {t:102.18, text:"Tre drenge, tre hjerter", w:[102.18,103.97,104.44,104.64]},
+                {t:105.88, text:"Tre grunde til at holde ud", w:[105.88,105.98,106.52,106.68,106.99,107.38]},
+                {t:107.8, text:"Jeg ser jer i alting jeg gør", w:[107.8,108.48,108.78,109.1,109.4,109.88,110.16]},
+                {t:110.42, text:"Selvom afstanden gør ondt", w:[110.42,110.9,111.83,111.96]},
+                {t:112.48, text:"Jeg er jeres far", w:[112.48,113.0,113.14,113.44]},
+                {t:113.72, text:"Det kan ingen tage fra", w:[113.72,117.29,117.42,118.0,118.32]},
+                {t:118.56, text:"Tre drenge, mine drenge", w:[118.56,121.01,123.04,123.46]},
+                {t:125.06, text:"I er alt hvad jeg har", w:[125.06,125.16,125.43,125.88,126.14,126.7]},
+                {t:126.8, text:"Dødsstille, det jeg ikke forstår", w:[126.8,127.9,127.9,127.9,128.57]},
+                {t:129.26, text:"Og svar jeg aldrig fik", w:[129.26,129.82,130.14,130.83,130.98]},
+                {t:131.3, text:"Men det eneste der tæller", w:[131.3,131.78,131.92,132.83,132.94]},
+                {t:133.6, text:"Er at I ved at I er elsket hvert minut", w:[133.6,134.1,134.3,134.46,134.76,135.06,135.28,135.66,136.5,136.9]},
+                {t:138.36, text:"Hver dag", w:[138.36,138.63]},
+                {t:149.6, text:"Uanset hvad der sker", w:[149.6,150.8,152.0,153.2]},
+                {t:160.8, text:"Hver dag", w:[160.8,171.94]},
+                {t:172.92, text:"Mikkel, Rasmus, Christoffer", w:[172.92,175.4,176.6]},
+                {t:181.86, text:"For altid", w:[181.86,185.3]}
+            ] },
+            { id: 'stop-brian', title: 'Stop Så Brian', file: 'stop-saa-brian.mp3', image: 'audio/stop-brian-art.svg', gradient: 'linear-gradient(135deg, #f97316, #ea580c, #9a3412)', glow: '#f97316', duration: 205, lyrics: [
+
+                {t:0.04, text:"Jeg spurgte: hvor skal Christoffer afleveres søndag?", w:[0.04,0.12,0.66,0.66,0.94,1.6,2.66]},
+                {t:5.1, text:"Han har haft en rigtig god dag og leget med Philip hele dagen", w:[5.1,5.2,5.42,5.68,5.92,6.28,6.44,6.68,6.92,7.26,7.4,7.72,8.39]},
+                {t:8.72, text:"Hun svarer: stop!", w:[8.72,9.62,10.36]},
+                {t:10.86, text:"Jeg skrev: har Rasmus været i skole i dag?", w:[10.86,11.0,11.46,11.63,12.04,12.26,12.36,12.74,12.98]},
+                {t:13.38, text:"Stop så!", w:[13.38,13.48]},
+                {t:14.08, text:"Jeg skrev: har du snakket med kommunen?", w:[14.08,14.26,14.78,14.82,14.96,15.32,15.44]},
+                {t:16.38, text:"Brian, stop nu!", w:[16.38,16.68,16.92]},
+                {t:17.26, text:"Jeg skal have det at vide om Rasmus kommer lørdag", w:[17.26,17.34,17.38,17.52,17.62,17.72,17.8,18.23,18.62,18.78]},
+                {t:19.52, text:"Stop så, nej!", w:[19.52,20.04,20.94]},
+                {t:21.92, text:"Jeg skrev om at deltage i skolemødet", w:[21.92,22.39,22.52,22.8,22.9,23.46,24.17]},
+                {t:25.17, text:"Stop så med at skrive!", w:[25.17,25.68,25.86,26.04,26.14]},
+                {t:27.02, text:"Sig mig, hvad gør en far", w:[27.02,27.52,28.02,28.5,28.62,28.76]},
+                {t:28.98, text:"Når svaret altid er stop?", w:[28.98,29.36,29.94,31.18,31.32]},
+                {t:32.08, text:"Han skriver én gang til", w:[32.08,32.6,32.72,33.8,33.94]},
+                {t:34.22, text:"For han spørger da aldrig for meget", w:[34.22,34.56,34.72,35.06,35.24,35.72,36.2]},
+                {t:36.3, text:"Sig mig, hvad gør en far når døren lukkes?", w:[36.3,37.65,38.56,38.78,39.14,39.3,39.5,39.86,40.58]},
+                {t:42.36, text:"Han banker på igen", w:[42.36,42.42,43.86,44.13]},
+                {t:44.64, text:"For en far, han giver aldrig op", w:[44.64,45.12,45.28,45.78,45.9,46.68,47.52]},
+                {t:47.88, text:"Jeg skrev: Rasmus har glemt sin medicin", w:[47.88,48.18,48.66,48.94,49.04,49.38,49.54]},
+                {t:50.2, text:"Han skal have den i morgen", w:[50.2,50.36,50.5,50.7,50.88,51.04]},
+                {t:51.36, text:"Stilhed", w:[51.36]},
+                {t:52.76, text:"Jeg skrev: hvor mange piller har han tilbage?", w:[52.76,53.42,53.84,53.86,54.4,54.5,54.68,54.96]},
+                {t:55.56, text:"Du må ikke spørge hvor mange piller han har tilbage!", w:[55.56,55.6,55.76,55.96,56.36,56.44,56.99,57.12,57.3,57.76]},
+                {t:58.06, text:"Jeg skriver: børnene mangler tøj", w:[58.06,58.1,58.5,58.86,59.14]},
+                {t:59.28, text:"Jeg har ikke noget, Mikkel har ikke noget", w:[59.28,59.42,59.54,59.86,60.36,60.58,60.74,60.96]},
+                {t:61.14, text:"Brian, jeg sender ikke piller til dig!", w:[61.14,61.68,61.74,62.1,62.28,62.72,63.44]},
+                {t:63.94, text:"Stop så!", w:[63.94,64.1]},
+                {t:64.74, text:"Jeg spurgte om Rasmus, okay?", w:[64.74,65.14,65.28,65.6,66.18]},
+                {t:66.64, text:"Stop nu! Du gør det kun for kontakt", w:[66.64,66.76,67.44,67.72,67.84,67.94,68.1,68.42]},
+                {t:68.84, text:"Sig mig, hvad gør en far", w:[68.84,69.17,70.14,70.24,70.72,70.86]},
+                {t:71.14, text:"Når svaret altid er stop?", w:[71.14,71.48,72.19,73.24,73.42]},
+                {t:74.22, text:"Han skriver én gang til", w:[74.22,74.71,74.84,75.9,76.04]},
+                {t:76.32, text:"For han spørger da aldrig for meget", w:[76.32,76.64,76.82,77.16,77.34,77.82,78.09]},
+                {t:78.86, text:"Sig mig, hvad gør en far når døren lukkes?", w:[78.86,80.04,80.66,80.87,81.2,81.36,81.6,81.94,82.66]},
+                {t:84.36, text:"Han banker på igen", w:[84.36,84.54,85.34,86.18]},
+                {t:86.64, text:"For en far, han giver aldrig op", w:[86.64,87.16,87.34,87.88,87.99,88.32,89.36]},
+                {t:90.0, text:"Jeg skrev: husk i morgen som aftalt, 10. og 12. december", w:[90.0,90.26,90.82,91.04,91.1,91.66,91.76,92.6,92.98,93.06,93.32]},
+                {t:93.68, text:"Du skal ikke lave mere ballade!", w:[93.68,94.08,94.22,94.52,94.84,95.1]},
+                {t:95.76, text:"Jeg skrev: det handler om børnene, ikke om dig og mig", w:[95.76,95.76,96.32,96.52,96.84,97.04,97.78,97.78,97.9,98.08,98.22]},
+                {t:98.52, text:"Brian, stop!", w:[98.52,99.76]},
+                {t:101.06, text:"Rasmus spurgte om Sebastians nummer, det tog fire timer", w:[101.06,101.18,101.5,101.64,102.44,102.9,102.94,103.18,103.89]},
+                {t:104.06, text:"Stop nu! Han kunne da selv have ringet", w:[104.06,105.03,105.52,105.58,105.84,106.1,106.32,106.46]},
+                {t:106.74, text:"Du er simpelthen for meget", w:[106.74,106.92,107.06,107.74,108.0]},
+                {t:108.78, text:"Jeg sendte billeder af Kristoffer der malede", w:[108.78,110.68,110.98,111.38,111.62,112.2,112.3]},
+                {t:112.84, text:"Han var så stolt med pensel i begge hænder", w:[112.84,113.28,113.46,113.6,113.96,114.12,114.52,114.62,114.98]},
+                {t:115.32, text:"Kristoffer sagde: far, send den her til mor", w:[115.32,115.94,116.4,116.8,116.88,117.08,117.28,117.42]},
+                {t:117.75, text:"Han viste sine dyr, sine tegninger, sit smil", w:[117.75,118.24,118.5,118.66,119.34,119.46,120.14,120.22]},
+                {t:120.74, text:"Svaret kom søndag formiddag:", w:[120.74,121.18,121.4,122.0]},
+                {t:122.98, text:"Brian, du spammer mig! Stop så!", w:[122.98,123.34,123.44,123.88,124.38,124.6]},
+                {t:125.74, text:"Sig mig, hvad gør en far", w:[125.74,127.05,127.9,128.06,128.54,128.68]},
+                {t:128.94, text:"Når svaret altid er stop?", w:[128.94,129.32,130.48,131.12,131.3]},
+                {t:132.1, text:"Han skriver én gang til", w:[132.1,132.53,132.64,133.71,133.88]},
+                {t:134.16, text:"For hans børn er aldrig for meget", w:[134.16,134.52,134.7,135.14,135.14,135.68,135.94]},
+                {t:136.3, text:"Sig mig, hvad gør en far når døren lukkes?", w:[136.3,137.44,138.4,138.93,139.04,139.2,139.5,140.08,140.58]},
+                {t:142.3, text:"Han banker på igen", w:[142.3,142.38,143.76,143.86]},
+                {t:144.52, text:"For en far, han giver aldrig op", w:[144.52,145.04,145.16,145.66,145.8,146.61,147.36]},
+                {t:147.84, text:"Kommunen sagde: der er ingen afgørelse", w:[147.84,148.28,148.9,148.9,148.9,149.14]},
+                {t:149.86, text:"Hun sagde: jeg udleverer ham ikke", w:[149.86,150.12,150.58,150.58,151.2,151.34]},
+                {t:151.54, text:"Jeg blokerer alle dine beskeder", w:[151.54,151.78,152.32,152.56,152.9]},
+                {t:153.34, text:"Så vil der ikke være nogen kommunikation mellem os", w:[153.34,153.46,153.58,153.76,154.02,154.32,154.64,155.44,155.96]},
+                {t:156.34, text:"Sig hvad? Brian!", w:[156.34,156.76,158.24]},
+                {t:158.56, text:"Jeg spurgte om medicin: Stop!", w:[158.56,158.64,158.92,159.06,159.78]},
+                {t:159.98, text:"Jeg spurgte om skole: Stop!", w:[159.98,160.02,160.2,160.34,161.02]},
+                {t:161.22, text:"Jeg sendte billeder: Spam!", w:[161.22,161.32,161.58,162.28]},
+                {t:162.78, text:"Jeg fulgte aftalen: Chikane!", w:[162.78,162.92,163.77,164.5]},
+                {t:165.76, text:"Men mine drenges medicin er ikke chikane", w:[165.76,165.86,166.12,166.58,167.18,167.24,167.42]},
+                {t:167.96, text:"Og billeder af Kristoffer der maler er ikke spam", w:[167.96,168.16,168.58,168.74,169.22,169.32,169.8,169.86,170.1]},
+                {t:170.38, text:"Og spørge til sin søns skole er ikke for meget", w:[170.38,170.8,171.08,171.3,171.48,171.76,172.16,172.26,172.68,172.78]},
+                {t:173.16, text:"Sig mig, hvad gør en far", w:[173.16,174.38,175.02,175.36,175.86,176.0]},
+                {t:176.28, text:"Når svaret altid er stop?", w:[176.28,176.64,177.36,178.44,178.6]},
+                {t:181.04, text:"Han stopper aldrig", w:[181.04,181.14,181.78]},
+                {t:182.44, text:"En far giver aldrig op", w:[182.44,184.06,186.1,186.58,186.98]}
+            ] },
+            { id: 'brormand', title: 'Brormand', file: 'brormand.mp3', image: 'audio/brormand-art.jpg', gradient: 'linear-gradient(135deg, #e040fb, #ff6090, #f59e0b)', glow: '#e040fb', duration: 202, lyrics: [
+                {t:14.4, text:"Du hentede ungerne til konfirmationen", w:[14.38,14.5,14.88,15.48,16.0]},
+                {t:17.4, text:"Rasmus grinede da du kom ind ad døren", w:[17.44,18.3,18.74,18.98,19.16,19.46,19.84,20.0]},
+                {t:21.1, text:"Du stod i kirken som hans gudfar", w:[21.08,21.24,21.58,21.84,22.18,22.4,22.66]},
+                {t:23.3, text:"Og Kristoffer råbte onkel Mikael er her!", w:[23.32,24.02,24.74,25.1,25.58,26.06,26.52]},
+                {t:28.2, text:"Og når du ringer siger du bare", w:[28.18,28.52,28.8,29.12,29.44,29.8,30.2]},
+                {t:32.4, text:"Jeg er med dig den hele vejen", w:[32.42,32.52,32.8,33.08,33.32,33.52,33.84]},
+                {t:34.5, text:"Hey brormand! Samme blod i begge hjerter", w:[34.52,34.86,36.59,36.72,37.04,37.18,37.69]},
+                {t:38.0, text:"Hey brormand! Os to mod hele verden", w:[38.02,38.3,39.46,39.82,40.1,40.54,41.3]},
+                {t:41.5, text:"Du har min ryg, jeg har din", w:[41.46,41.74,42.08,42.4,42.88,42.9,45.98]},
+                {t:46.6, text:"Sådan har det altid været", w:[46.64,47.0,47.22,47.52,61.51]},
+                {t:62.4, text:"Du kom forbi med bord og hammer", w:[62.36,62.42,62.66,63.2,63.5,64.0,64.32]},
+                {t:64.7, text:"Og smed det hele af med et grin (Med et grin!)", w:[64.72,64.94,65.28,65.74,65.84,66.22,66.5,66.9,67.24,67.76,68.0]},
+                {t:68.5, text:"Du sagde det hus er noget lort, Brian", w:[68.5,69.26,69.62,69.78,70.0,70.16,70.42,71.32]},
+                {t:72.5, text:"Ærligt som altid, det er dig", w:[72.49,72.66,73.1,73.74,73.78,73.92]},
+                {t:74.3, text:"Savblade fra Stark og en printer fra dit firma", w:[74.3,76.26,76.54,76.94,77.18,77.46,77.82,78.08,78.34]},
+                {t:79.4, text:"Du rakte hånden ud før jeg nåede at spørge", w:[79.39,79.58,80.11,80.52,80.76,81.16,81.3,81.66,81.82]},
+                {t:82.3, text:"Hey brormand! (Brormand!) Samme blod i begge hjerter", w:[82.26,82.78,83.64,84.28,84.72,85.06,85.2,85.69]},
+                {t:86.0, text:"Hey brormand! (Brormand!) Os to mod hele verden", w:[86.02,86.18,87.12,87.58,88.02,88.46,88.58,89.28]},
+                {t:89.4, text:"Du har min ryg, jeg har din (Jeg har din!)", w:[89.42,89.98,90.08,90.4,90.92,90.92,91.56,91.68,93.56,93.86]},
+                {t:94.5, text:"Sådan har det altid været", w:[94.54,95.0,95.24,95.8,109.76]},
+                {t:110.4, text:"Philippe løber rundt med Kristoffer", w:[110.4,110.86,111.28,111.8,112.02]},
+                {t:112.9, text:"Pernille griner og Louise også", w:[112.9,114.32,114.78,114.94,115.44]},
+                {t:116.1, text:"Mor siger I er gode brødre (Gode brødre)", w:[116.1,117.04,117.74,117.96,118.46,118.56,119.24,119.9]},
+                {t:120.8, text:"Og hele familien er samlet", w:[120.84,121.56,122.38,122.56,122.74]},
+                {t:123.6, text:"Hey brormand! (Brormand!) Samme blod i begge hjerter (Begge hjerter!)", w:[123.64,123.96,124.86,125.42,125.84,126.2,126.36,126.84,127.14,127.98]},
+                {t:129.6, text:"Hey brormand! (Brormand!) Os to mod hele verden (Hele verden!)", w:[129.58,130.78,131.62,132.26,132.36,132.78,133.12,133.92,134.36,134.54]},
+                {t:136.3, text:"Du har min ryg, jeg har din (Jeg har din!)", w:[136.33,137.96,138.08,138.4,138.9,138.9,139.14,139.68,141.64,141.88]},
+                {t:142.6, text:"Sådan har det altid været! (Altid!)", w:[142.58,142.98,143.24,143.77,143.9,150.44]},
+                {t:152.2, text:"Hold gejst op, brormand! (Brormand!)", w:[152.24,152.62,153.34,175.54,182.44]},
+                {t:201.2, text:"Samme blod - hele vejen!", w:[201.16,202.19,202.19,202.19,202.19]}
+            ] },
+            { id: 'hvad-boern-ved', title: 'Hvad Børn Ved', file: 'hvad-boern-ved.mp3', image: 'audio/hvad-boern-ved-art.png', gradient: 'linear-gradient(135deg, #f5a623, #e8852a, #8b5e34)', glow: '#f5a623', duration: 186, lyrics: [
+
+                {t:12.88, text:"Børn tæller ikke dage i en kalender", w:[12.88,13.1,13.46,13.72,14.24,14.76,14.96]},
+                {t:15.87, text:"De tæller tallerkner på bordet", w:[15.87,18.28,18.66,19.98,20.82]},
+                {t:23.06, text:"De ved ikke hvad en aftale er", w:[23.06,23.78,24.02,24.22,24.42,24.58,25.5]},
+                {t:26.2, text:"Men de ved hvem der sidder på deres stol", w:[26.2,26.34,26.5,26.78,27.1,27.58,27.7,28.22,31.88]},
+                {t:32.64, text:"De kender ikke ord som samværsret", w:[32.64,35.11,35.22,35.48,35.78,36.06]},
+                {t:37.14, text:"Men de kender hvem der bærer dem hjem", w:[37.14,37.4,37.56,37.94,38.22,38.34,38.68,38.88]},
+                {t:39.2, text:"De ved ikke hvad en dom betyder", w:[39.2,40.3,40.54,40.76,40.92,41.08,41.42]},
+                {t:42.62, text:"Men de ved hvem der visker godnat", w:[42.62,42.74,42.92,43.22,43.64,43.78,44.22]},
+                {t:47.88, text:"Hvad børn ved", w:[47.88,48.12,48.54]},
+                {t:48.9, text:"Hvad børn ved", w:[48.9,50.36,51.32]},
+                {t:51.66, text:"Kan ingen voksen se", w:[51.66,54.05,55.13,56.28]},
+                {t:57.2, text:"Hvad børn ved", w:[57.2,59.31,59.61]},
+                {t:60.8, text:"Hvad børn ved", w:[60.8,62.32,62.46]},
+                {t:62.6, text:"En tegning siger mere end en dom", w:[62.6,64.8,65.86,66.34,67.32,67.5,67.7]},
+                {t:68.08, text:"Han tegner hele familien med en blyant", w:[68.08,70.26,70.76,71.33,72.04,72.94,73.24]},
+                {t:73.92, text:"En blå, for den er finest", w:[73.92,74.42,74.6,74.82,74.9,74.9]},
+                {t:74.9, text:"Far får en kartoffelmund og et smil", w:[74.9,74.9,74.9,74.9,74.9,74.9,74.9]},
+                {t:82.6, text:"Og alle er glade på hans tegning", w:[82.6,83.29,83.97,84.66,85.34,86.03,86.71]},
+                {t:90.44, text:"Han savner dig som en kokosnød", w:[90.44,92.73,93.24,93.58,93.96,94.14]},
+                {t:95.02, text:"Og visker godnat skamlæst i dig", w:[95.02,95.3,95.86,96.3,96.84,96.94]},
+                {t:97.1, text:"Han ved ikke hvad en retssag er", w:[97.1,97.68,98.42,98.68,98.88,99.0,99.64]},
+                {t:99.88, text:"Men han ved hvem der mangler ved bordet", w:[99.88,100.7,100.88,101.43,101.54,101.7,102.18,102.36]},
+                {t:103.8, text:"Jeg vil bare hjem til far", w:[103.8,103.9,104.12,104.4,104.78,104.96]},
+                {t:105.24, text:"Siger en dreng på fire", w:[105.24,106.84,107.28,107.62,107.7]},
+                {t:107.98, text:"Og en på fjorten visker bag sin hånd:", w:[107.98,108.78,109.48,109.62,110.1,110.48,110.72,111.16]},
+                {t:111.94, text:"Jeg elsker dig alligevel", w:[111.94,112.18,112.58,113.18]},
+                {t:117.3, text:"De bad ikke om paragraffer", w:[117.3,117.46,117.82,118.16,118.32]},
+                {t:119.7, text:"De bad om pølsehorn til morgenmad", w:[119.7,119.92,120.2,120.36,121.1,121.36]},
+                {t:122.88, text:"De bad ikke om en afgørelse", w:[122.88,123.06,123.36,123.64,123.9,124.02]},
+                {t:124.92, text:"De bad om at far var der når de vågnede", w:[124.92,125.12,125.44,125.74,125.86,126.1,126.36,126.56,126.78,130.12]},
+                {t:131.08, text:"Hvad børn ved", w:[131.08,131.08,131.42]},
+                {t:131.6, text:"Hvad børn ved", w:[131.6,133.72,134.06]},
+                {t:134.48, text:"Hvad børn ved", w:[134.48,135.36,135.78]},
+                {t:135.78, text:"Hvad børn ved", w:[135.78,137.94,142.14]},
+                {t:146.02, text:"En tegning siger mere end en dom", w:[146.02,147.54,148.46,148.9,149.46,150.18,150.44]},
+                {t:150.82, text:"Mere end en dom", w:[150.82,152.79,152.94,156.42]},
+                {t:157.51, text:"Mere end en dom", w:[157.51,158.32,158.42,159.01]},
+                {t:160.49, text:"Mere end en dom", w:[160.49,161.1,161.24,172.79]},
+                {t:172.89, text:"Han peger på sin tegning", w:[172.89,176.74,176.85,176.99,177.21]},
+                {t:177.63, text:"Og siger: alle er glade", w:[177.63,179.53,179.79,179.93,180.42]},
+                {t:181.71, text:"Og måske er det alt man behøver at vide", w:[181.71,182.34,182.6,182.79,182.93,183.19,183.8,183.95,184.03]}
+            ] },
+            { id: 'hjem', title: 'Hjem', file: 'hjem.mp3', image: 'audio/hjem-art.png', gradient: 'linear-gradient(135deg, #c8956c, #a07050, #6b4530)', glow: '#c8956c', duration: 213, lyrics: [
+                {t:10.3, text:"Jeg malede væggerne en søndag i regn", w:[10.3,10.45,10.84,11.18,11.4,11.88,12.04]},
+                {t:12.3, text:"Med maling i håret og tro i maven", w:[12.32,12.52,13.08,13.2,13.6,13.76,13.96,14.36]},
+                {t:14.8, text:"Bankede søm i en væg der var skæv", w:[14.78,15.56,15.82,15.96,16.14,16.42,16.54,16.72]},
+                {t:17.0, text:"Og tænkte: Det her bliver godt nok", w:[17.0,17.41,17.94,17.94,18.12,18.34,18.64]},
+                {t:18.9, text:"Min bror sagde: Brian, det hus er noget lort", w:[18.9,19.66,19.92,20.34,20.74,20.74,20.96,21.18,21.38]},
+                {t:21.8, text:"Men han kom med hammer og bord alligevel", w:[21.76,22.06,22.26,22.54,22.7,22.98,23.12,23.36]},
+                {t:24.4, text:"Vi byggede senge til tre små drenge", w:[24.36,24.72,25.04,25.34,25.5,26.09,26.22]},
+                {t:26.6, text:"Og hængte gardiner i mørket", w:[26.6,26.82,27.16,27.7,27.88]},
+                {t:28.3, text:"For et hjem er ikke mursten", w:[28.32,28.96,29.24,29.56,29.82,30.14]},
+                {t:31.0, text:"Et hjem er ikke kvadratmeter", w:[31.01,31.56,31.88,32.04,32.42]},
+                {t:33.5, text:"Et hjem er det sted", w:[33.45,34.38,34.74,34.9,35.0]},
+                {t:35.5, text:"Hvor nogen venter på dig (Venter på dig!)", w:[35.52,35.8,36.04,36.38,36.48,36.84,37.38,37.38]},
+                {t:37.9, text:"Hvor din tallerken altid står klar", w:[37.88,38.34,38.44,39.14,39.66,39.96]},
+                {t:40.3, text:"Hvor nogen venter på dig (Venter på dig!)", w:[40.26,40.56,40.82,41.12,41.59,41.7,42.04,42.08]},
+                {t:42.9, text:"Det er hjem – og det starter i dag", w:[42.88,42.98,43.26,43.9,44.36,44.46,44.62,45.37,45.82]},
+                {t:50.5, text:"Jeg reder tre senge hver morgen kl. seks", w:[50.48,50.58,50.88,51.02,51.48,51.74,52.06,52.56]},
+                {t:53.0, text:"Selv når kun én af dem sover her", w:[53.02,53.14,53.28,53.42,53.84,54.02,54.14,54.42]},
+                {t:54.7, text:"Der står gummistøvler i alle tre størrelser", w:[54.68,55.18,55.41,56.18,56.52,56.76,56.98]},
+                {t:57.5, text:"Og fire stole ved et bord for tre", w:[57.52,57.7,57.9,58.24,58.5,58.76,58.96,59.2]},
+                {t:59.4, text:"Hun sagde: Kan mor se det nye hus?", w:[59.44,59.96,60.58,60.68,60.88,61.12,61.3,61.94]},
+                {t:62.2, text:"Det var det eneste hun ønskede sig", w:[62.16,62.2,62.32,62.76,62.86,63.1,63.46]},
+                {t:64.1, text:"Ikke legetøj, ikke en iPad", w:[64.14,64.86,65.84,65.96,66.12]},
+                {t:66.6, text:"Bare at vi alle var her", w:[66.58,67.12,67.7,67.82,68.08,68.28]},
+                {t:68.6, text:"For et hjem er ikke mursten", w:[68.56,69.02,69.1,71.64,71.74,71.98]},
+                {t:73.1, text:"Et hjem er ikke en adresse", w:[73.1,73.74,76.16,76.16,76.16,76.16]},
+                {t:76.2, text:"Et hjem er det sted", w:[76.16,76.16,76.16,76.16,76.16]},
+                {t:76.2, text:"Hvor nogen venter på dig (Venter på dig!)", w:[76.16,76.16,76.16,76.62,77.12,77.24,77.62,77.9]},
+                {t:78.5, text:"Hvor din tallerken altid står klar", w:[78.48,78.7,78.82,79.5,80.06,80.36]},
+                {t:80.6, text:"Hvor nogen venter på dig (Venter på dig!)", w:[80.64,80.96,81.18,81.5,81.64,82.0,82.44,82.7]},
+                {t:83.2, text:"Det er hjem – og det starter i dag", w:[83.18,83.38,83.8,84.26,84.3,84.86,85.04,85.74,86.3]},
+                {t:87.3, text:"Farmor kommer med pølsehorn kl. syv", w:[87.32,87.42,87.42,88.06,89.8,90.2]},
+                {t:90.5, text:"Min dreng spørger: Hvornår ses vi alle fire?", w:[90.5,91.26,91.84,92.4,92.84,93.18,100.2,100.66]},
+                {t:106.6, text:"Og jeg svarer: Snart", w:[106.61,107.16,107.16,109.46]},
+                {t:110.8, text:"For jeg har bygget det her med mine hænder", w:[110.76,110.76,110.76,110.76,110.76,110.76,110.76,110.76,110.76]},
+                {t:111.5, text:"Og der er plads til jer alle", w:[111.52,111.52,111.78,111.96,112.96,112.96,114.78]},
+                {t:117.7, text:"Hvor nogen venter på dig (Venter på dig!)", w:[117.74,118.54,119.22,119.54,119.92,120.02,120.34,120.52]},
+                {t:121.2, text:"Hvor din tallerken altid står klar", w:[121.16,121.26,121.44,122.26,122.84,123.14]},
+                {t:123.4, text:"Hvor nogen venter på dig (Venter på dig!)", w:[123.44,123.74,124.0,124.3,124.38,124.76,125.34,125.44]},
+                {t:126.0, text:"Det er hjem – og det starter i dag (Starter i dag!)", w:[126.04,126.16,126.4,127.0,127.24,127.64,127.8,128.54,129.02,129.18,129.98,130.24]},
+                {t:132.3, text:"Jeg malede væggerne en søndag i regn", w:[132.32,136.1,136.6,137.18,137.44,137.8,137.96]},
+                {t:138.2, text:"Og døren – den står altid åben", w:[138.24,138.54,138.94,139.04,139.49,139.97,140.58]}
+            ] },
+            { id: 'lad-dem-snakke', title: 'Lad Dem Snakke', file: 'lad-dem-snakke.mp3', image: 'audio/lad-dem-snakke-art.png', gradient: 'linear-gradient(135deg, #f5c842, #e8a020, #c47a18)', glow: '#f5c842', duration: 208, lyrics: [
+                {t:17.6, text:"De sagde jeg var færdig", w:[17.6,18.14,18.68,19.22,19.76]},
+                {t:21.2, text:"Skrev det ned i et brev med stempel på", w:[21.2,21.68,22.17,22.65,23.13,23.62,24.1,24.58,25.07]},
+                {t:27.0, text:"De sagde: Han giver op til sommer", w:[27.0,27.25,27.49,27.74,27.99,28.23,28.48]},
+                {t:29.3, text:"Men de kender ikke mig endnu", w:[29.3,29.98,30.65,31.33,32.0,32.68]},
+                {t:34.7, text:"Jeg danser i køkkenet kl. syv", w:[34.7,35.16,35.62,36.09,36.55,37.01]},
+                {t:38.4, text:"Med pølsehorn i ovnen og børn på gulvet", w:[38.4,38.81,39.21,39.62,40.03,40.43,40.84,41.25]},
+                {t:42.7, text:"Min dreng siger: Far du er mærkelig", w:[42.74,44.28,45.58,45.96,46.04,46.34,46.42]},
+                {t:47.1, text:"Og det er det bedste nogen har sagt til mig", w:[47.1,49.1,49.2,49.28,49.36,49.76,50.14,50.4,50.98,55.16]},
+                {t:56.1, text:"Lad dem skrive, lad dem ringe", w:[56.1,56.2,56.34,57.28,57.38,57.58]},
+                {t:57.9, text:"Lad dem sende hundrede breve mere", w:[57.88,58.5,58.68,58.98,59.34,59.6]},
+                {t:60.1, text:"Lad dem snakke (Lad dem snakke!)", w:[60.08,60.56,60.92,62.82,62.92,63.24]},
+                {t:64.0, text:"Vi danser stadig her", w:[64.04,64.48,65.02,65.56]},
+                {t:67.9, text:"Lad dem snakke (Lad dem snakke!)", w:[67.92,68.04,70.22,70.82,71.46,71.54]},
+                {t:73.3, text:"De kan ikke slukke det her", w:[73.32,73.42,73.6,73.76,74.22,74.52]},
+                {t:74.9, text:"Vi er her, vi er her, vi er her (Vi er her!)", w:[74.94,78.92,79.1,79.52,79.52,79.7,80.1,80.1,80.26,80.58,80.68,80.9]},
+                {t:82.5, text:"Og vi går ingen steder", w:[82.46,82.86,83.02,83.2,83.46]},
+                {t:87.6, text:"Vi er her, vi er her, vi er her (Vi er her!)", w:[87.6,88.22,88.36,88.94,88.94,89.0,89.9,90.0,90.18,90.54,90.86,91.2]},
+                {t:91.8, text:"Lad dem snakke", w:[91.76,93.1,97.62]},
+                {t:97.7, text:"De tæller mine fejl på et regneark", w:[97.72,97.72,98.0,98.16,98.62,98.78,98.92]},
+                {t:99.6, text:"Og vejer mine ord på en vægt der hælder", w:[99.62,100.02,100.32,100.54,100.96,101.08,101.22,101.5,101.7]},
+                {t:102.1, text:"Men de vejer ikke drengen der griner", w:[102.06,102.2,102.38,102.68,102.88,103.4,103.54]},
+                {t:104.0, text:"Når jeg snubler over hans Lego kl. seks", w:[104.0,104.62,104.66,105.04,105.26,105.56,105.98,106.42]},
+                {t:106.9, text:"De ser ikke tre drenge i en sofa", w:[106.9,107.02,107.28,107.46,107.62,107.98,108.16,108.18]},
+                {t:108.5, text:"Med popcorn og en film de har set før", w:[108.54,109.24,109.54,109.82,109.92,110.22,110.4,110.52,110.9]},
+                {t:111.3, text:"De ser et sagsnummer og en mappe", w:[111.32,111.7,111.92,112.06,112.56,112.74,112.86]},
+                {t:113.6, text:"Men vi ser bare hinanden", w:[113.64,113.9,113.96,114.26,114.82]},
+                {t:116.1, text:"Lad dem skrive, lad dem ringe", w:[116.08,116.76,116.9,117.76,117.94,118.12]},
+                {t:118.5, text:"Lad dem sende hundrede breve mere", w:[118.5,119.08,119.3,119.58,119.92,120.24]},
+                {t:120.7, text:"Lad dem snakke (Lad dem snakke!)", w:[120.68,121.18,121.5,122.12,122.7,122.82]},
+                {t:124.3, text:"Vi danser stadig her", w:[124.34,124.98,125.56,126.02]},
+                {t:126.4, text:"Lad dem snakke (Lad dem snakke!)", w:[126.44,128.56,130.84,131.42,132.06,132.18]},
+                {t:133.9, text:"De kan ikke slukke det her", w:[133.86,133.96,134.14,134.36,134.86,135.18]},
+                {t:138.3, text:"Vi er her, vi er her, vi er her (Vi er her!)", w:[138.29,139.24,139.62,140.12,140.12,140.22,140.66,140.72,141.42,141.7,142.12,142.46]},
+                {t:143.1, text:"Og vi går ingen steder", w:[143.12,143.42,143.6,143.78,144.08]},
+                {t:144.6, text:"Vi er her, vi er her, vi er her (Vi er her!)", w:[144.64,146.42,149.0,149.4,149.5,149.56,149.98,150.02,150.14,150.92,151.64,151.68]},
+                {t:152.3, text:"Lad dem snakke", w:[152.32,152.82,152.82]},
+                {t:152.8, text:"For hvad ved de om tirsdag aften", w:[152.82,152.86,153.04,153.26,153.44,153.64,154.2]},
+                {t:156.2, text:"Hvor vi alle fire sidder på gulvet", w:[156.24,156.34,156.5,156.82,157.3,157.98,158.62]},
+                {t:159.6, text:"Og den mindste falder i søvn på min arm", w:[159.6,161.32,162.42,162.92,163.38,163.5,163.9,164.12,164.62]},
+                {t:165.6, text:"Og den største dækker ham til", w:[165.64,165.7,165.9,166.82,167.44,171.48]},
+                {t:171.7, text:"Lad dem snakke (Lad dem snakke!)", w:[171.72,172.9,172.9,173.34,173.88,174.06]},
+                {t:175.1, text:"Vi danser stadig her", w:[175.08,176.32,176.84,180.96]},
+                {t:181.8, text:"Lad dem snakke (Lad dem snakke!)", w:[181.83,181.97,182.09,182.67,182.88,183.23]},
+                {t:185.0, text:"De kan ikke slukke det her", w:[184.97,185.23,185.39,185.63,186.05,186.43]},
+                {t:186.8, text:"Vi er her, vi er her, vi er her (Vi er her!)", w:[186.77,188.65,190.95,191.47,191.47,191.49,191.91,191.97,192.13,192.89,193.65,193.65]},
+                {t:194.3, text:"Og vi går ingen steder", w:[194.29,194.66,194.81,195.05,195.37]},
+                {t:198.8, text:"Lad dem snakke", w:[198.77,200.57,200.73]},
+                {t:202.4, text:"Vi danser videre", w:[202.45,202.55,202.99]}
+            ] },
+            { id: 'i-nat', title: 'I Nat', file: 'i-nat.mp3', image: 'audio/i-nat-art.svg', gradient: 'linear-gradient(135deg, #00e676, #00bcd4, #0a1a1a)', glow: '#00e676', duration: 185, lyrics: [
+                {t:10.68, text:"Skjorten er ny og skoene er rene", w:[10.68,11.22,11.34,11.56,11.76,12.24,12.48]},
+                {t:14.01, text:"For første gang i år er håret sat", w:[14.01,15.26,15.7,15.98,16.28,16.54,16.68,17.02]},
+                {t:17.34, text:"Spejlet siger: Du ligner en der lever", w:[17.34,19.94,20.64,20.82,21.12,21.3,21.93]},
+                {t:22.22, text:"Og i nat tror jeg på det", w:[22.22,23.3,23.44,23.6,23.9,24.1,28.62]},
+                {t:29.04, text:"Telefonen ligger hjemme på bordet", w:[29.04,29.64,29.96,30.38,30.48]},
+                {t:31.3, text:"Ingen breve, ingen sager, ingen krav", w:[31.3,31.48,32.02,32.18,32.6,33.08]},
+                {t:33.32, text:"Bare mig og gaden og en bassgang", w:[33.32,33.68,33.98,34.2,34.58,34.72,34.86]},
+                {t:35.53, text:"Og en følelse jeg troede var død", w:[35.53,35.94,36.18,36.54,36.66,37.0,37.28]},
+                {t:37.72, text:"Jeg har glemt hvordan det her føles", w:[37.72,39.38,39.52,39.9,40.2,40.36,40.95]},
+                {t:41.5, text:"Men kroppen husker", w:[41.5,42.52,43.06]},
+                {t:43.6, text:"I nat", w:[43.6,46.3]},
+                {t:46.66, text:"I nat!", w:[46.66,47.2]},
+                {t:49.22, text:"Er der ingen der venter på svar", w:[49.22,49.62,49.96,50.24,50.44,50.82,50.96]},
+                {t:51.4, text:"I nat", w:[51.4,51.82]},
+                {t:52.12, text:"I nat!", w:[52.12,53.56]},
+                {t:53.86, text:"Er jeg bare en mand i en bar", w:[53.86,54.4,54.58,54.78,55.04,55.26,55.48,55.62]},
+                {t:56.34, text:"I nat, i nat, i nat", w:[56.34,56.48,57.2,57.61,58.32,59.58]},
+                {t:59.58, text:"I nat!", w:[59.58,59.83]},
+                {t:59.68, text:"Ingen sag og ingen dom", w:[59.68,59.68,59.92,60.57,60.68]},
+                {t:61.14, text:"I nat, i nat, i nat", w:[61.14,61.34,61.82,62.14,62.3,63.18]},
+                {t:63.28, text:"I nat!", w:[63.28,63.8]},
+                {t:64.54, text:"Bare fri", w:[64.54,64.94]},
+                {t:69.88, text:"Musikken rammer og gulvet ryster", w:[69.88,71.32,71.78,71.84,72.5]},
+                {t:72.96, text:"Og en fremmed siger: Skål for ingenting", w:[72.96,75.1,75.3,75.6,76.34,76.78,77.12]},
+                {t:78.66, text:"Og jeg griner fordi det er perfekt", w:[78.66,79.64,79.94,80.36,80.6,80.94,81.67]},
+                {t:81.8, text:"At skåle for absolut ingenting", w:[81.8,82.12,82.6,83.19,83.62]},
+                {t:86.23, text:"Jeg har danset med paragraffer i årevis", w:[86.23,89.01,89.16,89.62,89.78,90.64,90.98]},
+                {t:91.6, text:"I nat danser jeg bare med mig selv", w:[91.6,93.68,94.02,94.72,94.91,95.24,95.54,96.02]},
+                {t:96.89, text:"Og det er nok", w:[96.89,97.0,97.12,97.32]},
+                {t:97.62, text:"Mere end nok", w:[97.62,98.1,98.32]},
+                {t:98.87, text:"Jeg har glemt hvordan det her føles", w:[98.87,99.38,99.52,99.9,100.26,100.36,100.78]},
+                {t:101.3, text:"Men i nat husker jeg", w:[101.3,102.94,103.1,103.38,105.16]},
+                {t:105.72, text:"I nat", w:[105.72,106.3]},
+                {t:106.64, text:"I nat!", w:[106.64,107.26]},
+                {t:108.5, text:"Er der ingen der venter på svar", w:[108.5,109.64,109.98,110.22,110.42,110.82,110.96]},
+                {t:111.42, text:"I nat", w:[111.42,111.88]},
+                {t:112.12, text:"I nat!", w:[112.12,112.64]},
+                {t:113.94, text:"Er jeg bare en mand i en bar", w:[113.94,114.38,114.58,114.8,115.04,115.26,115.56,115.62]},
+                {t:144.7, text:"I morgen starter det hele igen", w:[144.7,145.0,145.4,145.8,146.1,146.5]},
+                {t:147.0, text:"Brevene, kampene, alt det tunge", w:[147.0,147.5,148.1,148.5,148.9]},
+                {t:150.0, text:"Men i nat", w:[150.0,150.4,150.8]},
+                {t:153.1, text:"I nat er jeg let", w:[153.1,153.5,153.8,154.1,154.5]},
+                {t:155.5, text:"I NAT, I NAT, I NAT", w:[155.5,155.9,156.1,156.5,156.8,157.2]},
+                {t:157.5, text:"I NAT!", w:[157.5,157.8]},
+                {t:158.5, text:"Ingen sag og ingen dom", w:[158.5,158.8,159.2,159.6,160.0]},
+                {t:160.9, text:"I NAT, I NAT, I NAT", w:[160.9,161.1,161.4,161.7,162.0,162.3]},
+                {t:162.8, text:"I NAT!", w:[162.8,163.2]},
+                {t:163.6, text:"Bare FRI", w:[163.6,164.2]},
+                {t:165.3, text:"Bare fri", w:[165.3,165.8]},
+                {t:170.1, text:"I nat", w:[170.1,170.8]},
+                {t:176.1, text:"Bare fri", w:[176.1,176.8]}
+            ] }
         ];
 
         let currentSongId = null;
         let isPlaying = false;
+        let playGeneration = 0;
         let repeatMode = 'off'; // off, all, one
         let modalOpen = false;
+        let lyricsVisible = localStorage.getItem('lyricsVisible') !== 'false';
+
+        // --- Haptic feedback ---
+        function haptic(pattern) {
+            if ('vibrate' in navigator) navigator.vibrate(pattern);
+        }
 
         const audio = document.getElementById('modalAudio');
         const overlay = document.getElementById('modalOverlay');
@@ -426,11 +1112,15 @@
             return m + ':' + (sec < 10 ? '0' : '') + sec;
         }
 
+        let _toastTimer = 0;
         function showToast(msg) {
+            clearTimeout(_toastTimer);
             toast.textContent = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            _toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
         }
+
+        function _dbg() {} // debug stub
 
         function getSongTitle(song) {
             return song.subtitle ? song.title + ' (' + song.subtitle + ')' : song.title;
@@ -477,11 +1167,10 @@
         }
 
         // --- Open song / play ---
-        function openSong(id, fromAutoNext) {
+        function openSong(id) {
             const song = songs.find(s => s.id === id);
             if (!song) return;
 
-            const wasPlaying = currentSongId === id && isPlaying;
             const isSameSong = currentSongId === id;
             currentSongId = id;
 
@@ -503,10 +1192,15 @@
             modalSheet.style.setProperty('--modal-tint', `color-mix(in srgb, ${song.glow} 8%, #1a1a1a)`);
             document.getElementById('modalArtGlow').style.background = song.glow;
             if (window._setShaderColors) _setShaderColors(song.glow, '#e040fb');
+            currentSongGlow = song.glow;
+            // Color orbs with song color
+            orbEls.forEach(orb => { orb.style.background = song.glow; });
 
-            // Dynamic color extraction from album art
+            // Dynamic color extraction from album art (guarded by song ID)
             if (song.image && window.Vibrant) {
+                const vibrantId = id;
                 Vibrant.from(song.image).getPalette().then(palette => {
+                    if (currentSongId !== vibrantId) return; // song changed, discard
                     if (palette.Vibrant) {
                         const v = palette.Vibrant.hex;
                         const dv = palette.DarkVibrant ? palette.DarkVibrant.hex : song.glow;
@@ -515,11 +1209,14 @@
                         document.querySelector('.progress-fill').style.background = v;
                         if (window._setShaderColors) _setShaderColors(v, dv);
                         if (wavesurfer) wavesurfer.setOptions({ progressColor: v });
+                        currentSongGlow = v;
+                        orbEls.forEach(orb => { orb.style.background = v; });
                     }
                 }).catch(() => {});
             }
 
             document.getElementById('modalTitle').textContent = getSongTitle(song);
+            loadLyrics(song);
 
             // Update mini player
             const miniArt = document.getElementById('miniArt');
@@ -543,9 +1240,33 @@
             // Update URL
             history.replaceState(null, '', '?song=' + id);
 
-            if (!wasPlaying) {
+            _dbg('openSong(' + id + ') same=' + isSameSong + ' playing=' + isPlaying);
+            if (isSameSong && isPlaying) {
+                _dbg('SKIP: same+playing');
+            } else if (isSameSong) {
+                _dbg('RESUME: same+paused');
+                const gen = ++playGeneration;
+                audio.play().then(() => {
+                    _dbg('resume OK g=' + gen + '/' + playGeneration);
+                    if (gen === playGeneration) setPlayState(true);
+                }).catch((e) => {
+                    _dbg('resume ERR ' + e.name + ' g=' + gen + '/' + playGeneration);
+                    if (gen === playGeneration && e.name !== 'AbortError') setPlayState(false);
+                });
+            } else {
+                audio.pause();
+                const gen = ++playGeneration;
+                _dbg('NEW src=' + song.file + ' g=' + gen);
                 audio.src = 'audio/' + song.file;
-                audio.play().then(() => setPlayState(true)).catch(() => setPlayState(false));
+                audio.addEventListener('canplay', prefetchNext, { once: true });
+                audio.play().then(() => {
+                    _dbg('play OK g=' + gen + '/' + playGeneration + ' paused=' + audio.paused);
+                    if (gen === playGeneration) setPlayState(true);
+                    else _dbg('STALE: gen mismatch!');
+                }).catch((e) => {
+                    _dbg('play ERR ' + e.name + ' g=' + gen + '/' + playGeneration);
+                    if (gen === playGeneration && e.name !== 'AbortError') setPlayState(false);
+                });
             }
 
             // Media Session API
@@ -600,21 +1321,23 @@
 
         // --- Navigation ---
         function playNext() {
+            haptic(5);
             const idx = songs.findIndex(s => s.id === currentSongId);
             if (idx < songs.length - 1) {
-                openSong(songs[idx + 1].id, true);
+                openSong(songs[idx + 1].id);
             } else if (repeatMode === 'all') {
-                openSong(songs[0].id, true);
+                openSong(songs[0].id);
             } else {
                 setPlayState(false);
             }
         }
 
         function playPrevious() {
+            haptic(5);
             if (audio.currentTime > 3) { audio.currentTime = 0; return; }
             const idx = songs.findIndex(s => s.id === currentSongId);
-            if (idx > 0) openSong(songs[idx - 1].id, true);
-            else if (repeatMode === 'all') openSong(songs[songs.length - 1].id, true);
+            if (idx > 0) openSong(songs[idx - 1].id);
+            else if (repeatMode === 'all') openSong(songs[songs.length - 1].id);
         }
 
         // --- Close modal (keep playing!) ---
@@ -626,6 +1349,7 @@
             if (currentSongId && (isPlaying || audio.src)) {
                 miniPlayer.classList.add('visible');
             }
+            history.replaceState(null, '', window.location.pathname);
         }
 
         function stopPlayback() {
@@ -652,15 +1376,54 @@
 
         // --- Player controls ---
         btnPlay.addEventListener('click', () => {
+            haptic(10);
             if (isPlaying) { audio.pause(); setPlayState(false); }
             else { audio.play().then(() => setPlayState(true)).catch(() => {}); }
         });
         document.getElementById('btnRewind').addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
         document.getElementById('btnForward').addEventListener('click', () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); });
+        document.getElementById('btnPrev').addEventListener('click', playPrevious);
         document.getElementById('btnNext').addEventListener('click', playNext);
+
+        // --- Volume control ---
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeIcon = document.getElementById('volumeIcon');
+        let savedVolume = parseFloat(localStorage.getItem('volume') ?? '1');
+        let preMuteVolume = savedVolume || 1;
+        audio.volume = savedVolume;
+        volumeSlider.value = savedVolume * 100;
+
+        volumeSlider.addEventListener('input', () => {
+            const vol = volumeSlider.value / 100;
+            audio.volume = vol;
+            if (vol > 0) preMuteVolume = vol;
+            localStorage.setItem('volume', vol);
+            updateVolumeIcon(vol);
+        });
+
+        volumeIcon.addEventListener('click', () => {
+            if (audio.volume > 0) {
+                preMuteVolume = audio.volume;
+                audio.volume = 0;
+                volumeSlider.value = 0;
+            } else {
+                audio.volume = preMuteVolume || 1;
+                volumeSlider.value = audio.volume * 100;
+                localStorage.setItem('volume', audio.volume);
+            }
+            updateVolumeIcon(audio.volume);
+        });
+
+        function updateVolumeIcon(vol) {
+            if (vol === 0) volumeIcon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+            else if (vol < 0.5) volumeIcon.innerHTML = '<path d="M7 9v6h4l5 5V4l-5 5H7z"/>';
+            else volumeIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+        }
+        updateVolumeIcon(savedVolume);
 
         // --- Progress bar ---
         const miniTopProgress = document.getElementById('miniTopProgress');
+        const progressBarEl = document.getElementById('progressBar');
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
             const pct = (audio.currentTime / audio.duration * 100) + '%';
@@ -668,6 +1431,7 @@
             miniProgress.style.width = pct;
             miniTopProgress.style.width = pct;
             timeCurrent.textContent = fmt(audio.currentTime);
+            progressBarEl.setAttribute('aria-valuenow', Math.round(audio.currentTime / audio.duration * 100));
         });
         audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = fmt(audio.duration); });
 
@@ -688,11 +1452,24 @@
             }
         });
 
-        document.getElementById('progressBar').addEventListener('click', (e) => {
-            if (!audio.duration) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
-        });
+        // --- Progress bar: click + drag-to-scrub ---
+        (function initProgressScrub() {
+            const bar = document.getElementById('progressBar');
+            let scrubbing = false;
+            function seekFromEvent(e) {
+                if (!audio.duration) return;
+                const rect = bar.getBoundingClientRect();
+                const x = (e.touches ? e.touches[0].clientX : e.clientX);
+                const pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+                audio.currentTime = pct * audio.duration;
+            }
+            bar.addEventListener('mousedown', (e) => { scrubbing = true; seekFromEvent(e); });
+            document.addEventListener('mousemove', (e) => { if (scrubbing) seekFromEvent(e); });
+            document.addEventListener('mouseup', () => { scrubbing = false; });
+            bar.addEventListener('touchstart', (e) => { scrubbing = true; seekFromEvent(e); }, { passive: true });
+            bar.addEventListener('touchmove', (e) => { if (scrubbing) seekFromEvent(e); }, { passive: true });
+            bar.addEventListener('touchend', () => { scrubbing = false; });
+        })();
 
         // --- Close modal ---
         document.getElementById('modalClose').addEventListener('click', closeModal);
@@ -711,6 +1488,7 @@
         });
         document.getElementById('miniPlayBtn').addEventListener('click', (e) => {
             e.stopPropagation();
+            haptic(10);
             if (isPlaying) { audio.pause(); setPlayState(false); }
             else { audio.play().then(() => setPlayState(true)).catch(() => {}); }
         });
@@ -743,19 +1521,259 @@
             touchDeltaY = 0;
         });
 
+        // --- Swipe between songs (horizontal on album art) ---
+        (function initSwipeGesture() {
+            const artWrap = document.querySelector('.modal-art-wrap');
+            let swStartX = 0, swStartY = 0, swDeltaX = 0, swiping = false;
+            const modalArtEl = document.getElementById('modalArt');
+
+            artWrap.addEventListener('touchstart', (e) => {
+                if (e.touches.length !== 1) return;
+                swStartX = e.touches[0].clientX;
+                swStartY = e.touches[0].clientY;
+                swDeltaX = 0;
+                swiping = false;
+                modalArtEl.style.transition = 'none';
+            }, { passive: true });
+
+            artWrap.addEventListener('touchmove', (e) => {
+                if (e.touches.length !== 1) return;
+                const dx = e.touches[0].clientX - swStartX;
+                const dy = e.touches[0].clientY - swStartY;
+                // Only horizontal swipe (prevent conflict with vertical swipe-to-close)
+                if (!swiping && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) swiping = true;
+                if (!swiping) return;
+                swDeltaX = dx;
+                const pct = Math.max(0.7, 1 - Math.abs(dx) / 400);
+                modalArtEl.style.transform = `translateX(${dx}px)`;
+                modalArtEl.style.opacity = pct;
+            }, { passive: true });
+
+            artWrap.addEventListener('touchend', () => {
+                modalArtEl.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                modalArtEl.style.transform = '';
+                modalArtEl.style.opacity = '';
+                if (swiping && Math.abs(swDeltaX) > 60) {
+                    haptic([5, 50, 5]);
+                    if (swDeltaX < 0) playNext();
+                    else playPrevious();
+                }
+                swiping = false;
+                swDeltaX = 0;
+            });
+        })();
+
+        // --- Pinch-to-zoom album art ---
+        (function initPinchZoom() {
+            const modalArtEl = document.getElementById('modalArt');
+            let initialDist = 0, pinchScale = 1;
+
+            function getDist(t) {
+                const dx = t[0].clientX - t[1].clientX;
+                const dy = t[0].clientY - t[1].clientY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            modalArtEl.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    initialDist = getDist(e.touches);
+                    pinchScale = 1;
+                    modalArtEl.style.transition = 'none';
+                }
+            }, { passive: true });
+
+            modalArtEl.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    const dist = getDist(e.touches);
+                    pinchScale = Math.min(2, Math.max(1, dist / initialDist));
+                    modalArtEl.style.transform = `scale(${pinchScale})`;
+                }
+            }, { passive: true });
+
+            modalArtEl.addEventListener('touchend', () => {
+                modalArtEl.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                modalArtEl.style.transform = '';
+                pinchScale = 1;
+            });
+        })();
+
         // --- Floating particles ---
         (function initParticles() {
             const container = document.getElementById('particles');
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 30; i++) {
                 const p = document.createElement('span');
                 p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = (12 + Math.random() * 18) + 's';
-                p.style.animationDelay = (Math.random() * 15) + 's';
-                p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-                p.style.opacity = 0.15 + Math.random() * 0.3;
+                const dur = 10 + Math.random() * 22;
+                p.style.animationDuration = dur + 's';
+                p.dataset.baseDur = dur;
+                p.style.animationDelay = (Math.random() * 20) + 's';
+                const size = 1.5 + Math.random() * 4;
+                p.style.width = p.style.height = size + 'px';
+                p.style.opacity = 0.1 + Math.random() * 0.35;
                 container.appendChild(p);
             }
+            particleEls = document.querySelectorAll('#particles span');
         })();
+
+        // --- Lyrics system (word-by-word) ---
+        const lyricsBox = document.getElementById('lyricsBox');
+        const lyricsToggle = document.getElementById('lyricsToggle');
+        let currentLyrics = null;
+        let wordTimings = []; // flat array: {lineIdx, wordIdx, start, end, el}
+        let activeLyricIdx = -1;
+        let lastScrolledLine = -1;
+
+        function buildWordTimings(lyrics) {
+            // Build flat wordTimings array from lyrics.
+            // If a line has a `w` array of per-word start times, use those directly.
+            // Otherwise fall back to even interpolation across 80% of the line duration.
+            wordTimings = [];
+            for (let i = 0; i < lyrics.length; i++) {
+                const line      = lyrics[i];
+                const lineStart = line.t;
+                const lineEnd   = (i + 1 < lyrics.length) ? lyrics[i + 1].t : lineStart + 6;
+                const words     = line.text.split(/\s+/);
+                const wordCount = words.length;
+
+                if (line.w && line.w.length === wordCount) {
+                    // Use pre-computed per-word start times from the `w` array.
+                    // Derive end time for each word as the next word's start (or line end).
+                    for (let wi = 0; wi < wordCount; wi++) {
+                        const wStart = line.w[wi];
+                        const wEnd   = (wi + 1 < wordCount) ? line.w[wi + 1] : lineEnd;
+                        wordTimings.push({ lineIdx: i, wordIdx: wi, start: wStart, end: wEnd, word: words[wi] });
+                    }
+                } else {
+                    // Fallback: distribute words evenly across 80% of line duration.
+                    const singDur = (lineEnd - lineStart) * 0.8;
+                    for (let wi = 0; wi < wordCount; wi++) {
+                        const wStart = lineStart + (wi / wordCount) * singDur;
+                        const wEnd   = lineStart + ((wi + 1) / wordCount) * singDur;
+                        wordTimings.push({ lineIdx: i, wordIdx: wi, start: wStart, end: wEnd, word: words[wi] });
+                    }
+                }
+            }
+        }
+
+        function loadLyrics(song) {
+            currentLyrics = song.lyrics || null;
+            activeLyricIdx = -1;
+            lastScrolledLine = -1;
+            wordTimings = [];
+            if (!currentLyrics || currentLyrics.length === 0) {
+                lyricsBox.innerHTML = '<div class="lyrics-none">Ingen sangtekst tilgængelig</div>';
+            } else {
+                buildWordTimings(currentLyrics);
+                lyricsBox.innerHTML = currentLyrics.map((l, i) => {
+                    const words = l.text.split(/\s+/);
+                    const wordSpans = words.map((w, wi) =>
+                        `<span class="lyrics-word" data-line="${i}" data-word="${wi}">${w}</span>`
+                    ).join(' ');
+                    return `<div class="lyrics-line" data-idx="${i}">${wordSpans}</div>`;
+                }).join('');
+                // Click line to seek
+                lyricsBox.querySelectorAll('.lyrics-line').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const idx = parseInt(el.dataset.idx);
+                        if (currentLyrics[idx]) audio.currentTime = currentLyrics[idx].t;
+                    });
+                });
+            }
+            // Always open lyrics when song starts
+            lyricsVisible = true;
+            localStorage.setItem('lyricsVisible', 'true');
+            lyricsBox.classList.add('open');
+            lyricsToggle.classList.add('active');
+            // Show first line preview immediately, then start sync loop
+            activeLyricIdx = -2; // force updateLyrics to apply classes
+            updateLyrics();
+            if (!audio.paused) startLyricsLoop();
+        }
+
+        function updateLyrics() {
+            if (!currentLyrics || !currentLyrics.length) return;
+            const ct = audio.currentTime;
+
+            // Find active line
+            let newLineIdx = -1;
+            for (let i = currentLyrics.length - 1; i >= 0; i--) {
+                if (ct >= currentLyrics[i].t) { newLineIdx = i; break; }
+            }
+
+            // Update line classes (karaoke: active + next only visible)
+            if (newLineIdx !== activeLyricIdx) {
+                activeLyricIdx = newLineIdx;
+                lyricsBox.querySelectorAll('.lyrics-line').forEach((el, i) => {
+                    if (newLineIdx === -1) {
+                        // Before first lyric: show first line as "next" preview
+                        el.classList.toggle('active', false);
+                        el.classList.toggle('next', i === 0);
+                        el.classList.toggle('past', false);
+                    } else {
+                        el.classList.toggle('active', i === newLineIdx);
+                        el.classList.toggle('next', i === newLineIdx + 1);
+                        el.classList.toggle('past', i < newLineIdx);
+                    }
+                });
+            }
+
+            // Update word-by-word highlighting: singing (yellow) -> sung (white)
+            for (const wt of wordTimings) {
+                if (!wt.el) {
+                    wt.el = lyricsBox.querySelector(`.lyrics-word[data-line="${wt.lineIdx}"][data-word="${wt.wordIdx}"]`);
+                }
+                if (wt.el) {
+                    const isSinging = ct >= wt.start && ct < wt.end;
+                    const isSung = ct >= wt.end;
+                    if (isSinging) {
+                        if (!wt.el.classList.contains('singing')) {
+                            wt.el.classList.add('singing');
+                            wt.el.classList.remove('sung');
+                        }
+                    } else if (isSung) {
+                        if (!wt.el.classList.contains('sung')) {
+                            wt.el.classList.remove('singing');
+                            wt.el.classList.add('sung');
+                        }
+                    } else {
+                        wt.el.classList.remove('singing', 'sung');
+                    }
+                }
+            }
+        }
+
+        lyricsToggle.addEventListener('click', () => {
+            lyricsVisible = !lyricsVisible;
+            localStorage.setItem('lyricsVisible', lyricsVisible);
+            lyricsBox.classList.toggle('open', lyricsVisible);
+            lyricsToggle.classList.toggle('active', lyricsVisible);
+        });
+
+        // Smooth word-by-word sync via RAF + timeupdate fallback
+        let lyricsRAF = null;
+        function lyricsLoop() {
+            updateLyrics();
+            if (!audio.paused) lyricsRAF = requestAnimationFrame(lyricsLoop);
+            else lyricsRAF = null;
+        }
+        function startLyricsLoop() {
+            if (!lyricsRAF) lyricsLoop();
+        }
+        audio.addEventListener('play', startLyricsLoop);
+        audio.addEventListener('playing', startLyricsLoop);
+        audio.addEventListener('canplay', startLyricsLoop);
+        audio.addEventListener('timeupdate', () => {
+            updateLyrics();
+            // Safety net: restart RAF loop if audio is playing but loop stopped
+            if (!audio.paused && !lyricsRAF) startLyricsLoop();
+        });
+        audio.addEventListener('seeked', () => {
+            // Reset word caches on seek
+            for (const wt of wordTimings) { if (wt.el) wt.el.classList.remove('singing', 'sung'); }
+            activeLyricIdx = -1;
+            updateLyrics();
+        });
+        audio.addEventListener('pause', () => { if (lyricsRAF) { cancelAnimationFrame(lyricsRAF); lyricsRAF = null; } updateLyrics(); });
 
         // --- Init ---
         renderSongs();
@@ -779,7 +1797,8 @@
             if (e.key === 'ArrowLeft' && currentSongId) { audio.currentTime = Math.max(0, audio.currentTime - 10); }
             if (e.key === 'ArrowRight' && currentSongId) { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); }
             if (e.key === 'n' || e.key === 'N') { if (currentSongId) playNext(); }
-            if (e.key === 'r' || e.key === 'R') { cycleRepeat(); }
+            if ((e.key === 'r' || e.key === 'R') && currentSongId) { cycleRepeat(); }
+            if (e.key === 'l' || e.key === 'L') { if (modalOpen) lyricsToggle.click(); }
         });
 
         // --- Prefetch next track ---
@@ -797,7 +1816,7 @@
                 }
             }
         }
-        audio.addEventListener('canplay', prefetchNext, { once: false });
+        audio.addEventListener('canplay', prefetchNext, { once: true });
 
         // --- Google Cast ---
         let castSession = null;
@@ -992,9 +2011,22 @@
             } catch(e) { audioCtx = null; }
         }
 
+        // Smooth lerp helper
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        let smoothBass = 0, smoothMids = 0, smoothHighs = 0;
+
+        // Orbs & particles refs
+        const orbEls = document.querySelectorAll('#bgOrbs span');
+        let particleEls = [];
+        let currentSongGlow = '#1db954';
+
         function vizLoop() {
             if (!analyser || !isPlaying || isCasting) {
                 glBass *= 0.92; glMids *= 0.92; glHighs *= 0.92;
+                smoothBass = lerp(smoothBass, glBass, 0.1);
+                smoothMids = lerp(smoothMids, glMids, 0.1);
+                smoothHighs = lerp(smoothHighs, glHighs, 0.1);
+                updateOrbsAndParticles();
                 if (glBass > 0.005 || glMids > 0.005) vizRAF = requestAnimationFrame(vizLoop);
                 return;
             }
@@ -1006,7 +2038,32 @@
             glBass = bass / 10 / 255;
             glMids = mids / 30 / 255;
             glHighs = highs / 40 / 255;
+            smoothBass = lerp(smoothBass, glBass, 0.1);
+            smoothMids = lerp(smoothMids, glMids, 0.1);
+            smoothHighs = lerp(smoothHighs, glHighs, 0.1);
+            updateOrbsAndParticles();
             vizRAF = requestAnimationFrame(vizLoop);
+        }
+
+        let lastParticleUpdate = 0;
+        function updateOrbsAndParticles() {
+            // Animate orbs with audio (every frame - cheap)
+            orbEls.forEach((orb, i) => {
+                const scale = 1 + smoothBass * 0.3 + (i * 0.05 * smoothMids);
+                const opacity = 0.12 + smoothBass * 0.15 + smoothMids * 0.05;
+                orb.style.transform = `scale(${scale})`;
+                orb.style.opacity = opacity;
+            });
+            // Animate particles speed with bass (throttled - expensive style mutations)
+            const now = performance.now();
+            if (now - lastParticleUpdate > 200) {
+                lastParticleUpdate = now;
+                particleEls.forEach((p) => {
+                    const speedMult = 1 - smoothBass * 0.3;
+                    p.style.animationDuration = (parseFloat(p.dataset.baseDur) * speedMult) + 's';
+                    p.style.opacity = 0.15 + smoothHighs * 0.4;
+                });
+            }
         }
 
         // --- WebGL shader background ---
@@ -1025,13 +2082,20 @@
                 'float H(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
                 'float N(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(H(i),H(i+vec2(1,0)),f.x),mix(H(i+vec2(0,1)),H(i+vec2(1,1)),f.x),f.y);}',
                 'float F(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*N(p);p*=2.;a*=.5;}return v;}',
+                'vec3 hueShift(vec3 c,float a){float s=sin(a),co=cos(a);return c*mat3(vec3(.299,.587,.114)+vec3(.701,-.587,-.114)*co+vec3(.168,-.328,1.25)*s,vec3(.299,.587,.114)+vec3(-.299,.413,-.114)*co+vec3(.328,.174,-.672)*s,vec3(.299,.587,.114)+vec3(-.3,-.588,.886)*co+vec3(-1.25,.672,.328)*s);}',
                 'void main(){',
                 'vec2 u=gl_FragCoord.xy/r;float T=t*.12;',
-                'float n1=F(u*3.+vec2(T,T*.7)+bass*.5);',
-                'float n2=F(u*2.5-vec2(T*.6,T)+mids*.3);',
-                'float n3=F(u*4.+vec2(-T*.4,T*.5));',
-                'vec3 col=mix(c1,c2,n1)*(0.08+bass*.3+mids*.12);',
-                'col+=c1*n2*.06+c2*n3*.04;',
+                'float bx3=bass*3.0;',
+                'float pulse=1.0+bass*0.15;',
+                'vec2 pu=(u-.5)*pulse+.5;',
+                'float n1=F(pu*3.+vec2(T,T*.7)+bx3*.5);',
+                'float n2=F(pu*2.5-vec2(T*.6,T)+mids*.8);',
+                'float n3=F(pu*4.+vec2(-T*.4,T*.5)+highs*.4);',
+                'vec3 col=mix(c1,c2,n1)*(0.08+bx3*.3+mids*.15);',
+                'col=hueShift(col,mids*.8);',
+                'col+=c1*n2*.08+c2*n3*.06;',
+                'float bloom=smoothstep(0.6,1.0,highs)*0.15;',
+                'col+=vec3(bloom)*n3;',
                 'float v=1.-length((u-.5)*1.8);',
                 'col*=smoothstep(0.,.6,v);',
                 'gl_FragColor=vec4(col,1.);}'
@@ -1079,7 +2143,8 @@
             addEventListener('resize', resize);
 
             const t0 = performance.now();
-            (function loop() {
+            let shaderRAF = null;
+            function shaderRender() {
                 gl.uniform1f(ut, (performance.now() - t0) / 1000);
                 gl.uniform1f(ub, glBass);
                 gl.uniform1f(um, glMids);
@@ -1088,8 +2153,13 @@
                 gl.uniform3fv(uc2, col2);
                 gl.uniform2f(ur, canvas.width, canvas.height);
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-                requestAnimationFrame(loop);
-            })();
+                if (isPlaying) shaderRAF = requestAnimationFrame(shaderRender);
+                else shaderRAF = null;
+            }
+            // Render once at init, then only when playing
+            shaderRender();
+            window._startShader = function() { if (!shaderRAF) shaderRender(); };
+            window._stopShader = function() { shaderRender(); }; // render once more then stop
         })();
 
         // --- Wavesurfer.js waveform ---
@@ -1102,7 +2172,11 @@
         function initWaveform(song) {
             if (!WaveSurferLib) return;
             const wrap = document.getElementById('waveformWrap');
-            if (wavesurfer) { wavesurfer.destroy(); wavesurfer = null; }
+            if (wavesurfer) {
+                // Don't destroy - just update color. WaveSurfer auto-detects src changes.
+                wavesurfer.setOptions({ progressColor: song.glow });
+                return;
+            }
             wrap.innerHTML = '';
             wavesurfer = WaveSurferLib.create({
                 container: wrap,
@@ -1137,9 +2211,11 @@
                 if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 cancelAnimationFrame(vizRAF);
                 vizLoop();
+                if (window._startShader) window._startShader();
             } else {
                 cancelAnimationFrame(vizRAF);
                 vizLoop();
+                if (window._stopShader) window._stopShader();
             }
         };
 
@@ -1187,6 +2263,7 @@
         // Track song ended
         audio.addEventListener('ended', function trackEnded() {
             if (!currentSongId) return;
+            if (repeatMode === 'one') return; // Don't reset tracking on repeat-one
             trackListenTotal += (Date.now() - trackListenStart) / 1000;
             sendTrack('end', currentSongId, trackListenTotal);
             trackListenTotal = 0;
