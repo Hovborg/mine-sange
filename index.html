@@ -1598,6 +1598,7 @@
         })();
 
         // --- Floating particles ---
+        let particleEls = [];
         (function initParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 30; i++) {
@@ -2017,7 +2018,6 @@
 
         // Orbs & particles refs
         const orbEls = document.querySelectorAll('#bgOrbs span');
-        let particleEls = [];
         let currentSongGlow = '#1db954';
 
         function vizLoop() {
