@@ -106,6 +106,76 @@
         .np-tag.browser { color: var(--orange); }
         .np-tag.os { color: var(--pink); }
 
+        /* IP Detail Modal */
+        .ip-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .ip-modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .ip-modal {
+            background: #12122a; border: 1px solid var(--border); border-radius: 16px;
+            width: min(480px, calc(100vw - 32px)); max-height: calc(100vh - 64px);
+            overflow-y: auto; padding: 24px; transform: translateY(20px) scale(0.97);
+            transition: transform 0.2s;
+        }
+        .ip-modal-overlay.open .ip-modal { transform: translateY(0) scale(1); }
+        .ip-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .ip-modal-header h2 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .ip-modal-header h2 span { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+        .ip-modal-close {
+            width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text-secondary); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+            transition: background 0.15s, color 0.15s;
+        }
+        .ip-modal-close:hover { background: var(--surface-2); color: var(--text); }
+        .ip-modal-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .ip-modal-stat {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center;
+        }
+        .ip-modal-stat .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; margin-bottom: 4px; }
+        .ip-modal-stat .value { font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .ip-modal-section { margin-bottom: 16px; }
+        .ip-modal-section:last-child { margin-bottom: 0; }
+        .ip-modal-section h3 {
+            font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.04em; font-weight: 600; margin-bottom: 8px;
+            padding-bottom: 6px; border-bottom: 1px solid var(--border);
+        }
+        .ip-song-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .ip-song-row:last-child { border-bottom: none; }
+        .ip-song-name { font-weight: 500; font-size: 0.85rem; }
+        .ip-song-count { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); }
+        .ip-song-bar { height: 3px; border-radius: 2px; margin-top: 4px; }
+        .ip-play-item { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.8rem; }
+        .ip-play-item:last-child { border-bottom: none; }
+        .ip-play-time { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); }
+        .ip-info-grid { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 0.8rem; }
+        .ip-info-label { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; font-weight: 600; }
+        .ip-info-value { color: var(--text); }
+
+        .ip-clickable { cursor: pointer; transition: background 0.15s; }
+        .ip-clickable:hover td { background: rgba(124,106,239,0.08); }
+        .ip-clickable td:first-child { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+
+        .ip-label { color: var(--green); font-weight: 600; font-size: 0.8rem; margin-right: 6px; }
+        .ip-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .ip-name-input {
+            flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+            padding: 8px 12px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.85rem;
+            outline: none; transition: border-color 0.15s;
+        }
+        .ip-name-input:focus { border-color: var(--accent); }
+        .ip-name-input::placeholder { color: var(--text-muted); }
+        .ip-name-btn {
+            padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
+        }
+        .ip-name-btn:hover { opacity: 0.85; }
+        .ip-name-btn.remove { background: transparent; color: var(--red); border-color: var(--red); }
+
         .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
         .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-left: 10px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -122,6 +192,10 @@
     </style>
 </head>
 <body>
+    <div class="ip-modal-overlay" id="ipModal" onclick="if(event.target===this)closeIPModal()">
+        <div class="ip-modal" id="ipModalContent"></div>
+    </div>
+
     <div class="header">
         <div>
             <h1><span>Admin</span> Fars Jukebox</h1>
@@ -152,7 +226,12 @@
             'mine-drenge': '#3b82f6',
             'en-fars-kamp': '#ef4444', 'fars-kamp': '#ef4444',
             'stop-saa-brian': '#f97316', 'stop-brian': '#f97316',
-            'brormand': '#e040fb'
+            'brormand': '#e040fb',
+            'hjem': '#14b8a6',
+            'lad-dem-snakke': '#8b5cf6',
+            'hvad-boern-ved': '#f43f5e',
+            'rubble-robo-venner': '#ff6b35',
+            'i-nat': '#00e676'
         };
         const SONG_NAMES = {
             'bare-en-far': 'Bare En Far',
@@ -161,8 +240,25 @@
             'mine-drenge': 'Mine Drenge',
             'en-fars-kamp': 'En Fars Kamp', 'fars-kamp': 'En Fars Kamp',
             'stop-saa-brian': 'Stop Saa Brian', 'stop-brian': 'Stop Saa Brian',
-            'brormand': 'Brormand'
+            'brormand': 'Brormand',
+            'hjem': 'Hjem',
+            'lad-dem-snakke': 'Lad Dem Snakke',
+            'hvad-boern-ved': 'Hvad Boern Ved',
+            'rubble-robo-venner': 'Rubble og Robo-Venner',
+            'i-nat': 'I Nat'
         };
+
+        // --- IP Labels (localStorage) ---
+        function getIPLabels() {
+            try { return JSON.parse(localStorage.getItem('ip-labels') || '{}'); } catch { return {}; }
+        }
+        function setIPLabel(ip, name) {
+            const labels = getIPLabels();
+            if (name && name.trim()) { labels[ip] = name.trim(); }
+            else { delete labels[ip]; }
+            localStorage.setItem('ip-labels', JSON.stringify(labels));
+        }
+        function getIPLabel(ip) { return getIPLabels()[ip] || ''; }
 
         const hasChart = typeof Chart !== 'undefined';
         if (hasChart) {
@@ -261,10 +357,12 @@
             document.getElementById('statAvg').textContent = data.avg_plays_per_day || '-';
             document.getElementById('statPeak').textContent = data.peak_hour !== undefined ? data.peak_hour + ':00' : '-';
 
-            // Update top IPs table
+            // Update top IPs table (clickable, with labels)
             let ipRows = '';
             for (const item of (data.top_ips || [])) {
-                ipRows += `<tr><td class="mono ip-cell">${esc(item.ip)}</td><td class="mono">${esc(item.plays)}</td><td>${esc(item.country) || '-'}</td></tr>`;
+                const label = getIPLabel(item.ip);
+                const labelHtml = label ? `<span class="ip-label">${esc(label)}</span>` : '';
+                ipRows += `<tr class="ip-clickable" onclick="openIPModal('${esc(item.ip)}')"><td class="mono ip-cell">${labelHtml}${esc(item.ip)}</td><td class="mono">${esc(item.plays)}</td><td>${esc(item.country) || '-'}</td></tr>`;
             }
             document.getElementById('tbodyIPs').innerHTML = ipRows;
 
@@ -275,10 +373,12 @@
                 const name = SONG_NAMES[play.s] || play.s;
                 const color = SONG_COLORS[play.s] || '#7c6aef';
                 const deviceClass = (play.device || '').toLowerCase();
+                const playLabel = getIPLabel(play.ip);
+                const playLabelHtml = playLabel ? `<span class="ip-label">${esc(playLabel)}</span>` : '';
                 recentRows += `<tr>
                     <td class="mono time-cell">${esc(formatTime(play.t))}</td>
                     <td class="song-cell" style="color:${esc(color)}">${esc(name)}</td>
-                    <td class="mono ip-cell">${esc(play.ip)}</td>
+                    <td class="mono ip-cell">${playLabelHtml}${esc(play.ip)}</td>
                     <td>${esc(play.country) || '-'}</td>
                     <td><span class="device-badge ${esc(deviceClass)}">${esc(play.device) || '-'}</span></td>
                     <td>${esc(play.browser) || '-'}</td>
@@ -553,6 +653,128 @@
                     <div class="np-details">${tags.join('')}</div>
                 </div>`;
             }).join('');
+        }
+
+        // --- IP Detail Modal ---
+        function openIPModal(ip) {
+            if (!latestData) return;
+            const plays = (latestData.recent_plays || []).filter(p => p.ip === ip);
+            const topEntry = (latestData.top_ips || []).find(t => t.ip === ip);
+            const totalPlays = topEntry ? topEntry.plays : plays.length;
+            const country = topEntry?.country || plays[0]?.country || '-';
+
+            // Aggregate songs
+            const songCounts = {};
+            for (const p of plays) {
+                songCounts[p.s] = (songCounts[p.s] || 0) + 1;
+            }
+            const songEntries = Object.entries(songCounts).sort((a, b) => b[1] - a[1]);
+            const maxSongCount = songEntries.length ? songEntries[0][1] : 1;
+
+            // Device/browser/OS info (from most recent play)
+            const latest = plays.sort((a, b) => b.t.localeCompare(a.t))[0];
+            const device = latest?.device || '-';
+            const browser = latest?.browser || '-';
+            const os = latest?.os || '-';
+
+            // Time range
+            const times = plays.map(p => new Date(p.t).getTime()).filter(t => !isNaN(t));
+            const firstSeen = times.length ? formatTime(new Date(Math.min(...times)).toISOString()) : '-';
+            const lastSeen = times.length ? formatTime(new Date(Math.max(...times)).toISOString()) : '-';
+
+            // Estimated listen time (count * avg 3min per song)
+            const estimatedMin = Math.round(totalPlays * 3);
+
+            // Build song rows
+            let songRowsHtml = '';
+            for (const [song, count] of songEntries) {
+                const name = SONG_NAMES[song] || song;
+                const color = SONG_COLORS[song] || '#7c6aef';
+                const pct = Math.round((count / maxSongCount) * 100);
+                songRowsHtml += `<div class="ip-song-row">
+                    <div style="flex:1;min-width:0">
+                        <div class="ip-song-name" style="color:${esc(color)}">${esc(name)}</div>
+                        <div class="ip-song-bar" style="width:${pct}%;background:${esc(color)}"></div>
+                    </div>
+                    <div class="ip-song-count">${count}x</div>
+                </div>`;
+            }
+            if (!songRowsHtml) songRowsHtml = '<div style="color:var(--text-muted);font-size:0.8rem">Ingen data</div>';
+
+            // Build recent plays list (last 10)
+            const recentForIP = plays.slice(0, 10);
+            let recentHtml = '';
+            for (const p of recentForIP) {
+                const name = SONG_NAMES[p.s] || p.s;
+                const color = SONG_COLORS[p.s] || '#7c6aef';
+                recentHtml += `<div class="ip-play-item">
+                    <span class="ip-play-time">${esc(formatTime(p.t))}</span>
+                    <span style="color:${esc(color)};font-weight:500;margin-left:8px">${esc(name)}</span>
+                </div>`;
+            }
+            if (!recentHtml) recentHtml = '<div style="color:var(--text-muted);font-size:0.8rem">Ingen afspilninger fundet</div>';
+
+            const currentLabel = getIPLabel(ip);
+            const removeBtnHtml = currentLabel ? `<button class="ip-name-btn remove" onclick="removeIPName('${esc(ip)}')" title="Fjern navn">&times;</button>` : '';
+
+            document.getElementById('ipModalContent').innerHTML = `
+                <div class="ip-modal-header">
+                    <h2>&#128100; ${currentLabel ? `<span style="color:var(--green)">${esc(currentLabel)}</span>` : ''}<span>${esc(ip)}</span></h2>
+                    <button class="ip-modal-close" onclick="closeIPModal()" title="Luk">&times;</button>
+                </div>
+                <div class="ip-name-row">
+                    <input class="ip-name-input" id="ipNameInput" type="text" placeholder="Giv denne IP et navn..." value="${esc(currentLabel)}" onkeydown="if(event.key==='Enter')saveIPName('${esc(ip)}')">
+                    <button class="ip-name-btn" onclick="saveIPName('${esc(ip)}')">Gem</button>
+                    ${removeBtnHtml}
+                </div>
+                <div class="ip-modal-stats">
+                    <div class="ip-modal-stat"><div class="label">Afspilninger</div><div class="value green">${totalPlays}</div></div>
+                    <div class="ip-modal-stat"><div class="label">Est. lyttetid</div><div class="value orange">~${estimatedMin}m</div></div>
+                    <div class="ip-modal-stat"><div class="label">Sange</div><div class="value blue">${songEntries.length}</div></div>
+                </div>
+                <div class="ip-modal-section">
+                    <h3>Info</h3>
+                    <div class="ip-info-grid">
+                        <div class="ip-info-label">Land</div><div class="ip-info-value">${esc(country)}</div>
+                        <div class="ip-info-label">Enhed</div><div class="ip-info-value">${esc(device)}</div>
+                        <div class="ip-info-label">Browser</div><div class="ip-info-value">${esc(browser)}</div>
+                        <div class="ip-info-label">OS</div><div class="ip-info-value">${esc(os)}</div>
+                        <div class="ip-info-label">Foerst set</div><div class="ip-info-value">${esc(firstSeen)}</div>
+                        <div class="ip-info-label">Sidst set</div><div class="ip-info-value">${esc(lastSeen)}</div>
+                    </div>
+                </div>
+                <div class="ip-modal-section">
+                    <h3>Sange spillet</h3>
+                    ${songRowsHtml}
+                </div>
+                <div class="ip-modal-section">
+                    <h3>Seneste afspilninger</h3>
+                    ${recentHtml}
+                </div>`;
+
+            document.getElementById('ipModal').classList.add('open');
+            document.addEventListener('keydown', ipModalEscHandler);
+        }
+
+        function closeIPModal() {
+            document.getElementById('ipModal').classList.remove('open');
+            document.removeEventListener('keydown', ipModalEscHandler);
+        }
+
+        function ipModalEscHandler(e) { if (e.key === 'Escape') closeIPModal(); }
+
+        function saveIPName(ip) {
+            const input = document.getElementById('ipNameInput');
+            if (!input) return;
+            setIPLabel(ip, input.value);
+            openIPModal(ip); // re-render modal
+            if (latestData) render(latestData); // refresh table
+        }
+
+        function removeIPName(ip) {
+            setIPLabel(ip, '');
+            openIPModal(ip);
+            if (latestData) render(latestData);
         }
 
         loadStats();
