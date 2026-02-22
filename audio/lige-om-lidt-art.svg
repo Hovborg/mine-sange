@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="50%" style="stop-color:#d97706"/>
+      <stop offset="100%" style="stop-color:#92400e"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="300" rx="24" fill="url(#bg)"/>
+  <text x="150" y="120" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="72" fill="rgba(255,255,255,0.95)">&#x23F0;</text>
+  <text x="150" y="175" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="28" fill="white" letter-spacing="-0.5">LIGE OM</text>
+  <text x="150" y="210" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="28" fill="white" letter-spacing="-0.5">LIDT</text>
+  <text x="150" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="13" fill="rgba(255,255,255,0.6)">&#x2022; procrastination anthem &#x2022;</text>
+</svg>

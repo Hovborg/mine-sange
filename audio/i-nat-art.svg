@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1a1a"/>
+      <stop offset="40%" stop-color="#0d2626"/>
+      <stop offset="100%" stop-color="#071010"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="50%" cy="60%" r="40%">
+      <stop offset="0%" stop-color="#00e676" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#00e676" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="streetGlow" cx="50%" cy="95%" r="50%">
+      <stop offset="0%" stop-color="#00e676" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#00e676" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="neon">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <linearGradient id="rain" x1="0" y1="0" x2="0.1" y2="1">
+      <stop offset="0%" stop-color="rgba(0,230,118,0.3)"/>
+      <stop offset="100%" stop-color="rgba(0,230,118,0)"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="500" height="500" fill="url(#bg)"/>
+  <!-- Street glow -->
+  <rect x="0" y="350" width="500" height="150" fill="url(#streetGlow)"/>
+  <!-- Center glow -->
+  <circle cx="250" cy="300" r="200" fill="url(#glow1)"/>
+  <!-- Buildings left -->
+  <g fill="#0d1a1a" opacity="0.8">
+    <rect x="20" y="80" width="60" height="320" rx="2"/>
+    <rect x="90" y="120" width="50" height="280" rx="2"/>
+    <rect x="0" y="150" width="40" height="250" rx="2"/>
+  </g>
+  <!-- Buildings right -->
+  <g fill="#0d1a1a" opacity="0.8">
+    <rect x="420" y="90" width="60" height="310" rx="2"/>
+    <rect x="360" y="130" width="50" height="270" rx="2"/>
+    <rect x="460" y="160" width="40" height="240" rx="2"/>
+  </g>
+  <!-- Neon signs on buildings -->
+  <g filter="url(#neon)" opacity="0.7">
+    <rect x="30" y="140" width="40" height="12" rx="2" fill="#00e676"/>
+    <rect x="95" y="175" width="35" height="8" rx="2" fill="#ff6b35"/>
+    <rect x="430" y="150" width="38" height="10" rx="2" fill="#00bcd4"/>
+    <rect x="365" y="185" width="30" height="8" rx="2" fill="#e040fb"/>
+    <rect x="10" y="220" width="25" height="6" rx="1" fill="#ffeb3b"/>
+    <rect x="465" y="230" width="28" height="7" rx="1" fill="#00e676"/>
+  </g>
+  <!-- Building windows -->
+  <g fill="#1a3333" opacity="0.5">
+    <rect x="30" y="100" width="8" height="8" rx="1"/><rect x="44" y="100" width="8" height="8" rx="1"/><rect x="58" y="100" width="8" height="8" rx="1"/>
+    <rect x="30" y="115" width="8" height="8" rx="1"/><rect x="44" y="115" width="8" height="8" rx="1"/><rect x="58" y="115" width="8" height="8" rx="1"/>
+    <rect x="430" y="110" width="8" height="8" rx="1"/><rect x="444" y="110" width="8" height="8" rx="1"/><rect x="458" y="110" width="8" height="8" rx="1"/>
+    <rect x="430" y="125" width="8" height="8" rx="1"/><rect x="444" y="125" width="8" height="8" rx="1"/><rect x="458" y="125" width="8" height="8" rx="1"/>
+  </g>
+  <!-- Lit windows (warm) -->
+  <g fill="#ffeb3b" opacity="0.3">
+    <rect x="44" y="100" width="8" height="8" rx="1"/>
+    <rect x="30" y="115" width="8" height="8" rx="1"/>
+    <rect x="444" y="110" width="8" height="8" rx="1"/>
+    <rect x="430" y="125" width="8" height="8" rx="1"/>
+  </g>
+  <!-- Street / wet ground reflection -->
+  <rect x="0" y="390" width="500" height="110" fill="#071210" opacity="0.9"/>
+  <rect x="140" y="390" width="220" height="110" fill="#00e676" opacity="0.03"/>
+  <!-- Person silhouette - center, with hoodie -->
+  <g fill="#050f0f">
+    <!-- Head with hood -->
+    <path d="M235,240 Q235,215 250,210 Q265,215 265,240 L260,245 Q250,248 240,245Z"/>
+    <!-- Hood peak -->
+    <path d="M232,235 Q232,208 250,203 Q268,208 268,235 L265,238 Q250,242 235,238Z" fill="#0a1515"/>
+    <!-- Body -->
+    <path d="M230,245 L225,330 Q225,340 235,340 L265,340 Q275,340 275,330 L270,245Z"/>
+    <!-- Arms slightly out (fists up triumphant) -->
+    <path d="M230,260 L210,240 L208,235 Q206,232 210,232 L215,237 L232,255Z"/>
+    <path d="M270,260 L290,240 L292,235 Q294,232 290,232 L285,237 L268,255Z"/>
+    <!-- Fists -->
+    <circle cx="209" cy="233" r="5"/>
+    <circle cx="291" cy="233" r="5"/>
+    <!-- Legs -->
+    <path d="M237,340 L233,395 Q233,400 238,400 L248,400 Q250,400 250,395 L248,340Z"/>
+    <path d="M253,340 L252,395 Q252,400 255,400 L265,400 Q268,400 268,395 L267,340Z"/>
+  </g>
+  <!-- Person reflection on wet ground -->
+  <g fill="#00e676" opacity="0.04" transform="translate(250,790) scale(1,-1) translate(-250,0)">
+    <path d="M230,245 L225,330 Q225,340 235,340 L265,340 Q275,340 275,330 L270,245Z"/>
+    <path d="M237,340 L233,395 L248,395 L248,340Z"/>
+    <path d="M253,340 L252,395 L265,395 L267,340Z"/>
+  </g>
+  <!-- Rain streaks -->
+  <g stroke="#00e676" stroke-width="1" opacity="0.15">
+    <line x1="80" y1="0" x2="75" y2="40"/>
+    <line x1="150" y1="20" x2="145" y2="60"/>
+    <line x1="200" y1="10" x2="195" y2="50"/>
+    <line x1="300" y1="5" x2="295" y2="45"/>
+    <line x1="350" y1="25" x2="345" y2="65"/>
+    <line x1="420" y1="15" x2="415" y2="55"/>
+    <line x1="60" y1="80" x2="55" y2="120"/>
+    <line x1="120" y1="70" x2="115" y2="110"/>
+    <line x1="180" y1="90" x2="175" y2="130"/>
+    <line x1="320" y1="85" x2="315" y2="125"/>
+    <line x1="380" y1="75" x2="375" y2="115"/>
+    <line x1="450" y1="95" x2="445" y2="135"/>
+    <line x1="40" y1="160" x2="35" y2="200"/>
+    <line x1="160" y1="150" x2="155" y2="190"/>
+    <line x1="340" y1="155" x2="335" y2="195"/>
+    <line x1="470" y1="165" x2="465" y2="205"/>
+    <line x1="100" y1="240" x2="95" y2="280"/>
+    <line x1="190" y1="230" x2="185" y2="270"/>
+    <line x1="310" y1="235" x2="305" y2="275"/>
+    <line x1="400" y1="245" x2="395" y2="285"/>
+    <line x1="70" y1="320" x2="65" y2="360"/>
+    <line x1="170" y1="310" x2="165" y2="350"/>
+    <line x1="330" y1="315" x2="325" y2="355"/>
+    <line x1="440" y1="325" x2="435" y2="365"/>
+  </g>
+  <!-- "I NAT" text -->
+  <text x="250" y="460" text-anchor="middle" font-family="Impact,Arial Black,sans-serif" font-size="48" font-weight="900" fill="#00e676" filter="url(#neon)" letter-spacing="8" opacity="0.8">I NAT</text>
+  <!-- Subtle sparkles -->
+  <circle cx="100" cy="50" r="1.5" fill="#00e676" opacity="0.6"/>
+  <circle cx="400" cy="70" r="2" fill="#00bcd4" opacity="0.5"/>
+  <circle cx="60" cy="280" r="1.5" fill="#e040fb" opacity="0.4"/>
+  <circle cx="440" cy="260" r="2" fill="#ffeb3b" opacity="0.3"/>
+</svg>
