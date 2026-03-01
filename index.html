@@ -28,6 +28,10 @@
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* Skip link (accessibility) */
+        .skip-link { position: absolute; top: -100px; left: 16px; z-index: 9999; padding: 8px 16px; background: var(--accent); color: #000; border-radius: 8px; font-weight: 600; text-decoration: none; transition: top 0.2s; }
+        .skip-link:focus { top: 16px; }
+
         :root {
             --bg: #121212;
             --text: #ffffff;
@@ -79,6 +83,33 @@
         .header h1 { font-size: clamp(1.5rem, 5vw, 1.75rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 2px; color: #fff; }
         .header p { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; letter-spacing: 0.02em; animation: fadeInUp 0.8s ease backwards 0.3s; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Search bar */
+        .search-wrap { position: relative; margin-bottom: 12px; }
+        .search-input {
+            width: 100%; padding: 10px 14px 10px 38px; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; background: rgba(255,255,255,0.06); color: var(--text);
+            font-size: 0.9rem; font-family: inherit; outline: none; transition: all 0.15s;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-input:focus { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: var(--text-muted); pointer-events: none; }
+        .search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: none; background: rgba(255,255,255,0.1); border-radius: 50%; color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; display: none; align-items: center; justify-content: center; }
+        .search-clear.visible { display: flex; }
+        .song-card.hidden { display: none; }
+
+        /* Sleep timer badge */
+        .sleep-badge {
+            position: fixed; top: 16px; right: 16px; z-index: 200;
+            padding: 6px 14px; border-radius: 20px;
+            background: rgba(29,185,84,0.15); border: 1px solid rgba(29,185,84,0.3);
+            color: var(--accent); font-size: 0.75rem; font-weight: 600;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: none; cursor: pointer; transition: all 0.2s;
+        }
+        .sleep-badge.active { display: flex; align-items: center; gap: 6px; }
+        .sleep-badge:hover { background: rgba(29,185,84,0.25); }
 
         /* Song list */
         .song-list { display: flex; flex-direction: column; gap: 6px; }
@@ -372,19 +403,25 @@
     </style>
 </head>
 <body>
-    <canvas id="bgCanvas"></canvas>
-    <div class="bg-orbs" id="bgOrbs"><span></span><span></span><span></span></div>
-    <div class="particles" id="particles"></div>
+    <a href="#songList" class="skip-link">Spring til sangliste</a>
+    <canvas id="bgCanvas" aria-hidden="true"></canvas>
+    <div class="bg-orbs" id="bgOrbs" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="particles" id="particles" aria-hidden="true"></div>
 
-    <div class="container">
-        <div class="header">
-            <div class="header-icon"><img src="logo-transparent.png" alt="Hovborg logo"></div>
+    <div class="container" role="main">
+        <header class="header">
+            <div class="header-icon"><img src="logo-transparent.png" alt="Fars Jukebox logo" width="96" height="96"></div>
             <div class="header-text">
                 <h1>Fars Jukebox</h1>
                 <p>Sange lavet med hjertet (og lidt AI)</p>
             </div>
+        </header>
+        <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Sog efter sange..." autocomplete="off" aria-label="Sog efter sange">
+            <button class="search-clear" id="searchClear" aria-label="Ryd sogning">&#10005;</button>
         </div>
-        <div class="song-list" id="songList">
+        <div class="song-list" id="songList" role="list" aria-label="Sangliste">
             <noscript><div class="noscript-msg">JavaScript skal være aktiveret for at afspille sange.</div></noscript>
         </div>
         <a href="/hitboxen.html" class="section-link" style="--link-color:#dc2626">
@@ -403,21 +440,24 @@
             </div>
             <div class="section-link-arrow">&#8250;</div>
         </a>
-        <footer class="site-footer">Fars Jukebox &copy; 2026 &middot; Sange skabt med AI</footer>
+        <footer class="site-footer" role="contentinfo">Fars Jukebox &copy; 2026 &middot; Sange skabt med AI</footer>
     </div>
 
     <!-- Mini player bar -->
-    <div class="mini-player" id="miniPlayer">
+    <div class="mini-player" id="miniPlayer" role="complementary" aria-label="Mini musikafspiller">
         <div class="mini-player-top-progress"><div class="mini-player-top-progress-fill" id="miniTopProgress"></div></div>
         <div class="mini-player-art" id="miniArt"></div>
         <div class="mini-player-info">
             <div class="mini-player-title" id="miniTitle"></div>
             <div class="mini-player-progress"><div class="mini-player-progress-fill" id="miniProgress"></div></div>
         </div>
-        <button class="mini-player-btn" id="miniPlayBtn">
+        <button class="mini-player-btn" id="miniPlayBtn" aria-label="Afspil/Pause">
             <svg viewBox="0 0 24 24" id="miniPlayIcon"><polygon points="8,5 20,12 8,19"/></svg>
         </button>
     </div>
+
+    <!-- Sleep timer badge -->
+    <div class="sleep-badge" id="sleepBadge" title="Klik for at annullere sleep timer"></div>
 
     <!-- Toast -->
     <div class="toast" id="toast"></div>
@@ -491,6 +531,10 @@
                     <button class="action-btn airplay-btn" id="btnAirplay" aria-label="AirPlay">
                         <svg viewBox="0 0 24 24"><path d="M6 22h12l-6-6-6 6zM21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v-2H3V5h18v12h-4v2h4c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
                         AirPlay
+                    </button>
+                    <button class="action-btn" id="btnSleep" aria-label="Sleep timer">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                        Sleep timer
                     </button>
                 </div>
             </div>
@@ -1086,6 +1130,54 @@
                 {t:165.3, text:"Bare fri", w:[165.3,165.8]},
                 {t:170.1, text:"I nat", w:[170.1,170.8]},
                 {t:176.1, text:"Bare fri", w:[176.1,176.8]}
+            ] },
+            { id: 'godnat-skam', title: 'Godnat, Skam', subtitle: 'Kokosnød', file: 'godnat-skam.mp3', image: 'audio/godnat-skam-art.svg', gradient: 'linear-gradient(135deg, #a78bfa, #7c3aed, #4c1d95)', glow: '#a78bfa', duration: 183, lyrics: [
+                {t:12.0, text:"Han ringer klokken halv otte", w:[12.0,12.4,12.8,13.2,13.6]},
+                {t:15.0, text:"Jeg hører hans stemme bag en skærm", w:[15.0,15.3,15.6,15.9,16.2,16.5,16.8]},
+                {t:18.0, text:"Han siger hønekøk og griner", w:[18.0,18.4,18.8,19.2,19.6,20.0]},
+                {t:21.0, text:"Og verden stopper for et øjeblik", w:[21.0,21.3,21.6,21.9,22.2,22.5,22.8]},
+                {t:25.0, text:"Han viser mig en drage han har printet", w:[25.0,25.3,25.6,25.9,26.2,26.5,26.8,27.1]},
+                {t:28.0, text:"Og spørger om vi bygger Lego når han kommer", w:[28.0,28.3,28.6,28.9,29.2,29.5,29.8,30.1,30.4,30.7]},
+                {t:31.0, text:"Men lige før han lægger på", w:[31.0,31.3,31.6,31.9,32.2,32.5]},
+                {t:34.0, text:"Hvisker han det han altid gør", w:[34.0,34.4,34.8,35.2,35.6,36.0,36.4]},
+                {t:40.0, text:"Jeg savner dig som en kokosnød", w:[40.0,40.4,40.8,41.2,41.6,42.0,42.4]},
+                {t:44.0, text:"Som en kokosnød!", w:[44.0,44.5,45.0,45.5]},
+                {t:47.0, text:"Som en banan og en Pikachu", w:[47.0,47.4,47.8,48.2,48.6,49.0,49.4]},
+                {t:51.0, text:"Jeg savner dig som en kokosnød", w:[51.0,51.4,51.8,52.2,52.6,53.0,53.4]},
+                {t:55.0, text:"Som en kokosnød!", w:[55.0,55.5,56.0,56.5]},
+                {t:58.0, text:"For han har ikke ord for hvor meget", w:[58.0,58.3,58.6,58.9,59.2,59.5,59.8,60.1]},
+                {t:65.0, text:"Han siger godnat, skam – sit eget ord", w:[65.0,65.3,65.6,65.9,66.2,66.5,66.8,67.1,67.4]},
+                {t:68.5, text:"Og jeg elsker dig big time bag en telefon", w:[68.5,68.8,69.1,69.4,69.7,70.0,70.3,70.6,70.9,71.2]},
+                {t:72.0, text:"Han sagde det femten gange i træk:", w:[72.0,72.4,72.8,73.2,73.6,74.0,74.4,74.8]},
+                {t:75.5, text:"Jeg savner dig og... jeg savner dig og...", w:[75.5,75.8,76.1,76.4,76.7,77.0,77.3,77.6,77.9]},
+                {t:80.0, text:"Men sætningen blev aldrig færdig", w:[80.0,80.4,80.8,81.2,81.6,82.0]},
+                {t:83.0, text:"For der er ikke ord nok i en fireårigs mund", w:[83.0,83.3,83.6,83.9,84.2,84.5,84.8,85.1,85.4,85.7]},
+                {t:86.5, text:"Til det han prøver at fortælle mig", w:[86.5,86.8,87.1,87.4,87.7,88.0,88.3,88.6]},
+                {t:89.5, text:"Så han bruger hvad han kender", w:[89.5,89.8,90.1,90.4,90.7,91.0,91.3]},
+                {t:95.0, text:"Jeg savner dig som en kokosnød", w:[95.0,95.4,95.8,96.2,96.6,97.0,97.4]},
+                {t:99.0, text:"Som en kokosnød!", w:[99.0,99.5,100.0,100.5]},
+                {t:102.0, text:"Som en vandmelon og en ostehops", w:[102.0,102.4,102.8,103.2,103.6,104.0,104.4]},
+                {t:106.0, text:"Jeg savner dig som en kokosnød", w:[106.0,106.4,106.8,107.2,107.6,108.0,108.4]},
+                {t:110.0, text:"Som en kokosnød!", w:[110.0,110.5,111.0,111.5]},
+                {t:113.0, text:"For han har ikke ord for hvor meget", w:[113.0,113.3,113.6,113.9,114.2,114.5,114.8,115.1]},
+                {t:120.0, text:"En gullerod, en rødbanan", w:[120.0,120.5,121.0,121.5,122.0]},
+                {t:123.0, text:"En traktor og et rumskab", w:[123.0,123.5,124.0,124.5,125.0]},
+                {t:126.0, text:"Han opfinder et nyt ord hver aften", w:[126.0,126.4,126.8,127.2,127.6,128.0,128.4,128.8]},
+                {t:129.5, text:"Fordi savnet er for stort til de gamle", w:[129.5,129.9,130.3,130.7,131.1,131.5,131.9,132.3,132.7]},
+                {t:134.0, text:"Og hver aften lægger jeg på", w:[134.0,134.4,134.8,135.2,135.6,136.0,136.4]},
+                {t:137.0, text:"Og sidder stille med telefonen i min hånd", w:[137.0,137.3,137.6,137.9,138.2,138.5,138.8,139.1,139.4]},
+                {t:140.5, text:"Og tænker: Hvis en kokosnød", w:[140.5,140.9,141.3,141.7,142.1,142.5]},
+                {t:143.5, text:"Er alt det kærlighed han har – så er det nok", w:[143.5,143.8,144.1,144.4,144.7,145.0,145.3,145.6,145.9,146.2,146.5]},
+                {t:150.0, text:"Jeg savner dig som en kokosnød", w:[150.0,150.4,150.8,151.2,151.6,152.0,152.4]},
+                {t:154.0, text:"SOM EN KOKOSNØD!", w:[154.0,154.5,155.0,155.5]},
+                {t:157.0, text:"Som en banan og en Pikachu", w:[157.0,157.4,157.8,158.2,158.6,159.0,159.4]},
+                {t:161.0, text:"Jeg savner dig som en kokosnød", w:[161.0,161.4,161.8,162.2,162.6,163.0,163.4]},
+                {t:165.0, text:"SOM EN KOKOSNØD!", w:[165.0,165.5,166.0,166.5]},
+                {t:168.0, text:"For han har ikke ord for hvor meget", w:[168.0,168.3,168.6,168.9,169.2,169.5,169.8,170.1]},
+                {t:171.0, text:"Hvor meget!", w:[171.0,171.5]},
+                {t:174.0, text:"Godnat, skam", w:[174.0,174.8,175.6]},
+                {t:176.5, text:"Godnat, far", w:[176.5,177.3,178.1]},
+                {t:179.0, text:"Og din far – han glemmer dig aldrig", w:[179.0,179.3,179.6,179.9,180.2,180.5,180.8,181.1,181.4]}
             ] }
         ];
 
@@ -2295,6 +2387,133 @@
                 npInterval = setInterval(sendHeartbeat, 8000);
             }
         };
+
+        // --- Search / filter ---
+        (function initSearch() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClear');
+
+            function filterSongs() {
+                const q = input.value.trim().toLowerCase();
+                clearBtn.classList.toggle('visible', q.length > 0);
+                document.querySelectorAll('.song-card').forEach(card => {
+                    const id = card.dataset.id;
+                    const song = songs.find(s => s.id === id);
+                    if (!song) return;
+                    const haystack = (song.title + ' ' + (song.subtitle || '')).toLowerCase();
+                    card.classList.toggle('hidden', q.length > 0 && !haystack.includes(q));
+                });
+            }
+
+            input.addEventListener('input', filterSongs);
+            clearBtn.addEventListener('click', () => {
+                input.value = '';
+                filterSongs();
+                input.focus();
+            });
+            // Ctrl+F / Cmd+F focus search instead of browser find
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    input.focus();
+                    input.select();
+                }
+            });
+        })();
+
+        // --- Sleep timer ---
+        (function initSleepTimer() {
+            const btnSleep = document.getElementById('btnSleep');
+            const badge = document.getElementById('sleepBadge');
+            let sleepTimeout = null;
+            let sleepEnd = 0;
+            let sleepInterval = null;
+
+            const options = [5, 15, 30, 45, 60];
+            let optionIdx = 0;
+
+            function updateBadge() {
+                if (!sleepTimeout) {
+                    badge.classList.remove('active');
+                    return;
+                }
+                const remaining = Math.max(0, Math.ceil((sleepEnd - Date.now()) / 60000));
+                badge.textContent = remaining + ' min';
+                badge.classList.add('active');
+            }
+
+            function startSleep(minutes) {
+                clearTimeout(sleepTimeout);
+                clearInterval(sleepInterval);
+                sleepEnd = Date.now() + minutes * 60000;
+                sleepTimeout = setTimeout(() => {
+                    audio.pause();
+                    setPlayState(false);
+                    clearSleep();
+                    showToast('Sleep timer: musik stoppet');
+                }, minutes * 60000);
+                sleepInterval = setInterval(updateBadge, 10000);
+                updateBadge();
+                showToast('Sleep timer: ' + minutes + ' minutter');
+            }
+
+            function clearSleep() {
+                clearTimeout(sleepTimeout);
+                clearInterval(sleepInterval);
+                sleepTimeout = null;
+                sleepEnd = 0;
+                updateBadge();
+            }
+
+            btnSleep.addEventListener('click', () => {
+                if (sleepTimeout) {
+                    // Cycle to next option or cancel
+                    optionIdx = (optionIdx + 1) % (options.length + 1);
+                    if (optionIdx === options.length) {
+                        clearSleep();
+                        showToast('Sleep timer annulleret');
+                    } else {
+                        startSleep(options[optionIdx]);
+                    }
+                } else {
+                    optionIdx = 0;
+                    startSleep(options[0]);
+                }
+            });
+
+            badge.addEventListener('click', () => {
+                clearSleep();
+                showToast('Sleep timer annulleret');
+            });
+        })();
+
+        // --- Enhanced keyboard shortcuts ---
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            // M = mute toggle
+            if ((e.key === 'm' || e.key === 'M') && !e.ctrlKey && !e.metaKey) {
+                volumeIcon.click();
+            }
+            // P = previous song
+            if (e.key === 'p' || e.key === 'P') {
+                if (currentSongId) playPrevious();
+            }
+            // ArrowUp/ArrowDown = volume
+            if (e.key === 'ArrowUp' && currentSongId) {
+                e.preventDefault();
+                audio.volume = Math.min(1, audio.volume + 0.05);
+                volumeSlider.value = audio.volume * 100;
+                updateVolumeIcon(audio.volume);
+                localStorage.setItem('volume', audio.volume);
+            }
+            if (e.key === 'ArrowDown' && currentSongId) {
+                e.preventDefault();
+                audio.volume = Math.max(0, audio.volume - 0.05);
+                volumeSlider.value = audio.volume * 100;
+                updateVolumeIcon(audio.volume);
+                localStorage.setItem('volume', audio.volume);
+            }
+        });
 
         // --- Service Worker ---
         if ('serviceWorker' in navigator) {

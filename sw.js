@@ -1,12 +1,20 @@
-const CACHE = 'fars-jukebox-v2';
+const CACHE = 'fars-jukebox-v3';
 const PRECACHE = [
   '/', '/manifest.json',
+  // MP3 filer
   '/audio/bare-en-far.mp3', '/audio/kristoffer.mp3', '/audio/som-en-kokosnoed.mp3',
   '/audio/mine-drenge.mp3', '/audio/en-fars-kamp.mp3', '/audio/stop-saa-brian.mp3',
   '/audio/brormand.mp3', '/audio/hvad-boern-ved.mp3', '/audio/hjem.mp3', '/audio/lad-dem-snakke.mp3',
-  '/audio/bare-en-far-art.png', '/audio/kristoffer-art.png', '/audio/kokosnoed-art.png',
-  '/audio/mine-drenge-art.png', '/audio/fars-kamp-art.png', '/audio/stop-brian-art.svg',
-  '/audio/brormand-art.jpg', '/audio/hvad-boern-ved-art.png', '/audio/hjem-art.png', '/audio/lad-dem-snakke-art.png'
+  '/audio/i-nat.mp3', '/audio/godnat-skam.mp3',
+  '/audio/rubble-robo-venner.mp3', '/audio/lige-om-lidt.mp3',
+  '/audio/hoejere.mp3', '/audio/min-tur.mp3', '/audio/giv-os-mere.mp3',
+  // Cover art
+  '/audio/bare-en-far-art.svg', '/audio/kristoffer-art.svg', '/audio/kokosnoed-art.svg',
+  '/audio/mine-drenge-art.svg', '/audio/fars-kamp-art.svg', '/audio/stop-brian-art.svg',
+  '/audio/brormand-art.jpg', '/audio/hvad-boern-ved-art.png', '/audio/hjem-art.png', '/audio/lad-dem-snakke-art.png',
+  '/audio/i-nat-art.svg', '/audio/godnat-skam-art.svg',
+  '/audio/rubble-art.svg', '/audio/lige-om-lidt-art.svg',
+  '/audio/hoejere-art.svg', '/audio/min-tur-art.svg', '/audio/giv-os-mere-art.png'
 ];
 
 self.addEventListener('install', e => {

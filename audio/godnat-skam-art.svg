@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a1a"/>
+      <stop offset="50%" stop-color="#1a1035"/>
+      <stop offset="100%" stop-color="#0d0820"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx="75%" cy="20%" r="30%">
+      <stop offset="0%" stop-color="#f5c842" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#f5c842" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="phoneGlow" cx="50%" cy="55%" r="25%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bigGlow">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect width="500" height="500" fill="url(#bg)"/>
+  <!-- Moon glow -->
+  <circle cx="375" cy="100" r="150" fill="url(#moonGlow)"/>
+  <!-- Moon -->
+  <circle cx="380" cy="90" r="28" fill="#f5e6a3" opacity="0.9"/>
+  <circle cx="393" cy="82" r="22" fill="#0a0a1a" opacity="0.85"/>
+  <!-- Stars -->
+  <g fill="#fff" opacity="0.6">
+    <circle cx="60" cy="40" r="1.5"/>
+    <circle cx="120" cy="80" r="1"/>
+    <circle cx="200" cy="30" r="1.5"/>
+    <circle cx="280" cy="55" r="1"/>
+    <circle cx="440" cy="45" r="1.5"/>
+    <circle cx="470" cy="130" r="1"/>
+    <circle cx="50" cy="140" r="1"/>
+    <circle cx="160" cy="120" r="1.5"/>
+    <circle cx="310" cy="25" r="1"/>
+    <circle cx="100" cy="190" r="1"/>
+    <circle cx="420" cy="180" r="1.5"/>
+  </g>
+  <!-- Twinkling stars -->
+  <g fill="#a78bfa" opacity="0.5">
+    <circle cx="90" cy="60" r="2"/>
+    <circle cx="330" cy="40" r="1.5"/>
+    <circle cx="450" cy="90" r="2"/>
+  </g>
+  <!-- Phone glow center -->
+  <circle cx="250" cy="280" r="130" fill="url(#phoneGlow)"/>
+  <!-- Hand holding phone silhouette -->
+  <g fill="#1a1030">
+    <!-- Hand -->
+    <path d="M215,310 Q210,300 212,280 L218,240 Q220,230 230,228 L270,228 Q280,230 282,240 L288,280 Q290,300 285,310 L280,330 Q275,340 270,342 L230,342 Q225,340 220,330Z"/>
+    <!-- Fingers -->
+    <path d="M212,280 Q205,278 202,285 Q200,295 208,300 L215,310 Q210,300 212,280Z" opacity="0.8"/>
+    <path d="M288,280 Q295,278 298,285 Q300,295 292,300 L285,310 Q290,300 288,280Z" opacity="0.8"/>
+  </g>
+  <!-- Phone screen -->
+  <rect x="222" y="232" width="56" height="100" rx="6" fill="#1e1545" opacity="0.9"/>
+  <rect x="225" y="238" width="50" height="84" rx="4" fill="#2d1f6b"/>
+  <!-- Phone screen glow -->
+  <rect x="225" y="238" width="50" height="84" rx="4" fill="#a78bfa" opacity="0.15"/>
+  <!-- Contact icon on phone -->
+  <circle cx="250" cy="262" r="10" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="250" cy="258" r="4" fill="#a78bfa" opacity="0.5"/>
+  <path d="M240,270 Q245,265 250,264 Q255,265 260,270" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.5"/>
+  <!-- Call duration text -->
+  <text x="250" y="290" text-anchor="middle" font-family="monospace" font-size="8" fill="#a78bfa" opacity="0.7">23:47</text>
+  <!-- Sound waves from phone -->
+  <g fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.3" filter="url(#softGlow)">
+    <path d="M280,255 Q295,255 295,270 Q295,285 280,285"/>
+    <path d="M285,248 Q305,248 305,270 Q305,292 285,292"/>
+    <path d="M220,255 Q205,255 205,270 Q205,285 220,285"/>
+    <path d="M215,248 Q195,248 195,270 Q195,292 215,292"/>
+  </g>
+  <!-- Coconut floating (small, dreamy) -->
+  <g transform="translate(130,200)" opacity="0.4">
+    <ellipse cx="0" cy="0" rx="15" ry="13" fill="#8B6914"/>
+    <ellipse cx="0" cy="-2" rx="13" ry="11" fill="#A0782C"/>
+    <circle cx="-4" cy="-3" r="2" fill="#5a4510"/>
+    <circle cx="4" cy="-3" r="2" fill="#5a4510"/>
+    <circle cx="0" cy="2" r="2" fill="#5a4510"/>
+  </g>
+  <!-- Another small coconut -->
+  <g transform="translate(370,220)" opacity="0.3">
+    <ellipse cx="0" cy="0" rx="12" ry="10" fill="#8B6914"/>
+    <ellipse cx="0" cy="-2" rx="10" ry="8" fill="#A0782C"/>
+    <circle cx="-3" cy="-2" r="1.5" fill="#5a4510"/>
+    <circle cx="3" cy="-2" r="1.5" fill="#5a4510"/>
+  </g>
+  <!-- Warm particles/dust -->
+  <g fill="#f5c842" opacity="0.2" filter="url(#bigGlow)">
+    <circle cx="150" cy="300" r="3"/>
+    <circle cx="350" cy="280" r="4"/>
+    <circle cx="180" cy="350" r="3"/>
+    <circle cx="320" cy="340" r="3"/>
+    <circle cx="100" cy="260" r="2"/>
+    <circle cx="400" cy="310" r="2"/>
+  </g>
+  <!-- Title text -->
+  <text x="250" y="430" text-anchor="middle" font-family="Georgia,serif" font-size="36" font-weight="700" fill="#e8d5b0" filter="url(#softGlow)" letter-spacing="2" opacity="0.9">Godnat, Skam</text>
+  <!-- Subtitle -->
+  <text x="250" y="460" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#a78bfa" opacity="0.6" letter-spacing="1">Kokosnod</text>
+</svg>

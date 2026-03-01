@@ -1,17 +1,45 @@
 {
   "name": "Fars Jukebox",
   "short_name": "Fars Jukebox",
-  "description": "Sange lavet med hjertet (og lidt AI)",
+  "description": "Sange lavet med hjertet (og lidt AI). Lyt til originale sange online.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0a0a1a",
-  "theme_color": "#0a0a1a",
+  "orientation": "portrait",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "lang": "da",
+  "categories": ["music", "entertainment"],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%237c6aef'/%3E%3Cpath d='M352 96v232a56 56 0 1 1-32-50.56V160H208v184a56 56 0 1 1-32-50.56V128h176z' fill='white'/%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%23121212'/%3E%3Cpath d='M352 96v232a56 56 0 1 1-32-50.56V160H208v184a56 56 0 1 1-32-50.56V128h176z' fill='%231db954'/%3E%3C/svg%3E",
       "sizes": "512x512",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23121212'/%3E%3Cpath d='M352 96v232a56 56 0 1 1-32-50.56V160H208v184a56 56 0 1 1-32-50.56V128h176z' fill='%231db954'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hit-Boxen",
+      "url": "/hitboxen.html",
+      "description": "Hit-Boxen sange"
+    },
+    {
+      "name": "Kristoffer",
+      "url": "/kristoffer.html",
+      "description": "Kristoffers side"
     }
   ]
 }
