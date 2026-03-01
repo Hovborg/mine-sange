@@ -22,7 +22,14 @@ Arbejd KUN med musik deling kode.
 | `index.html` | Hovedside — sangliste + fuldt musikafspiller med karaoke lyrics |
 | `hitboxen.html` | Hit-Boxen — separat sangside med egne sange |
 | `kristoffer.html` | Dedikeret side til Kristoffer |
-| `admin.html` | Admin-panel (statistik) |
+| `admin.html` | Admin-panel (statistik, login påkrævet) |
+| `sang-stats.py` | Python script der parser nginx logs → stats.json |
+| `sw.js` | Service Worker (cache v4) |
+
+## Admin credentials
+- Brugernavn: `admin`
+- Password: `Mikkel2111nov`
+- Auth: SHA-256 client-side, sessionStorage
 
 ## Nøgle-patterns
 - Sange defineres som JS-array `songs[]` med id, title, file, image, gradient, glow, duration, lyrics
@@ -35,6 +42,7 @@ Arbejd KUN med musik deling kode.
 - Chromecast + AirPlay integration
 - WebGL shader background reagerer på audio-analyse
 - Vibrant.js til dynamisk farve-extraktion fra album art
+- Keyboard shortcuts: Space, Arrow, N, P, R, L, M, Escape
 
 ## Konventioner
 - Variabler og funktioner: camelCase

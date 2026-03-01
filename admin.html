@@ -189,9 +189,98 @@
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .chart-grid { grid-template-columns: 1fr; }
         }
+
+        /* Login overlay */
+        .login-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 16px;
+        }
+        .login-overlay.hidden { display: none; }
+        .login-box {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; width: min(360px, calc(100vw - 32px));
+            text-align: center;
+        }
+        .login-box h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .login-box p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
+        .login-input {
+            width: 100%; padding: 10px 14px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--surface-2);
+            color: var(--text); font-family: inherit; font-size: 0.9rem;
+            outline: none; margin-bottom: 10px; transition: border-color 0.15s;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn {
+            width: 100%; padding: 10px; border-radius: 8px; border: none;
+            background: var(--accent); color: #fff; font-family: inherit;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .login-btn:hover { opacity: 0.85; }
+        .login-error { color: var(--red); font-size: 0.8rem; margin-top: 8px; min-height: 1.2em; }
     </style>
 </head>
 <body>
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h2>Admin Login</h2>
+            <p>Fars Jukebox Administration</p>
+            <input class="login-input" id="loginUser" type="text" placeholder="Brugernavn" autocomplete="username">
+            <input class="login-input" id="loginPass" type="password" placeholder="Adgangskode" autocomplete="current-password">
+            <button class="login-btn" id="loginBtn">Log ind</button>
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+    <script>
+    (function() {
+        const EXPECTED_USER = 'admin';
+        const EXPECTED_HASH = '39a74e81d73b6ad98a5aab5d08b160b2fee8bcc8ff67c14d76c7276c908fe8c2';
+
+        async function sha256(str) {
+            const buf = new TextEncoder().encode(str);
+            const hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        const overlay = document.getElementById('loginOverlay');
+
+        if (sessionStorage.getItem('admin-auth') === 'true') {
+            overlay.classList.add('hidden');
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', tryLogin);
+        document.getElementById('loginPass').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') tryLogin();
+        });
+        document.getElementById('loginUser').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('loginPass').focus();
+        });
+
+        async function tryLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            const err = document.getElementById('loginError');
+
+            if (user !== EXPECTED_USER) {
+                err.textContent = 'Forkert brugernavn eller adgangskode';
+                return;
+            }
+
+            const hash = await sha256(pass);
+            if (hash !== EXPECTED_HASH) {
+                err.textContent = 'Forkert brugernavn eller adgangskode';
+                return;
+            }
+
+            sessionStorage.setItem('admin-auth', 'true');
+            overlay.classList.add('hidden');
+        }
+    })();
+    </script>
+
     <div class="ip-modal-overlay" id="ipModal" onclick="if(event.target===this)closeIPModal()">
         <div class="ip-modal" id="ipModalContent"></div>
     </div>
@@ -231,7 +320,12 @@
             'lad-dem-snakke': '#8b5cf6',
             'hvad-boern-ved': '#f43f5e',
             'rubble-robo-venner': '#ff6b35',
-            'i-nat': '#00e676'
+            'i-nat': '#00e676',
+            'godnat-skam': '#a78bfa',
+            'giv-os-mere': '#e11d48',
+            'lige-om-lidt': '#f59e0b',
+            'hoejere': '#7c3aed',
+            'min-tur': '#dc2626'
         };
         const SONG_NAMES = {
             'bare-en-far': 'Bare En Far',
@@ -245,7 +339,12 @@
             'lad-dem-snakke': 'Lad Dem Snakke',
             'hvad-boern-ved': 'Hvad Boern Ved',
             'rubble-robo-venner': 'Rubble og Robo-Venner',
-            'i-nat': 'I Nat'
+            'i-nat': 'I Nat',
+            'godnat-skam': 'Godnat, Skam',
+            'giv-os-mere': 'Giv Os Mere',
+            'lige-om-lidt': 'Lige Om Lidt',
+            'hoejere': 'Højere',
+            'min-tur': 'Min Tur'
         };
 
         // --- IP Labels (localStorage) ---
@@ -345,7 +444,14 @@
 
         function render(data) {
             const firstRender = !initialized;
-            if (firstRender) { buildLayout(); initialized = true; }
+            if (firstRender) {
+                buildLayout();
+                initialized = true;
+                document.getElementById('tbodyIPs').addEventListener('click', (e) => {
+                    const row = e.target.closest('tr[data-ip]');
+                    if (row) openIPModal(row.dataset.ip);
+                });
+            }
 
             document.getElementById('generated').textContent = 'Opdateret: ' + formatTime(data.generated);
 
@@ -362,7 +468,7 @@
             for (const item of (data.top_ips || [])) {
                 const label = getIPLabel(item.ip);
                 const labelHtml = label ? `<span class="ip-label">${esc(label)}</span>` : '';
-                ipRows += `<tr class="ip-clickable" onclick="openIPModal('${esc(item.ip)}')"><td class="mono ip-cell">${labelHtml}${esc(item.ip)}</td><td class="mono">${esc(item.plays)}</td><td>${esc(item.country) || '-'}</td></tr>`;
+                ipRows += `<tr class="ip-clickable" data-ip="${esc(item.ip)}"><td class="mono ip-cell">${labelHtml}${esc(item.ip)}</td><td class="mono">${esc(item.plays)}</td><td>${esc(item.country) || '-'}</td></tr>`;
             }
             document.getElementById('tbodyIPs').innerHTML = ipRows;
 
@@ -715,16 +821,16 @@
             if (!recentHtml) recentHtml = '<div style="color:var(--text-muted);font-size:0.8rem">Ingen afspilninger fundet</div>';
 
             const currentLabel = getIPLabel(ip);
-            const removeBtnHtml = currentLabel ? `<button class="ip-name-btn remove" onclick="removeIPName('${esc(ip)}')" title="Fjern navn">&times;</button>` : '';
+            const removeBtnHtml = currentLabel ? `<button class="ip-name-btn remove" data-action="remove-ip" title="Fjern navn">&times;</button>` : '';
 
             document.getElementById('ipModalContent').innerHTML = `
                 <div class="ip-modal-header">
                     <h2>&#128100; ${currentLabel ? `<span style="color:var(--green)">${esc(currentLabel)}</span>` : ''}<span>${esc(ip)}</span></h2>
-                    <button class="ip-modal-close" onclick="closeIPModal()" title="Luk">&times;</button>
+                    <button class="ip-modal-close" data-action="close-modal" title="Luk">&times;</button>
                 </div>
                 <div class="ip-name-row">
-                    <input class="ip-name-input" id="ipNameInput" type="text" placeholder="Giv denne IP et navn..." value="${esc(currentLabel)}" onkeydown="if(event.key==='Enter')saveIPName('${esc(ip)}')">
-                    <button class="ip-name-btn" onclick="saveIPName('${esc(ip)}')">Gem</button>
+                    <input class="ip-name-input" id="ipNameInput" type="text" placeholder="Giv denne IP et navn..." value="${esc(currentLabel)}">
+                    <button class="ip-name-btn" data-action="save-ip">Gem</button>
                     ${removeBtnHtml}
                 </div>
                 <div class="ip-modal-stats">
@@ -751,6 +857,16 @@
                     <h3>Seneste afspilninger</h3>
                     ${recentHtml}
                 </div>`;
+
+            const modalContent = document.getElementById('ipModalContent');
+            modalContent.addEventListener('click', (e) => {
+                if (e.target.closest('[data-action="save-ip"]')) saveIPName(ip);
+                if (e.target.closest('[data-action="remove-ip"]')) removeIPName(ip);
+                if (e.target.closest('[data-action="close-modal"]')) closeIPModal();
+            });
+            modalContent.querySelector('#ipNameInput')?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') saveIPName(ip);
+            });
 
             document.getElementById('ipModal').classList.add('open');
             document.addEventListener('keydown', ipModalEscHandler);

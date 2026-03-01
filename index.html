@@ -202,7 +202,7 @@
             touch-action: none;
         }
         @supports not (backdrop-filter: blur(1px)) {
-            .modal { background: linear-gradient(180deg, #1a1a1a 0%, #181818 50%, #121212 100%); }
+            .modal { background: var(--modal-tint, linear-gradient(180deg, #1a1a1a 0%, #181818 50%, #121212 100%)); }
         }
         .modal-overlay.active .modal { transform: translateY(0); }
 
@@ -1564,10 +1564,15 @@
                 audio.currentTime = pct * audio.duration;
             }
             bar.addEventListener('mousedown', (e) => { scrubbing = true; seekFromEvent(e); });
-            document.addEventListener('mousemove', (e) => { if (scrubbing) seekFromEvent(e); });
+            let _scrubRAF = 0;
+            document.addEventListener('mousemove', (e) => {
+                if (!scrubbing) return;
+                if (_scrubRAF) return;
+                _scrubRAF = requestAnimationFrame(() => { _scrubRAF = 0; seekFromEvent(e); });
+            });
             document.addEventListener('mouseup', () => { scrubbing = false; });
-            bar.addEventListener('touchstart', (e) => { scrubbing = true; seekFromEvent(e); }, { passive: true });
-            bar.addEventListener('touchmove', (e) => { if (scrubbing) seekFromEvent(e); }, { passive: true });
+            bar.addEventListener('touchstart', (e) => { scrubbing = true; e.preventDefault(); seekFromEvent(e); }, { passive: false });
+            bar.addEventListener('touchmove', (e) => { if (scrubbing) { e.preventDefault(); seekFromEvent(e); } }, { passive: false });
             bar.addEventListener('touchend', () => { scrubbing = false; });
         })();
 

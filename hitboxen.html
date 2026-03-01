@@ -118,6 +118,7 @@
         .song-card:nth-child(1) { animation-delay: 0.02s; }
         .song-card:nth-child(2) { animation-delay: 0.04s; }
         .song-card:nth-child(3) { animation-delay: 0.06s; }
+        .song-card:nth-child(4) { animation-delay: 0.08s; }
 
         @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } }
 
@@ -345,9 +346,25 @@
 
         /* Noscript */
         .noscript-msg { text-align: center; color: var(--text-secondary); padding: 40px 20px; font-size: 0.9rem; }
+
+        /* Skip link */
+        .skip-link { position: absolute; top: -40px; left: 0; background: var(--accent); color: #000; padding: 8px 16px; z-index: 100; font-weight: 600; font-size: 0.85rem; border-radius: 0 0 8px 0; transition: top 0.2s; }
+        .skip-link:focus { top: 0; }
+
+        /* Search bar */
+        .search-input {
+            width: 100%; padding: 10px 14px; border-radius: 10px;
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text); font-family: inherit; font-size: 0.9rem;
+            outline: none; transition: border-color 0.15s, background 0.15s;
+        }
+        .search-input:focus { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); }
+        .search-input::placeholder { color: var(--text-muted); }
     </style>
 </head>
 <body>
+    <a href="#songList" class="skip-link">Spring til sange</a>
     <div class="bg-orbs" id="bgOrbs"><span></span><span></span><span></span></div>
     <div class="particles" id="particles"></div>
 
@@ -362,6 +379,9 @@
                 <h1>Hit-Boxen</h1>
                 <p>Hit-Boxen</p>
             </div>
+        </div>
+        <div class="search-wrap" style="margin-bottom:12px">
+            <input type="text" id="songSearch" class="search-input" placeholder="Søg efter sange..." autocomplete="off">
         </div>
         <div class="song-list" id="songList">
             <noscript><div class="noscript-msg">JavaScript skal være aktiveret for at afspille sange.</div></noscript>
@@ -1026,8 +1046,6 @@
         // --- Close modal ---
         document.getElementById('modalClose').addEventListener('click', closeModal);
         overlay.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOpen) closeModal(); });
-
         // --- Mini player ---
         miniPlayer.addEventListener('click', (e) => {
             if (e.target.closest('.mini-player-btn')) return;
@@ -1394,6 +1412,15 @@
         // --- Init ---
         renderSongs();
 
+        // --- Search ---
+        document.getElementById('songSearch').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('.song-card').forEach(card => {
+                const title = card.querySelector('.song-title').textContent.toLowerCase();
+                card.style.display = title.includes(q) || !q ? '' : 'none';
+            });
+        });
+
         // Deep linking: ?song=lige-om-lidt
         const params = new URLSearchParams(window.location.search);
         const deepLink = params.get('song');
@@ -1411,9 +1438,18 @@
             }
             if (e.key === 'ArrowLeft' && currentSongId) { audio.currentTime = Math.max(0, audio.currentTime - 10); }
             if (e.key === 'ArrowRight' && currentSongId) { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); }
+            if (e.key === 'ArrowUp' && currentSongId) { e.preventDefault(); audio.volume = Math.min(1, audio.volume + 0.1); volumeSlider.value = audio.volume * 100; updateVolumeIcon(audio.volume); }
+            if (e.key === 'ArrowDown' && currentSongId) { e.preventDefault(); audio.volume = Math.max(0, audio.volume - 0.1); volumeSlider.value = audio.volume * 100; updateVolumeIcon(audio.volume); }
             if (e.key === 'n' || e.key === 'N') { if (currentSongId) playNext(); }
+            if (e.key === 'p' || e.key === 'P') { if (currentSongId) playPrevious(); }
             if ((e.key === 'r' || e.key === 'R') && currentSongId) { cycleRepeat(); }
             if (e.key === 'l' || e.key === 'L') { if (modalOpen) lyricsToggle.click(); }
+            if (e.key === 'Escape' && modalOpen) { closeModal(); }
+            if (e.key === 'm' || e.key === 'M') {
+                if (audio.volume > 0) { preMuteVolume = audio.volume; audio.volume = 0; volumeSlider.value = 0; }
+                else { audio.volume = preMuteVolume || 1; volumeSlider.value = audio.volume * 100; }
+                updateVolumeIcon(audio.volume);
+            }
         });
 
         // --- Prefetch next track ---

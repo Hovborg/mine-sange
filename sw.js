@@ -1,4 +1,4 @@
-const CACHE = 'fars-jukebox-v3';
+const CACHE = 'fars-jukebox-v4';
 const PRECACHE = [
   '/', '/manifest.json',
   // MP3 filer

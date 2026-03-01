@@ -4,7 +4,8 @@ import re
 import json
 import os
 import time
-from datetime import datetime
+import tempfile
+from datetime import datetime, timezone
 from collections import defaultdict
 from urllib.request import urlopen, Request
 from urllib.error import URLError
@@ -26,6 +27,9 @@ VALID_SONGS = {
     'bare-en-far', 'kristoffer', 'kokosnoed', 'mine-drenge',
     'fars-kamp', 'stop-brian', 'brormand',
     'en-fars-kamp', 'stop-saa-brian', 'som-en-kokosnoed',
+    'hvad-boern-ved', 'hjem', 'lad-dem-snakke', 'i-nat',
+    'godnat-skam', 'rubble-robo-venner', 'giv-os-mere',
+    'lige-om-lidt', 'hoejere', 'min-tur',
 }
 
 BOT_PATTERNS = re.compile(r'bot|crawl|spider|slurp|mediapartners|adsbot|bingpreview|googlebot|yandex|baidu|semrush|ahrefs|mj12bot|dotbot|searchbot|claudebot', re.I)
@@ -385,7 +389,7 @@ def main():
     total_listen_mins = round(total_listen_time / 60, 1)
 
     stats = {
-        'generated': datetime.utcnow().isoformat() + 'Z',
+        'generated': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
         'total_plays': len(plays),
         'unique_listeners': len(per_ip),
         'page_views': page_views,
@@ -406,8 +410,17 @@ def main():
     }
 
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-    with open(OUTPUT_FILE, 'w') as f:
-        json.dump(stats, f, ensure_ascii=False)
+    fd, tmp_path = tempfile.mkstemp(dir=os.path.dirname(OUTPUT_FILE), suffix='.tmp')
+    try:
+        with os.fdopen(fd, 'w') as f:
+            json.dump(stats, f, ensure_ascii=False)
+        os.replace(tmp_path, OUTPUT_FILE)
+    except BaseException:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
 
 if __name__ == '__main__':
     main()
