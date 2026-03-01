@@ -51,6 +51,30 @@ Arbejd KUN med musik deling kode.
 - Animationer: CSS transitions + JS requestAnimationFrame loops
 - Alle sange har `duration` i sekunder og `lyrics[]` med timestamps
 
+## Tilføj ny sang — hvad skal du bruge?
+
+For at tilføje en ny sang til siden, skal følgende leveres:
+
+1. **MP3-fil** — Selve sangen i MP3-format. Placeres i `/audio/` (f.eks. `audio/sang-navn.mp3`)
+2. **Cover art** — Billede i SVG eller PNG-format. Placeres i `/audio/` (f.eks. `audio/sang-navn-art.svg`)
+3. **Sangtitel** — Titel som vises i UI
+4. **Sang-id** — Kort kebab-case id (f.eks. `min-nye-sang`)
+5. **Varighed** — Sangens længde i sekunder (heltal)
+6. **Gradient-farver** — 3 farver til baggrunds-gradient (f.eks. `#f59e0b, #d97706, #92400e`)
+7. **Glow-farve** — Primær farve til glow-effekt (f.eks. `#f59e0b`)
+8. **Lyrics med timestamps** — Word-by-word timing i formatet:
+   ```
+   {t: start_sek, text: "Hele linjen", w: [ord1_start, ord2_start, ...]}
+   ```
+   Genereres bedst med `stable-ts` forced alignment
+9. **(Valgfrit) Subtitle** — Undertitel/artist-navn
+
+### Filer der skal opdateres:
+- **HTML-fil** (index.html, hitboxen.html, etc.) — Tilføj sang-objekt til `songs[]` array
+- **sw.js** — Tilføj MP3 og art til `PRECACHE[]` listen, bump cache version
+- **sang-stats.py** — Tilføj sang-id til `VALID_SONGS` set
+- **admin.html** — Tilføj sang til `SONG_COLORS` og `SONG_NAMES`
+
 ## Vigtigt
 - Rør IKKE lyrics timestamps medmindre specifikt bedt om det
 - Behold Google Cast og AirPlay integration
