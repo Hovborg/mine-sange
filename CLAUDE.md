@@ -24,7 +24,8 @@ Arbejd KUN med musik deling kode.
 | `kristoffer.html` | Dedikeret side til Kristoffer |
 | `admin.html` | Admin-panel (statistik, login påkrævet) |
 | `sang-stats.py` | Python script der parser nginx logs → stats.json |
-| `sw.js` | Service Worker (cache v4) |
+| `sw.js` | Service Worker (cache v5) |
+| `CHANGELOG.md` | Projekt-changelog med alle ændringer |
 
 ## Admin credentials
 - Brugernavn: `admin`
@@ -75,8 +76,30 @@ For at tilføje en ny sang til siden, skal følgende leveres:
 - **sang-stats.py** — Tilføj sang-id til `VALID_SONGS` set
 - **admin.html** — Tilføj sang til `SONG_COLORS` og `SONG_NAMES`
 
+## Hosting & Drift
+- Hostet på **GitHub Pages** — pusher til `main` deployer automatisk
+- **Ingen lokal server nødvendig** for selve websiden
+- `sang-stats.py` kører på serveren med nginx logs (ikke lokal PC)
+- Service Worker opdateres automatisk i besøgendes browsere når ny version pushes
+- Ved PC-genstart: Ingen lokal proces behøver genstartes — alt kører i skyen
+
+## Sangrækkefølge (index.html)
+1. En Fars Kamp for Sine Børn
+2. KRISTOFFER!
+3. Som en Kokosnød
+4. Mine Drenge
+5. Bare En Far
+6. Stop Så Brian
+7. Brormand
+8. Hvad Børn Ved
+9. Hjem
+10. Lad Dem Snakke
+11. I Nat
+12. Godnat, Skam
+
 ## Vigtigt
 - Rør IKKE lyrics timestamps medmindre specifikt bedt om det
 - Behold Google Cast og AirPlay integration
 - Test altid at service worker cache-listen matcher faktiske filer
 - `og-image.png` bruges til social sharing
+- Opdater altid `CHANGELOG.md` ved ændringer

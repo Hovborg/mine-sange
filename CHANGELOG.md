@@ -2,6 +2,13 @@
 
 Alle bemærkelsesværdige ændringer i dette projekt dokumenteres her.
 
+## 2026-03-02
+
+### Projektfiler
+- SW cache bumpet v4 → v5
+- CHANGELOG.md oprettet med fuld projekthistorik
+- CLAUDE.md opdateret med sangrækkefølge, hosting-info og drift-detaljer
+
 ## 2026-03-01
 
 ### Sangrækkefølge
