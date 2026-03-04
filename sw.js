@@ -1,4 +1,4 @@
-const CACHE = 'fars-jukebox-v5';
+const CACHE = 'fars-jukebox-v6';
 const PRECACHE = [
   '/', '/manifest.json',
   // MP3 filer
@@ -33,7 +33,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   // Never cache admin paths
   if (url.pathname.startsWith('/admin')) return;
-  if (url.pathname.endsWith('.mp3')) {
+  if (url.pathname.endsWith('.mp3') || url.pathname.endsWith('.mp4')) {
     e.respondWith(handleAudio(e.request));
   } else if (e.request.mode === 'navigate' || url.pathname === '/') {
     // Network-first for HTML pages
@@ -68,7 +68,7 @@ async function handleAudio(req) {
           'Content-Range': `bytes ${start}-${end}/${total}`,
           'Accept-Ranges': 'bytes',
           'Content-Length': end - start + 1,
-          'Content-Type': 'audio/mpeg'
+          'Content-Type': req.url.endsWith('.mp4') ? 'video/mp4' : 'audio/mpeg'
         }
       });
     }
