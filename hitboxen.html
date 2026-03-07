@@ -191,6 +191,8 @@
         .modal-art .art-emoji { font-size: 4.5rem; z-index: 1; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
         .modal-art .art-glow { position: absolute; width: 160px; height: 160px; border-radius: 50%; filter: blur(50px); opacity: 0.35; }
         .modal-art .art-shimmer { display: none; }
+        .art-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 12px; z-index: 1; display: none; }
+        .modal-art.has-video { aspect-ratio: 3/2; width: min(420px, 85vw); height: auto; }
 
         /* Spinning ring - disabled */
         .modal-art::before { display: none; }
@@ -413,6 +415,7 @@
             <div class="modal-art-wrap">
                 <div class="modal-art-glow" id="modalArtGlow"></div>
                 <div class="modal-art" id="modalArt">
+                    <video class="art-video" id="artVideo" muted playsinline></video>
                     <div class="art-glow" id="artGlow"></div>
                     <span class="art-emoji" id="artEmoji"></span>
                     <div class="art-shimmer"></div>
@@ -478,7 +481,7 @@
 
     <script>
         const songs = [
-            { id: 'giv-os-mere', title: 'Giv Os Mere', file: 'giv-os-mere.mp3', image: 'audio/giv-os-mere-art.png', gradient: 'linear-gradient(135deg, #e11d48, #be123c, #881337)', glow: '#e11d48', duration: 191, lyrics: [
+            { id: 'giv-os-mere', title: 'Giv Os Mere', file: 'giv-os-mere.mp3', video: 'giv-os-mere-video.mp4', image: 'audio/giv-os-mere-art.png', gradient: 'linear-gradient(135deg, #e11d48, #be123c, #881337)', glow: '#e11d48', duration: 191, lyrics: [
                 { t: 14.3, text: 'Volumen op og verden forsvinder', w: [14.3, 15.04, 15.32, 15.4, 15.86] },
                 { t: 16.58, text: 'Der er kun os og den her lyd', w: [16.58, 18.1, 18.24, 18.38, 18.72, 18.82, 19.06, 19.42] },
                 { t: 20.04, text: 'Bassen banker og gulvet dirrer', w: [20.04, 21.74, 22.12, 22.46, 23.04] },
@@ -522,7 +525,7 @@
                 { t: 116.54, text: 'Giv os mere', w: [116.54, 118.38, 120.58] },
                 { t: 121.18, text: 'Mere', w: [121.18] }
             ] },
-            { id: 'lige-om-lidt', title: 'Lige Om Lidt', file: 'lige-om-lidt.mp3', image: 'audio/lige-om-lidt-art.svg', gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)', glow: '#f59e0b', duration: 177, lyrics: [
+            { id: 'lige-om-lidt', title: 'Lige Om Lidt', file: 'lige-om-lidt.mp3', video: 'lige-om-lidt-video.mp4', image: 'audio/lige-om-lidt-art.svg', gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)', glow: '#f59e0b', duration: 177, lyrics: [
                 { t: 0.0, text: 'Jeg trykker snooze og siger: bare fem minutter', w: [0.0, 0.1, 0.6, 1.0, 1.14, 1.46, 1.84, 2.26] },
                 { t: 3.08, text: 'Kaffen bliver kold mens jeg scroller p\u00e5 min telefon', w: [3.08, 4.16, 4.4, 4.82, 5.14, 5.34, 5.86, 6.16, 6.3] },
                 { t: 7.02, text: 'T\u00f8jet til fitness h\u00e6nger over stolen', w: [7.02, 7.98, 8.22, 8.8, 9.66, 10.0] },
@@ -565,7 +568,7 @@
                 { t: 129.72, text: 'Lige om...', w: [129.72, 130.28] },
                 { t: 130.28, text: 'Nu', w: [130.28] }
             ] },
-            { id: 'hoejere', title: 'H\u00f8jere', file: 'hoejere.mp3', image: 'audio/hoejere-art.png', gradient: 'linear-gradient(135deg, #7c3aed, #6d28d9, #4c1d95)', glow: '#7c3aed', duration: 161, lyrics: [
+            { id: 'hoejere', title: 'H\u00f8jere', file: 'hoejere.mp3', video: 'hoejere-video.mp4', image: 'audio/hoejere-art.png', gradient: 'linear-gradient(135deg, #7c3aed, #6d28d9, #4c1d95)', glow: '#7c3aed', duration: 161, lyrics: [
                 { t: 8.28, text: 'Taxaen k\u00f8rer og vi r\u00e5ber med p\u00e5 sangen', w: [8.28, 8.96, 9.36, 9.42, 9.5, 9.76, 9.96, 10.24] },
                 { t: 10.94, text: 'Vi kender halvdelen af ordene og det er fint', w: [10.94, 11.82, 12.12, 12.7, 13.02, 13.7, 13.96, 14.04, 14.1] },
                 { t: 14.42, text: 'Vinduet er \u00e5bent og byen ligger foran os', w: [14.42, 16.62, 17.06, 17.62, 17.74, 18.44, 18.76, 19.44] },
@@ -608,7 +611,7 @@
                 { t: 153.78, text: 'H\u00f8jere', w: [153.78] },
                 { t: 158.02, text: 'H\u00f8jere', w: [158.02] }
             ] },
-            { id: 'min-tur', title: 'Min Tur', file: 'min-tur.mp3', image: 'audio/min-tur-art.png', gradient: 'linear-gradient(135deg, #dc2626, #b91c1c, #7f1d1d)', glow: '#dc2626', duration: 153, lyrics: [
+            { id: 'min-tur', title: 'Min Tur', file: 'min-tur.mp3', video: 'min-tur-video.mp4', image: 'audio/min-tur-art.png', gradient: 'linear-gradient(135deg, #dc2626, #b91c1c, #7f1d1d)', glow: '#dc2626', duration: 153, lyrics: [
                 { t: 8.94, text: 'Jeg har ventet l\u00e6nge nok', w: [8.94, 9.64, 9.82, 10.42, 10.64] },
                 { t: 10.92, text: 'St\u00e5et i k\u00f8 mens andre gik forbi', w: [10.92, 12.04, 12.14, 12.34, 12.58, 12.96, 13.14] },
                 { t: 13.6, text: 'Holdt min mund og holdt min plads', w: [13.6, 14.24, 14.34, 14.6, 14.8, 15.24, 15.38] },
@@ -770,6 +773,17 @@
             const modalArt = document.getElementById('modalArt');
             const artEmoji = document.getElementById('artEmoji');
             const artGlow = document.getElementById('artGlow');
+            const artVideo = document.getElementById('artVideo');
+            if (song.video) {
+                artVideo.src = 'audio/' + song.video;
+                artVideo.style.display = 'block';
+                modalArt.classList.add('has-video');
+            } else {
+                artVideo.pause();
+                artVideo.removeAttribute('src');
+                artVideo.style.display = 'none';
+                modalArt.classList.remove('has-video');
+            }
             if (song.image) {
                 modalArt.style.background = `url('${song.image}') center/cover`;
                 artEmoji.textContent = '';
@@ -1021,6 +1035,34 @@
                 audio.play().then(() => setPlayState(true));
             } else {
                 playNext();
+            }
+        });
+
+        // Keep modal video synced with audio playback
+        audio.addEventListener('play', () => {
+            const artVideo = document.getElementById('artVideo');
+            if (artVideo && artVideo.src) artVideo.play().catch(() => {});
+        });
+        audio.addEventListener('pause', () => {
+            const artVideo = document.getElementById('artVideo');
+            if (artVideo) artVideo.pause();
+        });
+        audio.addEventListener('seeked', () => {
+            const artVideo = document.getElementById('artVideo');
+            if (artVideo && artVideo.src) artVideo.currentTime = audio.currentTime || 0;
+        });
+        audio.addEventListener('timeupdate', () => {
+            const artVideo = document.getElementById('artVideo');
+            if (!artVideo || !artVideo.src || artVideo.paused) return;
+            if (Math.abs((artVideo.currentTime || 0) - (audio.currentTime || 0)) > 0.3) {
+                artVideo.currentTime = audio.currentTime || 0;
+            }
+        });
+        audio.addEventListener('ended', () => {
+            const artVideo = document.getElementById('artVideo');
+            if (artVideo) {
+                artVideo.pause();
+                artVideo.currentTime = 0;
             }
         });
 

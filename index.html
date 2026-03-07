@@ -218,6 +218,8 @@
         .modal-art .art-emoji { font-size: 4.5rem; z-index: 1; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
         .modal-art .art-glow { position: absolute; width: 160px; height: 160px; border-radius: 50%; filter: blur(50px); opacity: 0.35; }
         .modal-art .art-shimmer { display: none; }
+        .art-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 12px; z-index: 1; display: none; }
+        .modal-art.has-video { aspect-ratio: 3/2; width: min(420px, 85vw); height: auto; }
 
         /* Spinning ring - disabled */
         .modal-art::before { display: none; }
@@ -470,6 +472,7 @@
             <div class="modal-art-wrap">
                 <div class="modal-art-glow" id="modalArtGlow"></div>
                 <div class="modal-art" id="modalArt">
+                    <video class="art-video" id="artVideo" muted playsinline></video>
                     <div class="art-glow" id="artGlow"></div>
                     <span class="art-emoji" id="artEmoji"></span>
                     <div class="art-shimmer"></div>
@@ -593,7 +596,43 @@
                 {t:225.94, text:"Kærlighed til mine drenge, det er min mission", w:[225.94,226.48,226.64,226.88,227.8,228.38,228.48,232.24]},
                 {t:233.45, text:"Kærlighed til mine drenge, det er min mission", w:[233.45,233.9,234.02,234.86,235.57,236.86,236.96,237.66]}
             ] },
-            { id: 'kristoffer', title: 'KRISTOFFER!', subtitle: 'Onkel Reje Mega Heavy Mix', file: 'kristoffer.mp3', image: 'audio/kristoffer-art.png', gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)', glow: '#e040fb', duration: 265, lyrics: [
+            { id: 'bare-en-far', title: 'Bare En Far', file: 'bare-en-far.mp3', image: 'audio/bare-en-far-art.png', gradient: 'linear-gradient(135deg, #f59e0b, #d97706, #92400e)', glow: '#f59e0b', duration: 149, lyrics: [
+
+                {t:0.0, text:"Mit navn er Brian, jeg står her i dag", w:[0.0,0.46,0.58,0.72,2.38,2.48,3.17,3.28,3.56]},
+                {t:5.9, text:"Med tre drenge i hjertet, det er lige en sag", w:[5.9,6.0,6.44,7.12,7.89,8.9,9.1,9.2,9.59,10.1]},
+                {t:11.31, text:"Mikkel, Rasmus, Kristoffer, I er jo mit liv", w:[11.31,12.5,12.86,14.12,14.41,14.74,15.02,15.68]},
+                {t:16.2, text:"Jeg lover jer, for altid vil jeg være her", w:[16.2,16.86,17.74,18.28,18.38,19.18,19.46,19.62,20.52]},
+                {t:21.39, text:"Jeg kæmper for jer hver eneste dag", w:[21.39,21.5,22.0,22.16,22.61,23.05,23.71]},
+                {t:23.82, text:"Gennem tårer og smerte, det er min sag", w:[23.82,24.32,24.76,24.84,25.58,25.6,25.84,26.1]},
+                {t:27.21, text:"Kristoffer visker: jeg elsker dig alligevel", w:[27.21,27.32,28.5,28.75,29.22,29.52]},
+                {t:31.02, text:"Det er de ord, der holder mig i live, min søn", w:[31.02,32.12,32.24,32.79,33.72,33.96,34.36,34.58,34.74,35.22,35.34]},
+                {t:35.7, text:"Mor siger, du ikke må elske mig", w:[35.7,37.08,38.12,38.74,38.9,39.08,39.76]},
+                {t:39.8, text:"Fire år gammel med hemmeligheder i sig", w:[39.8,40.68,41.14,41.6,41.88,42.88,43.0]},
+                {t:44.02, text:"Men du hviskede sandheden, min lille mand", w:[44.02,44.12,44.32,44.86,45.8,45.8,46.18]},
+                {t:47.08, text:"Jeg elsker dig alligevel, du holdt min hånd", w:[47.08,48.35,48.9,49.95,50.76,50.84,51.5,51.84]},
+                {t:52.42, text:"Jeg kæmper for jer hver eneste dag", w:[52.42,52.86,53.3,53.48,53.82,54.36,55.02]},
+                {t:55.12, text:"Gennem tårer og smerte, det er min sag", w:[55.12,55.62,56.08,56.16,56.86,56.88,57.14,57.38]},
+                {t:57.62, text:"Kristoffer visker: jeg elsker dig alligevel", w:[57.62,58.64,59.8,60.06,60.56,61.39]},
+                {t:62.34, text:"Det er de ord, der holder mig i live, min søn", w:[62.34,63.18,63.62,64.11,65.02,65.25,65.64,65.88,66.2,66.7,66.7]},
+                {t:67.18, text:"Jeg viste dem beviset, de lagde det væk", w:[67.18,68.56,69.68,69.92,71.58,71.85,72.36,72.77]},
+                {t:74.08, text:"De lukkede min journal og kaldte det et træk", w:[74.08,74.42,74.92,75.16,75.8,76.3,76.96,77.06,77.46]},
+                {t:79.38, text:"Min søn sagde: begge slår, de undersøgte kun mig", w:[79.38,79.64,80.08,80.48,80.72,81.44,81.94,82.86,83.4]},
+                {t:83.94, text:"Sådan ser det ud, når systemet dømmer dig", w:[83.94,84.62,85.08,85.4,85.88,85.92,87.26,88.42]},
+                {t:88.42, text:"Jeg kæmper for jer hver eneste dag", w:[88.42,89.32,89.82,89.98,90.32,90.88,91.56]},
+                {t:91.68, text:"Gennem tårer og smerte, det er min sag", w:[91.68,92.12,92.64,92.66,93.4,93.4,93.68,93.9]},
+                {t:94.26, text:"Kristoffer visker: jeg elsker dig alligevel", w:[94.26,95.08,96.3,96.6,97.06,97.9]},
+                {t:99.2, text:"Det er de ord, der holder mig i live, min søn", w:[99.2,99.76,100.02,100.42,101.46,101.76,102.12,102.38,102.56,103.24,103.24]},
+                {t:104.24, text:"En dag vil I høre disse ord, mine drenge", w:[104.24,105.84,105.94,106.32,106.46,106.76,107.16,107.7,108.48]},
+                {t:110.2, text:"Og I vil vide, far kæmpede så længe", w:[110.2,110.3,110.58,110.94,112.02,112.12,112.97,113.81]},
+                {t:114.12, text:"Mikkel, Rasmus, Kristoffer, I er mit liv", w:[114.12,116.61,117.08,118.5,118.64,119.48,119.95]},
+                {t:120.06, text:"Far holder aldrig op, det er mit løfte til jer", w:[120.06,121.02,121.38,121.96,122.9,123.18,123.82,124.05,124.76,124.96]},
+                {t:126.94, text:"Jeg kæmper for jer hver eneste dag", w:[126.94,127.19,127.64,127.82,128.23,128.68,129.32]},
+                {t:129.42, text:"Gennem tårer og smerte, det er min sag", w:[129.42,129.96,130.4,130.46,131.24,131.24,131.5,131.74]},
+                {t:132.1, text:"Kristoffer visker: jeg elsker dig alligevel", w:[132.1,133.0,134.14,134.4,134.88,135.74]},
+                {t:137.0, text:"Det er de ord, der holder mig i live, min søn", w:[137.0,137.56,137.92,138.24,139.22,139.6,139.94,140.2,140.38,140.8,140.95]},
+                {t:141.34, text:"Der holder mig i live, min søn", w:[141.34,144.92,145.02,145.4,145.6,146.02,146.43]}
+            ] },
+            { id: 'kristoffer', title: 'KRISTOFFER!', subtitle: 'Onkel Reje Mega Heavy Mix', file: 'kristoffer.mp3', video: 'kristoffer-video.mp4', image: 'audio/kristoffer-art.png', gradient: 'linear-gradient(135deg, #e040fb, #7c4dff, #6200ea)', glow: '#e040fb', duration: 265, lyrics: [
                 {t:10.42, text:"KRISTOFFER! (KRISTOFFER!)", w:[10.42,11.18]},
                 {t:11.48, text:"SKIBIDI! (skibidi!)", w:[11.48,12.02]},
                 {t:12.54, text:"SIGMA! (sigma!)", w:[12.54,13.12]},
@@ -1078,7 +1117,7 @@
                 {t:198.8, text:"Lad dem snakke", w:[198.77,200.57,200.73]},
                 {t:202.4, text:"Vi danser videre", w:[202.45,202.55,202.99]}
             ] },
-            { id: 'i-nat', title: 'I Nat', file: 'i-nat.mp3', image: 'audio/i-nat-art.svg', gradient: 'linear-gradient(135deg, #00e676, #00bcd4, #0a1a1a)', glow: '#00e676', duration: 185, lyrics: [
+            { id: 'i-nat', title: 'I Nat', file: 'i-nat.mp3', video: 'i-nat-video.mp4', image: 'audio/i-nat-art.svg', gradient: 'linear-gradient(135deg, #00e676, #00bcd4, #0a1a1a)', glow: '#00e676', duration: 185, lyrics: [
                 {t:10.68, text:"Skjorten er ny og skoene er rene", w:[10.68,11.22,11.34,11.56,11.76,12.24,12.48]},
                 {t:14.01, text:"For første gang i år er håret sat", w:[14.01,15.26,15.7,15.98,16.28,16.54,16.68,17.02]},
                 {t:17.34, text:"Spejlet siger: Du ligner en der lever", w:[17.34,19.94,20.64,20.82,21.12,21.3,21.93]},
@@ -1278,6 +1317,17 @@
             const modalArt = document.getElementById('modalArt');
             const artEmoji = document.getElementById('artEmoji');
             const artGlow = document.getElementById('artGlow');
+            const artVideo = document.getElementById('artVideo');
+            if (song.video) {
+                artVideo.src = 'audio/' + song.video;
+                artVideo.style.display = 'block';
+                modalArt.classList.add('has-video');
+            } else {
+                artVideo.pause();
+                artVideo.removeAttribute('src');
+                artVideo.style.display = 'none';
+                modalArt.classList.remove('has-video');
+            }
             if (song.image) {
                 modalArt.style.background = `url('${song.image}') center/cover`;
                 artEmoji.textContent = '';
@@ -1415,6 +1465,12 @@
             document.getElementById('miniPlayIcon').innerHTML = playing ? pauseIcon : playIcon;
             if (playing) overlay.classList.add('playing');
             else overlay.classList.remove('playing');
+            // Sync video play/pause
+            const artVideo = document.getElementById('artVideo');
+            if (artVideo.src) {
+                if (playing) artVideo.play().catch(() => {});
+                else artVideo.pause();
+            }
             // Show mini player if we have a song and modal is closed
             if (currentSongId && !modalOpen) miniPlayer.classList.add('visible');
         }
@@ -1532,6 +1588,11 @@
             miniTopProgress.style.width = pct;
             timeCurrent.textContent = fmt(audio.currentTime);
             progressBarEl.setAttribute('aria-valuenow', Math.round(audio.currentTime / audio.duration * 100));
+            // Sync video with audio (correct drift > 0.3s)
+            const artVideo = document.getElementById('artVideo');
+            if (artVideo.src && Math.abs(artVideo.currentTime - audio.currentTime) > 0.3) {
+                artVideo.currentTime = audio.currentTime;
+            }
         });
         audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = fmt(audio.duration); });
 
@@ -1562,6 +1623,8 @@
                 const x = (e.touches ? e.touches[0].clientX : e.clientX);
                 const pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
                 audio.currentTime = pct * audio.duration;
+                const artVideo = document.getElementById('artVideo');
+                if (artVideo.src) artVideo.currentTime = audio.currentTime;
             }
             bar.addEventListener('mousedown', (e) => { scrubbing = true; seekFromEvent(e); });
             let _scrubRAF = 0;
