@@ -1,6 +1,6 @@
-const CACHE = 'fars-jukebox-v5';
+const CACHE = 'fars-jukebox-v6';
 const PRECACHE = [
-  '/', '/manifest.json',
+  '/', '/manifest.json', '/videoer.html',
   // MP3 filer
   '/audio/bare-en-far.mp3', '/audio/kristoffer.mp3', '/audio/som-en-kokosnoed.mp3',
   '/audio/mine-drenge.mp3', '/audio/en-fars-kamp.mp3', '/audio/stop-saa-brian.mp3',
@@ -14,7 +14,9 @@ const PRECACHE = [
   '/audio/brormand-art.jpg', '/audio/hvad-boern-ved-art.png', '/audio/hjem-art.png', '/audio/lad-dem-snakke-art.png',
   '/audio/i-nat-art.svg', '/audio/godnat-skam-art.svg',
   '/audio/rubble-art.svg', '/audio/lige-om-lidt-art.svg',
-  '/audio/hoejere-art.svg', '/audio/min-tur-art.svg', '/audio/giv-os-mere-art.png'
+  '/audio/hoejere-art.svg', '/audio/min-tur-art.svg', '/audio/giv-os-mere-art.png',
+  // Videoer
+  '/video-sandheden-bag-muren.mp4', '/video-sandheden-bag-muren.gif'
 ];
 
 self.addEventListener('install', e => {

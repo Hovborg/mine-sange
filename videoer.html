@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#121212">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23121212'/%3E%3Cpath d='M22 6v14.5a3.5 3.5 0 1 1-2-3.16V10h-7v11.5a3.5 3.5 0 1 1-2-3.16V8h11z' fill='%231db954'/%3E%3C/svg%3E">
+    <title>Videoer - Fars Jukebox</title>
+    <meta name="description" content="Videoer fra Fars Jukebox">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #121212;
+            --text: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #6a6a6a;
+            --accent: #1db954;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(160deg, #0d1117 0%, #121212 40%, #161b22 70%, #0d1117 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 800px; width: 100%; }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            padding: 10px 16px; margin-bottom: 24px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.15s;
+        }
+        .back-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .back-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .header p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .video-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        .video-thumb-wrap {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .video-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-thumb-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            transition: background 0.2s;
+        }
+        .video-card:hover .play-overlay {
+            background: rgba(0,0,0,0.4);
+        }
+
+        .play-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .video-card:hover .play-btn {
+            transform: scale(1.1);
+            background: #fff;
+        }
+        .play-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: #121212;
+            margin-left: 4px;
+        }
+
+        .video-info { padding: 16px 20px 20px; }
+        .video-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+        .video-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+        .video-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .info-box {
+            background: rgba(29,185,84,0.1);
+            border: 1px solid rgba(29,185,84,0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .info-box strong { color: var(--accent); }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Tilbage til Fars Jukebox
+        </a>
+
+        <div class="header">
+            <h1>Videoer</h1>
+            <p>Musikvideoer og animerede klip</p>
+        </div>
+
+        <div class="info-box">
+            <strong>Til Gmail:</strong> Højreklik på en video og vælg "Kopier billedadresse" for at indsætte GIF-thumbnail i din email. Link derefter billedet til video-URL'en.
+        </div>
+
+        <div class="video-grid">
+
+            <a href="video-sandheden-bag-muren.mp4" class="video-link" target="_blank">
+                <div class="video-card">
+                    <div class="video-thumb-wrap">
+                        <img src="video-sandheden-bag-muren.gif" alt="Sandheden Bag Muren" class="video-thumb-gif">
+                        <div class="play-overlay">
+                            <div class="play-btn">
+                                <svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">Sandheden Bag Muren</div>
+                        <div class="video-desc">Klik for at afspille videoen</div>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="footer">
+            Fars Jukebox &copy; 2026
+        </div>
+    </div>
+</body>
+</html>
