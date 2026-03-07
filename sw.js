@@ -1,4 +1,4 @@
-const CACHE = 'fars-jukebox-v6';
+const CACHE = 'fars-jukebox-v7';
 const PRECACHE = [
   '/', '/manifest.json', '/videoer.html',
   // MP3 filer
@@ -16,7 +16,8 @@ const PRECACHE = [
   '/audio/rubble-art.svg', '/audio/lige-om-lidt-art.svg',
   '/audio/hoejere-art.svg', '/audio/min-tur-art.svg', '/audio/giv-os-mere-art.png',
   // Videoer
-  '/video-sandheden-bag-muren.mp4', '/video-sandheden-bag-muren.gif'
+  '/video-sandheden-bag-muren.mp4', '/video-sandheden-bag-muren.gif',
+  '/video-kristoffer.mp4', '/video-kristoffer.gif'
 ];
 
 self.addEventListener('install', e => {
