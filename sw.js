@@ -1,4 +1,4 @@
-const CACHE = 'fars-jukebox-v7';
+const CACHE = 'fars-jukebox-v8';
 const PRECACHE = [
   '/', '/manifest.json', '/videoer.html',
   // MP3 filer
@@ -15,7 +15,11 @@ const PRECACHE = [
   '/audio/i-nat-art.svg', '/audio/godnat-skam-art.svg',
   '/audio/rubble-art.svg', '/audio/lige-om-lidt-art.svg',
   '/audio/hoejere-art.svg', '/audio/min-tur-art.svg', '/audio/giv-os-mere-art.png',
-  // Videoer
+  // Videoer (audio)
+  '/audio/bare-en-far-video.mp4', '/audio/kristoffer-video.mp4', '/audio/stop-saa-brian-video.mp4',
+  '/audio/i-nat-video.mp4', '/audio/lad-dem-snakke-video.mp4', '/audio/hoejere-video.mp4',
+  '/audio/giv-os-mere-video.mp4',
+  // Videoer (roden)
   '/video-sandheden-bag-muren.mp4', '/video-sandheden-bag-muren.gif',
   '/video-kristoffer.mp4', '/video-kristoffer.gif'
 ];
