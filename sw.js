@@ -1,23 +1,24 @@
-const CACHE = 'fars-jukebox-v18';
+const CACHE = 'fars-jukebox-v19';
 const PRECACHE = [
   '/', '/manifest.json',
   // MP3 filer
   '/audio/bare-en-far.mp3', '/audio/kristoffer.mp3', '/audio/som-en-kokosnoed.mp3',
-  '/audio/mine-drenge.mp3', '/audio/en-fars-kamp.mp3', '/audio/stop-saa-brian.mp3',
+  '/audio/mine-drenge.mp3', '/audio/en-fars-kamp.mp3',
   '/audio/brormand.mp3', '/audio/hvad-boern-ved.mp3', '/audio/hjem.mp3', '/audio/lad-dem-snakke.mp3',
-  '/audio/i-nat.mp3', '/audio/godnat-skam.mp3', '/audio/sandheden-bag-muren.mp3',
+  '/audio/i-nat.mp3', '/audio/godnat-skam.mp3',
   '/audio/rubble-robo-venner.mp3', '/audio/lige-om-lidt.mp3',
   '/audio/hoejere.mp3', '/audio/min-tur.mp3', '/audio/giv-os-mere.mp3',
   // Videoer
-  '/audio/sandheden-bag-muren-video-v23.mp4',
+  '/audio/bare-en-far-video.mp4', '/audio/kristoffer-video.mp4',
+  '/audio/lad-dem-snakke-video.mp4', '/audio/i-nat-video.mp4',
+  '/audio/hoejere-video.mp4', '/audio/giv-os-mere-video.mp4',
   // Cover art
-  '/audio/bare-en-far-art.png', '/audio/kristoffer-art.png', '/audio/kokosnoed-art.png',
-  '/audio/mine-drenge-art.png', '/audio/fars-kamp-art.png', '/audio/stop-brian-art.svg',
+  '/audio/bare-en-far-art.svg', '/audio/kristoffer-art.svg', '/audio/kokosnoed-art.svg',
+  '/audio/mine-drenge-art.svg', '/audio/fars-kamp-art.svg',
   '/audio/brormand-art.jpg', '/audio/hvad-boern-ved-art.png', '/audio/hjem-art.png', '/audio/lad-dem-snakke-art.png',
   '/audio/i-nat-art.svg', '/audio/godnat-skam-art.svg',
   '/audio/rubble-art.svg', '/audio/lige-om-lidt-art.svg',
-  '/audio/hoejere-art.svg', '/audio/hoejere-art.png', '/audio/min-tur-art.svg', '/audio/min-tur-art.png', '/audio/giv-os-mere-art.png',
-  '/audio/sandheden-bag-muren-art.png'
+  '/audio/hoejere-art.svg', '/audio/hoejere-art.png', '/audio/min-tur-art.svg', '/audio/min-tur-art.png', '/audio/giv-os-mere-art.png'
 ];
 
 self.addEventListener('install', e => {

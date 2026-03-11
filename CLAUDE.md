@@ -64,18 +64,17 @@ musik-deling/
 
 ## Sider og Sange
 
-### index.html — Hovedsiden (11 sange)
-1. Sandheden Bag Muren
-2. En Fars Kamp for Sine Børn
-3. KRISTOFFER!
-4. Som en Kokosnød
-5. Mine Drenge
-6. Bare En Far
-7. Hvad Børn Ved
-8. Hjem
-9. Lad Dem Snakke
-10. I Nat
-11. Godnat, Skam
+### index.html — Hovedsiden (10 sange)
+1. En Fars Kamp for Sine Børn
+2. KRISTOFFER!
+3. Som en Kokosnød
+4. Mine Drenge
+5. Bare En Far
+6. Hvad Børn Ved
+7. Hjem
+8. Lad Dem Snakke
+9. I Nat
+10. Godnat, Skam
 
 ### hitboxen.html — Hit-Boxen (4 sange)
 1. Giv Os Mere
@@ -89,10 +88,10 @@ musik-deling/
 
 ### Fjernede sange (filer bevaret i audio/, men ikke vist)
 - Stop Så Brian — fjernet pga. juridisk risiko (offentliggør private beskeder)
+- Sandheden Bag Muren — mediefiler mangler, fjernet indtil de er på plads
 
 ## Admin Credentials
-- Brugernavn: `admin`
-- Password: `Mikkel2111nov`
+- Se lokale noter (ikke i git af sikkerhedsgrunde)
 - Auth: SHA-256 client-side, sessionStorage
 
 ## Nøgle-patterns
