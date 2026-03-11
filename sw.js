@@ -1,32 +1,27 @@
-const CACHE = 'fars-jukebox-v8';
+const CACHE = 'fars-jukebox-v18';
 const PRECACHE = [
-  '/', '/manifest.json', '/videoer.html',
+  '/', '/manifest.json',
   // MP3 filer
   '/audio/bare-en-far.mp3', '/audio/kristoffer.mp3', '/audio/som-en-kokosnoed.mp3',
   '/audio/mine-drenge.mp3', '/audio/en-fars-kamp.mp3', '/audio/stop-saa-brian.mp3',
   '/audio/brormand.mp3', '/audio/hvad-boern-ved.mp3', '/audio/hjem.mp3', '/audio/lad-dem-snakke.mp3',
-  '/audio/i-nat.mp3', '/audio/godnat-skam.mp3',
+  '/audio/i-nat.mp3', '/audio/godnat-skam.mp3', '/audio/sandheden-bag-muren.mp3',
   '/audio/rubble-robo-venner.mp3', '/audio/lige-om-lidt.mp3',
   '/audio/hoejere.mp3', '/audio/min-tur.mp3', '/audio/giv-os-mere.mp3',
+  // Videoer
+  '/audio/sandheden-bag-muren-video-v23.mp4',
   // Cover art
-  '/audio/bare-en-far-art.svg', '/audio/kristoffer-art.svg', '/audio/kokosnoed-art.svg',
-  '/audio/mine-drenge-art.svg', '/audio/fars-kamp-art.svg', '/audio/stop-brian-art.svg',
+  '/audio/bare-en-far-art.png', '/audio/kristoffer-art.png', '/audio/kokosnoed-art.png',
+  '/audio/mine-drenge-art.png', '/audio/fars-kamp-art.png', '/audio/stop-brian-art.svg',
   '/audio/brormand-art.jpg', '/audio/hvad-boern-ved-art.png', '/audio/hjem-art.png', '/audio/lad-dem-snakke-art.png',
   '/audio/i-nat-art.svg', '/audio/godnat-skam-art.svg',
   '/audio/rubble-art.svg', '/audio/lige-om-lidt-art.svg',
-  '/audio/hoejere-art.svg', '/audio/min-tur-art.svg', '/audio/giv-os-mere-art.png',
-  // Videoer (audio)
-  '/audio/bare-en-far-video.mp4', '/audio/kristoffer-video.mp4', '/audio/stop-saa-brian-video.mp4',
-  '/audio/i-nat-video.mp4', '/audio/lad-dem-snakke-video.mp4', '/audio/hoejere-video.mp4',
-  '/audio/giv-os-mere-video.mp4',
-  // Videoer (roden)
-  '/video-sandheden-bag-muren.mp4', '/video-sandheden-bag-muren.gif',
-  '/video-kristoffer.mp4', '/video-kristoffer.gif'
+  '/audio/hoejere-art.svg', '/audio/hoejere-art.png', '/audio/min-tur-art.svg', '/audio/min-tur-art.png', '/audio/giv-os-mere-art.png',
+  '/audio/sandheden-bag-muren-art.png'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)));
-  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -38,14 +33,16 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  // Never cache admin paths
-  if (url.pathname.startsWith('/admin')) return;
+  // Never cache admin or API paths
+  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/')) return;
+  // Skip tracking endpoints
+  if (url.pathname === '/np' || url.pathname === '/track') return;
   if (url.pathname.endsWith('.mp3') || url.pathname.endsWith('.mp4')) {
     e.respondWith(handleAudio(e.request));
   } else if (e.request.mode === 'navigate' || url.pathname === '/') {
     // Network-first for HTML pages
     e.respondWith(fetch(e.request).then(r => {
-      const cache = caches.open(CACHE).then(c => { c.put(e.request, r.clone()); });
+      caches.open(CACHE).then(c => { c.put(e.request, r.clone()); }).catch(() => {});
       return r;
     }).catch(() => caches.match(e.request)));
   } else {
@@ -63,12 +60,11 @@ async function handleAudio(req) {
     if (cached) {
       const blob = await cached.blob();
       const total = blob.size;
-      const parts = range.replace(/bytes=/, '').split('-');
-      const start = parseInt(parts[0], 10);
-      const end = parts[1] ? parseInt(parts[1], 10) : total - 1;
-      if (isNaN(start) || isNaN(end) || start < 0 || end >= total || start > end) {
+      const parsed = parseByteRange(range, total);
+      if (!parsed) {
         return new Response(null, { status: 416, headers: { 'Content-Range': `bytes */${total}` } });
       }
+      const { start, end } = parsed;
       return new Response(blob.slice(start, end + 1), {
         status: 206,
         headers: {
@@ -92,4 +88,26 @@ async function handleAudio(req) {
     const cached = await cache.match(req.url, { ignoreSearch: true, ignoreVary: true });
     return cached || new Response('Offline', { status: 503 });
   }
+}
+
+function parseByteRange(rangeHeader, total) {
+  const match = /^bytes=(\d*)-(\d*)$/i.exec((rangeHeader || '').trim());
+  if (!match) return null;
+
+  let start;
+  let end;
+
+  if (!match[1] && match[2]) {
+    const suffix = parseInt(match[2], 10);
+    if (!Number.isFinite(suffix) || suffix <= 0) return null;
+    start = Math.max(0, total - suffix);
+    end = total - 1;
+  } else {
+    start = match[1] ? parseInt(match[1], 10) : 0;
+    end = match[2] ? parseInt(match[2], 10) : total - 1;
+  }
+
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null;
+  if (start < 0 || start > end || end >= total) return null;
+  return { start, end };
 }
