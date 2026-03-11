@@ -1,7 +1,8 @@
-const CACHE = 'fars-jukebox-v19';
+const CACHE = 'fars-jukebox-v20';
 const PRECACHE = [
   '/', '/manifest.json',
   // MP3 filer
+  '/audio/sandheden-bag-muren.mp3',
   '/audio/bare-en-far.mp3', '/audio/kristoffer.mp3', '/audio/som-en-kokosnoed.mp3',
   '/audio/mine-drenge.mp3', '/audio/en-fars-kamp.mp3',
   '/audio/brormand.mp3', '/audio/hvad-boern-ved.mp3', '/audio/hjem.mp3', '/audio/lad-dem-snakke.mp3',
@@ -9,10 +10,12 @@ const PRECACHE = [
   '/audio/rubble-robo-venner.mp3', '/audio/lige-om-lidt.mp3',
   '/audio/hoejere.mp3', '/audio/min-tur.mp3', '/audio/giv-os-mere.mp3',
   // Videoer
+  '/audio/sandheden-bag-muren-video-v22.mp4',
   '/audio/bare-en-far-video.mp4', '/audio/kristoffer-video.mp4',
   '/audio/lad-dem-snakke-video.mp4', '/audio/i-nat-video.mp4',
   '/audio/hoejere-video.mp4', '/audio/giv-os-mere-video.mp4',
   // Cover art
+  '/audio/sandheden-bag-muren-art.png',
   '/audio/bare-en-far-art.svg', '/audio/kristoffer-art.svg', '/audio/kokosnoed-art.svg',
   '/audio/mine-drenge-art.svg', '/audio/fars-kamp-art.svg',
   '/audio/brormand-art.jpg', '/audio/hvad-boern-ved-art.png', '/audio/hjem-art.png', '/audio/lad-dem-snakke-art.png',

@@ -1,0 +1,17 @@
+{
+  "name": "fars-jukebox-media",
+  "main": "index.js",
+  "compatibility_date": "2026-03-11",
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "fars-jukebox-media"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "sang.hovborg.tech/audio/*",
+      "zone_name": "hovborg.tech"
+    }
+  ]
+}
